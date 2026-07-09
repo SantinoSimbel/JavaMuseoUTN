@@ -1,0 +1,14 @@
+# Carpetas generadas por Eclipse/compilación
+build/
+bin/
+target/
+
+# Archivos compilados
+*.class
+
+# Configuración local de Eclipse
+.settings/
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db
