@@ -1,0 +1,18 @@
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ `javaMuseoUTN` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
+
+USE `javaMuseoUTN`;
+
+DROP TABLE IF EXISTS `category`;
+
+CREATE TABLE `category` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO `category` VALUES (1,'Anime'),(2, 'Videojuegos'),(3,'Peliculas');
+
+
+create user java@'%' identified by 'himitsu';
+
+grant select, insert, update, delete on javaMuseoUTN.* to java@'%';
