@@ -12,7 +12,7 @@
 	<p>CRUD categorias:</p>
 	
 	<div>
-		<form action="CategoryServlet">
+		<form action="CategoryServlet" method="GET">
 			<input type="hidden" name="action" value= "list">
 			<button type= "submit">Mostrar Categorias</button>
 		</form>

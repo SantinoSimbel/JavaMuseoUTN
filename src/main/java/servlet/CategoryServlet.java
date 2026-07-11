@@ -59,7 +59,7 @@ public class CategoryServlet extends HttpServlet {
 		// guardo en el request la lista de categorias que le voy a mandar al jsp. ("name", objeto)
 		request.setAttribute("allCategories", categories);;
 		//le mando el request(con las allCategories) y la response al jsp para que que responda él.
-		request.getRequestDispatcher("mostrarCategorias.jsp").forward(request,response);
+		request.getRequestDispatcher("/WEB-INF/mostrarCategorias.jsp").forward(request,response);
 	}
 
 }
