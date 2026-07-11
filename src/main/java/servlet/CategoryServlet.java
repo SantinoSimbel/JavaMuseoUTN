@@ -9,7 +9,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import data.DbHandler;
+import data.CategoryDAO;
+import data.DbConnection;
 import entities.Category;
 
 /**
@@ -53,8 +54,8 @@ public class CategoryServlet extends HttpServlet {
 	
 	public void getAllCategories(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		DbHandler db = new DbHandler();
-		LinkedList<Category> categories = db.getAllCategories();
+		CategoryDAO dao  = new CategoryDAO();
+		LinkedList<Category> categories = dao.list();
 		
 		// guardo en el request la lista de categorias que le voy a mandar al jsp. ("name", objeto)
 		request.setAttribute("allCategories", categories);;
