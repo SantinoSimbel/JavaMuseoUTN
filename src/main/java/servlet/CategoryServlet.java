@@ -36,7 +36,7 @@ public class CategoryServlet extends HttpServlet {
 		
 		//agarramos el parametro action de la url. ...action="list"...
 		String action = request.getParameter("action");
-		//si action era = mostrar entonces llamamos al getAll
+		//si action era = list entonces llamamos al getAll
 		if ("list".equals(action)) {
 			getAllCategories(request, response);
 		}

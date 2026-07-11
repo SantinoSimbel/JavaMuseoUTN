@@ -9,6 +9,8 @@
 <title>Insert title here</title>
 
 <%
+	//codigo java para que la pagina funcione correctamente ponerlo en head (segun profe)
+	//no los que tengan comportamientos o animaciones 
 	LinkedList<Category> categoriesList = (LinkedList<Category>) request.getAttribute("allCategories");
 %>
 </head>

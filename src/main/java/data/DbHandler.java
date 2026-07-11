@@ -49,7 +49,7 @@ public class DbHandler {
 	// es un metodo normal, tiene misma estructura que un
 	// public String mostrarDatos()
 	public LinkedList<Category> getAllCategories() {
-		LinkedList<Category> categorias = new LinkedList<>();
+		LinkedList<Category> categories = new LinkedList<>();
 		// definimos estos 2 aca para que pueda encontrlos el finally
 		Statement stmt = null;
 		ResultSet rs = null;
@@ -69,9 +69,9 @@ public class DbHandler {
 				c.setId(rs.getInt("id"));
 				c.setName(rs.getString("name"));
 
-				categorias.add(c); // lo guardo en la linked list que cree al inicio del metodo
+				categories.add(c); // lo guardo en la linked list que cree al inicio del metodo
 			}
-			return categorias;
+			return categories;
 
 		} catch (SQLException e) {
 			e.printStackTrace();
