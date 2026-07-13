@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import data.CategoryDAO;
-import data.DbConnection;
 import entities.Category;
 
 /**
@@ -60,7 +59,7 @@ public class CategoryServlet extends HttpServlet {
 		// guardo en el request la lista de categorias que le voy a mandar al jsp. ("name", objeto)
 		request.setAttribute("allCategories", categories);;
 		//le mando el request(con las allCategories) y la response al jsp para que que responda él.
-		request.getRequestDispatcher("/WEB-INF/mostrarCategorias.jsp").forward(request,response);
+		request.getRequestDispatcher("/WEB-INF/category/list.jsp").forward(request,response);
 	}
 
 }

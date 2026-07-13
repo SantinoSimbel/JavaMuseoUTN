@@ -1,9 +1,6 @@
 package data;
 
 import java.sql.*; //como vamos a usar muchos mejor el *
-import java.util.LinkedList;
-
-import entities.Category;
 
 public class DbConnection {
 	private String driver = "com.mysql.cj.jdbc.Driver";

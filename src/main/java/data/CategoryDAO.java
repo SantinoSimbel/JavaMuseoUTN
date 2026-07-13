@@ -9,7 +9,7 @@ import java.util.LinkedList;
 import entities.Category;
 
 public class CategoryDAO {
-	
+
 	private DbConnection db = new DbConnection();
 
 	// es un metodo normal, tiene misma estructura que un
@@ -58,4 +58,6 @@ public class CategoryDAO {
 		}
 
 	}
+	//falta el search o findOne
 }
+
