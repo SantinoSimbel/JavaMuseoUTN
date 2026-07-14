@@ -32,23 +32,33 @@ public class CategoryServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		//response.getWriter().append("Served at: ").append(request.getContextPath());
 		
-		//agarramos el parametro action de la url. ...action="list"...
-		String action = request.getParameter("action");
-		//si action era = list entonces llamamos al getAll
-		if ("list".equals(action)) {
+		//agarramos el parametro operation de la url. ...operation="list"...
+		String operation = request.getParameter("operation");
+		
+		switch (operation) {
+		case "list":
 			getAllCategories(request, response);
+			break;
+		case "showAddForm":
+			showAddForm(request, response);
+			break;
 		}
 	}
-	
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		doGet(request, response);
+
+		String operation = request.getParameter("operation");
+		
+		switch (operation) {
+		case "add":
+			addCategory(request, response);
+			break;
+		}
 	}
 	
 	public void getAllCategories(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -60,6 +70,25 @@ public class CategoryServlet extends HttpServlet {
 		request.setAttribute("allCategories", categories);;
 		//le mando el request(con las allCategories) y la response al jsp para que que responda él.
 		request.getRequestDispatcher("/WEB-INF/category/list.jsp").forward(request,response);
+	}
+	
+	public void showAddForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		CategoryDAO dao  = new CategoryDAO();
+		LinkedList<Category> categories = dao.list();
+		request.setAttribute("allCategories", categories);;
+		request.getRequestDispatcher("/WEB-INF/category/add.jsp").forward(request,response);
+	}
+	
+	public void addCategory(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		Category newCat = new Category();
+		newCat.setName(request.getParameter("name"));
+		
+		CategoryDAO dao  = new CategoryDAO();
+		dao.add(newCat);
+		//ver si esto funciona:
+		showAddForm(request, response);
+		
 	}
 
 }

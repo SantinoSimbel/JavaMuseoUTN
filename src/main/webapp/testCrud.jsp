@@ -14,12 +14,15 @@
 	<div>
 		<!-- action: cuando se envie el form hace la peticion a tal servlet, con tal metodo -->
 		<form action="CategoryServlet" method="GET">
-			<input type="hidden" name="action" value= "list">
+			<input type="hidden" name="operation" value= "list">
 			<button type= "submit">Mostrar Categorias</button>
 		</form>
 		<!-- tambien al solo hacer un get podria ponerse:
-				<a href="CategoryServlet?action=list">Mostrar categorías</a>
-		 -->
+				<a href="CategoryServlet?operation=list">Mostrar categorías</a>
+		(y darle estilo css, los form convienen cuando uno esta enviando cosas para buscar,
+		si no directamente usar <a>)
+		-->
+		<a href="CategoryServlet?operation=showAddForm">guardar categorías</a>
 		
 	</div>
 </body>

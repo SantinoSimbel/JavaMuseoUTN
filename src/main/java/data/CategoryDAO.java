@@ -1,6 +1,7 @@
 package data;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -58,6 +59,43 @@ public class CategoryDAO {
 		}
 
 	}
-	//falta el search o findOne
+	//falta el search o findOne (si es que hace falta)
+	
+	public void add(Category newCat) {
+		PreparedStatement stmt = null;
+		//le pongo keyRs para tener nombre mas amigable con lo que estoy haciendo. (en el stmt no hace falta saber que es un preparedStatement.)
+		ResultSet keyRs = null;
+		Connection conn = null;
+		
+		//crear el prepareStatement (la consulta)
+		try {
+			conn= db.getConnection();
+			//no cortar la sentencias(aca no esta cortada pero en el video si)
+			stmt = conn.prepareStatement("insert into category(name) values(?)", Statement.RETURN_GENERATED_KEYS); //eso ultimo devuelve el id generado por la base de datos
+			stmt.setString(1, newCat.getName());
+			
+			stmt.executeUpdate();// devuelve la cantidad de filas actualizadas (se usa para insert, update o delete, cuando quiera saber cuantas filas afecte con mi operacion
+			// stmt.execute(); devuelve un boolean sobre si se genero un resulset o no
+			
+			keyRs = stmt.getGeneratedKeys();
+			
+			if(keyRs!= null && keyRs.next()) {
+				newCat.setId(keyRs.getInt(1)); //ese 1 porque no se el nombre de la columna que devuelve. ademas devuelve una sola columna entonces le pido el dato de esa columna
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			//cerrar las conexiones para que no consuman recursos
+			try {
+				if(keyRs != null)keyRs.close();
+				if(stmt != null)stmt.close();
+				db.releaseConnection();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			
+		}
+	}
 }
 
