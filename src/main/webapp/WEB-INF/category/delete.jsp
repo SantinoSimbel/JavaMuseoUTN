@@ -13,21 +13,17 @@
 </head>
 <body>
 
-	<h1>Modificar categoria</h1>
+	<h1>Eliminar categoria</h1>
 	<a href="testCrud.jsp">Regresar al menu</a>
 	
 	<!-- Formulario -->
 	<form action="CategoryServlet" method="POST">
-		<input type= "hidden" name="operation" value = "update">
+		<input type= "hidden" name="operation" value = "delete">
 		<p>
 			<label>Id:</label> <input type="text" name="id">
 		</p>
-		<p>
-			<label>Nombre:</label> <input type="text" name="name">
-		</p>
 		
-		
-		<button type="submit">Actualizar</button>
+		<button type="submit">Eliminar</button>
 	</form>
 	
 	<!-- Tabla para mostar que se guardo -->

@@ -24,7 +24,7 @@
 		-->
 		<a href="CategoryServlet?operation=showAddForm">Crear categoria</a>
 		<a href="CategoryServlet?operation=showEditForm">Modificar categoria</a>
-		<a href="CategoryServlet?operation=">Eliminar categoria</a>
+		<a href="CategoryServlet?operation=delete">Eliminar categoria</a>
 		
 	</div>
 </body>

@@ -46,6 +46,9 @@ public class CategoryServlet extends HttpServlet {
 		case "showEditForm":
 			showEditForm(request, response);
 			break;
+		case "delete":
+			showDeleteForm(request, response);
+			break;
 		}
 	}
 
@@ -63,6 +66,9 @@ public class CategoryServlet extends HttpServlet {
 			break;
 		case "update":
 			updateCategory(request, response);
+			break;
+		case "delete":
+			deleteCategory(request, response);
 			break;
 		}
 	}
@@ -94,6 +100,14 @@ public class CategoryServlet extends HttpServlet {
 		request.getRequestDispatcher("/WEB-INF/category/update.jsp").forward(request,response);
 	}
 	
+	public void showDeleteForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		CategoryDAO dao  = new CategoryDAO();
+		LinkedList<Category> categories = dao.list();
+		request.setAttribute("allCategories", categories);;
+		request.getRequestDispatcher("/WEB-INF/category/delete.jsp").forward(request,response);
+	}
+	
 	public void addCategory(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Category newCat = new Category();
 		newCat.setName(request.getParameter("name"));
@@ -114,7 +128,16 @@ public class CategoryServlet extends HttpServlet {
 		dao.update(newCat);
 		//ver si esto funciona: (si funciona, pero como conviene hacerlo en el TP?)
 		showAddForm(request, response);
+	}
+	
+	public void deleteCategory(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		Category delCat = new Category();
+		delCat.setId(Integer.parseInt(request.getParameter("id")));
 		
+		CategoryDAO dao  = new CategoryDAO();
+		dao.delete(delCat);
+		//ver si esto funciona: (si funciona, pero como conviene hacerlo en el TP?)
+		showDeleteForm(request, response);
 	}
 
 }
