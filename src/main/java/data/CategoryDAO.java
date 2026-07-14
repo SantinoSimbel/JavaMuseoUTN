@@ -97,5 +97,57 @@ public class CategoryDAO {
 			
 		}
 	}
+	
+	public void update(Category updCat) {
+		PreparedStatement stmt = null;
+		Connection conn = null;	
+		
+		//crear el prepareStatement (la consulta)
+		try {
+			conn= db.getConnection();
+			stmt = conn.prepareStatement("update category set name = ? where id = ?");
+			stmt.setString(1, updCat.getName());
+			stmt.setInt(2, updCat.getId());
+
+			stmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			//cerrar las conexiones para que no consuman recursos
+			try {
+				if(stmt != null)stmt.close();
+				db.releaseConnection();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}	
+		}
+
+	} 
+	
+	public void delete(Category delCat) {
+		PreparedStatement stmt = null;
+		Connection conn = null;
+		
+		try {
+			conn= db.getConnection();
+			stmt = conn.prepareStatement("delete from category where id = ?");
+
+			stmt.setInt(1, delCat.getId());
+
+			stmt.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			//cerrar las conexiones para que no consuman recursos
+			try {
+				if(stmt != null)stmt.close();
+				db.releaseConnection();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}	
+		}
+	}
 }
 

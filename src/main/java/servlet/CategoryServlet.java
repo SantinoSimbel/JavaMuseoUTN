@@ -43,6 +43,9 @@ public class CategoryServlet extends HttpServlet {
 		case "showAddForm":
 			showAddForm(request, response);
 			break;
+		case "showEditForm":
+			showEditForm(request, response);
+			break;
 		}
 	}
 
@@ -57,6 +60,9 @@ public class CategoryServlet extends HttpServlet {
 		switch (operation) {
 		case "add":
 			addCategory(request, response);
+			break;
+		case "update":
+			updateCategory(request, response);
 			break;
 		}
 	}
@@ -80,13 +86,33 @@ public class CategoryServlet extends HttpServlet {
 		request.getRequestDispatcher("/WEB-INF/category/add.jsp").forward(request,response);
 	}
 	
+	public void showEditForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		CategoryDAO dao  = new CategoryDAO();
+		LinkedList<Category> categories = dao.list();
+		request.setAttribute("allCategories", categories);;
+		request.getRequestDispatcher("/WEB-INF/category/update.jsp").forward(request,response);
+	}
+	
 	public void addCategory(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Category newCat = new Category();
 		newCat.setName(request.getParameter("name"));
 		
 		CategoryDAO dao  = new CategoryDAO();
 		dao.add(newCat);
-		//ver si esto funciona:
+		//ver si esto funciona: (si funciona, pero como conviene hacerlo en el TP?)
+		showAddForm(request, response);
+		
+	}
+	
+	public void updateCategory(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		Category newCat = new Category();
+		newCat.setId(Integer.parseInt(request.getParameter("id")));
+		newCat.setName(request.getParameter("name"));
+		
+		CategoryDAO dao  = new CategoryDAO();
+		dao.update(newCat);
+		//ver si esto funciona: (si funciona, pero como conviene hacerlo en el TP?)
 		showAddForm(request, response);
 		
 	}

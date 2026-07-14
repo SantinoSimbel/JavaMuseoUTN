@@ -22,7 +22,9 @@
 		(y darle estilo css, los form convienen cuando uno esta enviando cosas para buscar,
 		si no directamente usar <a>)
 		-->
-		<a href="CategoryServlet?operation=showAddForm">guardar categorías</a>
+		<a href="CategoryServlet?operation=showAddForm">Crear categoria</a>
+		<a href="CategoryServlet?operation=showEditForm">Modificar categoria</a>
+		<a href="CategoryServlet?operation=">Eliminar categoria</a>
 		
 	</div>
 </body>
