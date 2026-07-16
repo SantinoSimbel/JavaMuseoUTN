@@ -6,7 +6,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>List categories</title>
 
 <%
 	//codigo java para que la pagina funcione correctamente ponerlo en head (segun profe)
@@ -30,7 +30,11 @@
 		<% for (Category cat : categoriesList){ %>
 			<tr>
 				<td><%= cat.getId()%></td>
-				<td><%= cat.getName()%></td>
+				<td>
+					<button><%= cat.getName()%></button>
+					<button>E</button>
+					<button>B</button>
+				</td>
 			</tr>
 			<%} %>
 		</tbody>
