@@ -17,7 +17,7 @@
 
 <body>
 	<h1>Tabla categorias</h1>
-	<a href="testCrud.jsp">Regresar al menu</a>
+	<a href="adminHome.jsp">Regresar al menu</a>
 
 	<table border="1">
 		<thead>
