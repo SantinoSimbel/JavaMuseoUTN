@@ -5,6 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.LinkedList;
 
 import entities.Category;
@@ -59,7 +62,45 @@ public class CategoryDAO {
 		}
 
 	}
-	//falta el search o findOne (si es que hace falta)
+	
+	public Category search(Category c) { //recibimos un Category que solo tenga el id
+		//definimos estos 2 aca para que pueda encontrlos el finally
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		Connection conn = null;
+		
+		//crear el prepareStatement (la consulta)
+		try {
+			//lo definimos aca asi si nunca entra al try puedo devolverlo null (en caso de querer avisar que esta nulo, hacerlo en la interfaz grafica!)
+			conn= db.getConnection();
+			Category cat = null;
+			stmt = conn.prepareStatement("select * from category where id = ?");
+			//al primer signo de pregunta(1) le asigno el resultado de getId() (el id que ingreso el usuario)
+			stmt.setInt(1, c.getId());
+			
+			rs = stmt.executeQuery();
+			
+			if(rs!= null && rs.next()) {
+				cat = new Category();
+				cat.setId(rs.getInt("id"));
+				cat.setName(rs.getString("name"));
+			}
+			
+			return cat;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			try {
+				if(rs != null)rs.close();
+				if(stmt != null)stmt.close();
+				db.releaseConnection();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 	
 	public void add(Category newCat) {
 		PreparedStatement stmt = null;
