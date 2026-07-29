@@ -18,6 +18,7 @@
 <body>
 	<h1>Tabla categorias</h1>
 	<a href="adminHome.jsp">Regresar al menu</a>
+	<a href ="CategoryServlet?operation=new">Crear nueva categoria</a>
 
 	<table border="1">
 		<thead>
@@ -31,7 +32,9 @@
 			<tr>
 				<td><%= cat.getId()%></td>
 				<td>
-					<button><%= cat.getName()%></button>
+					<a href ="CategoryServlet?operation=edit&id=<%=cat.getId()%>">
+						<%= cat.getName()%>
+					</a>
 					<button>E</button>
 					<button>B</button>
 				</td>
