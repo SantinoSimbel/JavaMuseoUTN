@@ -14,6 +14,7 @@ El sistema tiene 3 tipos de usuarios, los administradores, los invitados y los r
 ## Modelo
 
 [Imágen del Modelo](https://drive.google.com/file/d/1JlHYepIgV6Vz3JOAJYQTQy4ENsG2jMB9/view?usp=sharing)
+
 [Documento de organizacion](https://docs.google.com/document/d/1ofofCWA-NhJqfKzBfnuxRcjVR1hn-_lQ-hIlwk1Gtow/edit?tab=t.0)
 
 
