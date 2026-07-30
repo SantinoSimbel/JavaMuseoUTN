@@ -36,7 +36,11 @@
 						<%= cat.getName()%>
 					</a>
 					<button>E</button>
-					<button>B</button>
+					<form action="CategoryServlet" method="POST">
+						<input type="hidden" name="operation" value= "delete">
+						<input type="hidden" name="id" value="<%= cat.getId() %>">
+						<button type= "submit">B</button>
+					</form>
 				</td>
 			</tr>
 			<%} %>

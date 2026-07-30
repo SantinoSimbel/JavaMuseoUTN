@@ -46,9 +46,6 @@ public class CategoryServlet extends HttpServlet {
 		case "edit":
 			showForm(request, response);
 			break;
-		case "delete":
-			showDeleteForm(request, response);
-			break;
 		}
 	}
 
@@ -110,14 +107,7 @@ public class CategoryServlet extends HttpServlet {
 		
 		request.getRequestDispatcher("/WEB-INF/category/form.jsp").forward(request,response);
 	}
-	
-	public void showDeleteForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		CategoryDAO dao  = new CategoryDAO();
-		LinkedList<Category> categories = dao.list();
-		request.setAttribute("allCategories", categories);;
-		request.getRequestDispatcher("/WEB-INF/category/delete.jsp").forward(request,response);
-	}
+
 	
 	public void addCategory(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Category newCat = new Category();
@@ -145,8 +135,7 @@ public class CategoryServlet extends HttpServlet {
 		
 		CategoryDAO dao  = new CategoryDAO();
 		dao.delete(delCat);
-		//ver si esto funciona: (si funciona, pero como conviene hacerlo en el TP?)
-		showDeleteForm(request, response);
+		response.sendRedirect("CategoryServlet?operation=list");
 	}
 
 }
