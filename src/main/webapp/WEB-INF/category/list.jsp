@@ -6,7 +6,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>List categories</title>
 
 <%
 	//codigo java para que la pagina funcione correctamente ponerlo en head (segun profe)
@@ -18,6 +18,7 @@
 <body>
 	<h1>Tabla categorias</h1>
 	<a href="adminHome.jsp">Regresar al menu</a>
+	<a href ="CategoryServlet?operation=new">Crear nueva categoria</a>
 
 	<table border="1">
 		<thead>
@@ -30,7 +31,17 @@
 		<% for (Category cat : categoriesList){ %>
 			<tr>
 				<td><%= cat.getId()%></td>
-				<td><%= cat.getName()%></td>
+				<td>
+					<a href ="CategoryServlet?operation=edit&id=<%=cat.getId()%>">
+						<%= cat.getName()%>
+					</a>
+					<button>E</button>
+					<form action="CategoryServlet" method="POST">
+						<input type="hidden" name="operation" value= "delete">
+						<input type="hidden" name="id" value="<%= cat.getId() %>">
+						<button type= "submit">B</button>
+					</form>
+				</td>
 			</tr>
 			<%} %>
 		</tbody>

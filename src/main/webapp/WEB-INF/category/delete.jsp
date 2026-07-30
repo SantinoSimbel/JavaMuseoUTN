@@ -6,7 +6,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>Delete category</title>
 <%
 	LinkedList<Category> categoriesList = (LinkedList<Category>) request.getAttribute("allCategories");
 %>

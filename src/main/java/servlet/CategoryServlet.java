@@ -40,14 +40,11 @@ public class CategoryServlet extends HttpServlet {
 		case "list":
 			getAllCategories(request, response);
 			break;
-		case "showAddForm":
-			showAddForm(request, response);
+		case "new":
+			showForm(request, response);
 			break;
-		case "showEditForm":
-			showEditForm(request, response);
-			break;
-		case "delete":
-			showDeleteForm(request, response);
+		case "edit":
+			showForm(request, response);
 			break;
 		}
 	}
@@ -84,29 +81,33 @@ public class CategoryServlet extends HttpServlet {
 		request.getRequestDispatcher("/WEB-INF/category/list.jsp").forward(request,response);
 	}
 	
-	public void showAddForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void showForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		//showform prepara lo necesario para que el form.jsp pueda mostrarse o vacio o con la categoria a editar
+		Category cat;
+		boolean editing;
 		
-		CategoryDAO dao  = new CategoryDAO();
-		LinkedList<Category> categories = dao.list();
-		request.setAttribute("allCategories", categories);;
-		request.getRequestDispatcher("/WEB-INF/category/add.jsp").forward(request,response);
-	}
-	
-	public void showEditForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String operation = request.getParameter("operation");
 		
-		CategoryDAO dao  = new CategoryDAO();
-		LinkedList<Category> categories = dao.list();
-		request.setAttribute("allCategories", categories);;
-		request.getRequestDispatcher("/WEB-INF/category/update.jsp").forward(request,response);
-	}
-	
-	public void showDeleteForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		if ("new".equals(operation)) {
+			cat = new Category();
+			editing =  false;
+		} else {
+			editing = true;
+			int id = Integer.parseInt(request.getParameter("id"));
+			
+			Category c = new Category();
+			c.setId(id);
+			
+			CategoryDAO dao  = new CategoryDAO();
+			cat = dao.search(c);
+		}
 		
-		CategoryDAO dao  = new CategoryDAO();
-		LinkedList<Category> categories = dao.list();
-		request.setAttribute("allCategories", categories);;
-		request.getRequestDispatcher("/WEB-INF/category/delete.jsp").forward(request,response);
+		request.setAttribute("oneCategory", cat);
+		request.setAttribute("editing", editing);
+		
+		request.getRequestDispatcher("/WEB-INF/category/form.jsp").forward(request,response);
 	}
+
 	
 	public void addCategory(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Category newCat = new Category();
@@ -114,8 +115,7 @@ public class CategoryServlet extends HttpServlet {
 		
 		CategoryDAO dao  = new CategoryDAO();
 		dao.add(newCat);
-		//ver si esto funciona: (si funciona, pero como conviene hacerlo en el TP?)
-		showAddForm(request, response);
+		response.sendRedirect("CategoryServlet?operation=list");
 		
 	}
 	
@@ -126,8 +126,7 @@ public class CategoryServlet extends HttpServlet {
 		
 		CategoryDAO dao  = new CategoryDAO();
 		dao.update(newCat);
-		//ver si esto funciona: (si funciona, pero como conviene hacerlo en el TP?)
-		showAddForm(request, response);
+		response.sendRedirect("CategoryServlet?operation=list");
 	}
 	
 	public void deleteCategory(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -136,8 +135,7 @@ public class CategoryServlet extends HttpServlet {
 		
 		CategoryDAO dao  = new CategoryDAO();
 		dao.delete(delCat);
-		//ver si esto funciona: (si funciona, pero como conviene hacerlo en el TP?)
-		showDeleteForm(request, response);
+		response.sendRedirect("CategoryServlet?operation=list");
 	}
 
 }
