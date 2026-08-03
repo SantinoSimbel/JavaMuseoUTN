@@ -20,22 +20,24 @@ integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJ
 </head>
 
 <body>
+	<!-- Titulo y botones -->
 	<div class= "container mt-4">
 		<div class="d-flex justify-content-between align-items-center mb-4">
 
 			<h1>Categorias</h1>
 
-			<a href="CategoryServlet?operation=new" 
-			   class="btn btn-success">
-				Nueva categoria 
-			</a>
-
-		</div>
-		<a href="adminHome.jsp" 
-		   class = "btn btn-secondary mb-3">
+			<a href="adminHome.jsp"
+			   class = "btn btn-secondary">
 			Regresar al menu
+			</a>
+		</div>
+		
+		<a href="CategoryServlet?operation=new" 
+		   class="btn btn-success mb-3">
+			Nueva categoria 
 		</a>
 		
+		<!-- Listado -->
 		<% for (Category cat : categoriesList){ %>
 			<div class= "card mb-3 shadow-sm">
 				<a href ="CategoryServlet?operation=edit&id=<%=cat.getId()%>"
@@ -57,9 +59,7 @@ integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJ
 							<button class = "btn btn-danger">Eliminar</button>
 						</form>
 					</div>
-				
 				</div>
-					
 			</div>
 		<% } %>		
 	</div>
