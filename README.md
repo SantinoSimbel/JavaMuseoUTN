@@ -25,17 +25,17 @@ El sistema tiene 3 tipos de usuarios, los administradores, los invitados y los r
 
 |Requerimiento|Detalle/Listado de casos incluidos|
 |:-|-:|
-|ABMC simple|Categoría, Usuario, (Ubicación)|
-|ABMC dependiente|Artículo, Evento, Entrada|
-|CU NO-ABMC|Comprar entrada, (recordatorio evento en pagina)|
+|ABMC simple|Categoría|
+|ABMC dependiente|Artículo, Evento, Entrada/compra|
+|CU NO-ABMC|Comprar entrada|
 
 ### Aprobación Directa
 
 |Requerimiento|Detalle/Listado de casos incluidos|
 |:-|-:|
-|ABMC|Categoría, Usuario, (Ubicación), Artículo, Evento, Entrada, (reseña)|
-|CU "Complejo"(nivel resumen)|Comprar entrada, (profe: reseñar charla)|
-|Listado complejo|Artículos por categoría, (Evento por fecha), Evento por categoría, (Evento por ubicación)|
+|ABMC|Categoría, Usuario, Artículo, Evento, reseña, (¿Entrada?)|
+|CU "Complejo"(nivel resumen)|Comprar entrada, reseñar charla|
+|Listado complejo|Artículos por categoría, (Evento por fecha), Evento por categoría|
 |Nivel de acceso|Admin, Registrado, Invitado|
 |Manejo de errores|no requiere detalle|
 |requerimiento extra obligatorio (**)|Notificar evento por email|
