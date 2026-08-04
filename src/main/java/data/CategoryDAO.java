@@ -30,7 +30,7 @@ public class CategoryDAO {
 			conn = db.getConnection(); // nos conectamos
 			stmt = conn.createStatement();
 			// ejecutar la sentencia (y guardamos el resultado en resulset)
-			rs = stmt.executeQuery("select * from category");
+			rs = stmt.executeQuery("select id, name from category");
 
 			// recorremos el resulset para mapearlo a objetos
 			while (rs != null && rs.next()) {
@@ -74,7 +74,7 @@ public class CategoryDAO {
 			//lo definimos aca asi si nunca entra al try puedo devolverlo null (en caso de querer avisar que esta nulo, hacerlo en la interfaz grafica!)
 			conn= db.getConnection();
 			Category cat = null;
-			stmt = conn.prepareStatement("select * from category where id = ?");
+			stmt = conn.prepareStatement("select id, name from category where id = ?");
 			//al primer signo de pregunta(1) le asigno el resultado de getId() (el id que ingreso el usuario)
 			stmt.setInt(1, c.getId());
 			
