@@ -2,7 +2,10 @@ CREATE DATABASE /*!32312 IF NOT EXISTS*/ `javaMuseoUTN` /*!40100 DEFAULT CHARACT
 
 USE `javaMuseoUTN`;
 
+DROP TABLE IF EXISTS `item`;
 DROP TABLE IF EXISTS `category`;
+
+
 
 CREATE TABLE `category` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -10,9 +13,31 @@ CREATE TABLE `category` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO `category` VALUES (1,'Anime'),(2, 'Videojuegos'),(3,'Peliculas');
+INSERT INTO `category` (`name`) VALUES ('Anime'),('Videojuegos'),('Peliculas');
 
 
+
+CREATE TABLE `item` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `description` varchar(500) NOT NULL,
+  `picture` varchar(500) NOT NULL,
+  `category_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `fk_articule_category` FOREIGN KEY (`category_id`) REFERENCES `category` (`id`) 
+    ON DELETE RESTRICT 
+    ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO `item` (`name`, `description`, `picture`, `category_id`) VALUES
+('Esferas del dragon','Las Esferas del Dragón son siete misteriosas esferas mágicas de color naranja. Tienen estrellas rojas grabadas en su interior, desde una hasta siete estrellas. Fueron creadas por el pueblo namekiano y tienen el poder de invocar al dragón sagrado Shen Long para conceder deseos.','https://static.wikia.nocookie.net/dragonball/images/8/8e/Esferas_del_Drag%C3%B3n_Blue_Velvet.png/revision/latest?cb=20230214174437&path-prefix=es',1)
+,('Espadas del Caos','Las Espadas del Caos son un par de hojas curvas de acero oscuro unidas a largas cadenas que se funden con los antebrazos del guerrero espartano Kratos.','https://www.aceros-de-hispania.com/53650-large_default/espadas-del-caos-god-of-war.jpg',2)
+,('DeLorean DMC-12','El DeLorean DMC-12 es una máquina del tiempo construida por el doctor Emmett Brown. Está modificado con un condensador de flujo, un reactor de plutonio y el sistema de desplazamiento temporal.','https://acnews.blob.core.windows.net/imgnews/medium/NAZ_bf7e3903a04e46daa9d927049d764d97.webp',3);
+
+
+
+DROP USER IF EXISTS 'java'@'%';
 create user java@'%' identified by 'himitsu';
 
-grant select, insert, update, delete on javaMuseoUTN.* to java@'%';
+
+grant select, insert, update, delete on javaMuseoUTN.* to java@'%';lete on javaMuseoUTN.* to java@'%';
