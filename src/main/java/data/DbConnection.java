@@ -25,7 +25,7 @@ public class DbConnection {
 	public Connection getConnection() {
 		try {
 			if (conn == null || conn.isClosed()) {// la crea solo si la conexion no existe o si esta cerrada
-				conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + db, user, password);
+				conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + db + "?useUnicode=true&characterEncoding=UTF-8", user, password);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
