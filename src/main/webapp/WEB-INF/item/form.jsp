@@ -6,25 +6,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Form item</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
-integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-
-
-<%
-	Item item = (Item) request.getAttribute("oneItem");
-	boolean editing = (boolean) request.getAttribute("editing");
+	<title>Form item</title>
+	<%@ include file="/WEB-INF/common/head.jsp" %>
 	
-	String name = item.getName() == null ? "" : item.getName();
-	String description = item.getDescription() == null ? "" : item.getDescription();
-	String picture = item.getPicture() == null ? "" : item.getPicture();
+	<%
+		Item item = (Item) request.getAttribute("oneItem");
+		boolean editing = (boolean) request.getAttribute("editing");
 	
-	 LinkedList<Category> categories = (LinkedList<Category>) request.getAttribute("allCategories");
-%>
+		String name = item.getName() == null ? "" : item.getName();
+		String description = item.getDescription() == null ? "" : item.getDescription();
+		String picture = item.getPicture() == null ? "" : item.getPicture();
+	 	LinkedList<Category> categories = (LinkedList<Category>) request.getAttribute("allCategories");
+	%>
 </head>
 <body>
+	<!-- Navbar -->
+	<%@ include file="/WEB-INF/common/navbar.jsp" %>
+	
 	<!-- Titulo y botones -->
 	<div class= "container mt-4">
 		<div class= "d-flex justify-content-between align-items-center mb-4 ">
@@ -73,8 +71,7 @@ integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJ
 			</div>
 		</div>
 	</div>
-<!--Script para que funcione el js de bootstrap-->	
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" 
-integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+<!--Script para que funcione el js de bootstrap-->
+<%@ include file="/WEB-INF/common/scripts.jsp" %>
 </body>
 </html>
