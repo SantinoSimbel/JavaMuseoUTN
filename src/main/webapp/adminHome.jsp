@@ -3,10 +3,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Admin Home</title>
+	<title>Admin Home</title>
+	<%@ include file="/WEB-INF/common/head.jsp" %>
 </head>
 <body>
+	<!-- navbar -->
+	<%@ include file="/WEB-INF/common/navbar.jsp" %>
+	
 	<h1>Admin home</h1>
 	<p>Seleccione que desea administrar:</p>
 	<div style= "display: flex; flex-direction: column;">
@@ -17,5 +20,7 @@
 		<a href="">Usuarios</a>
 	</div>
 	
+<!--Script para que funcione el js de bootstrap-->	
+<%@ include file="/WEB-INF/common/scripts.jsp" %>
 </body>
 </html>
