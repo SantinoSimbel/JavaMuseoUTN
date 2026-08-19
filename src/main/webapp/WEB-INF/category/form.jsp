@@ -41,7 +41,7 @@ integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJ
 						<input type="hidden" name="id" value="<%=category.getId()%>">
 					<%}%>
 					<div class= "mb-3">
-						<label class="form-label">Nombre:</label>
+						<b><label class="form-label">Nombre:</label></b>
 						<input type="text" name="name" class="form-control" required value="<%=name%>">
 					</div>
 					
