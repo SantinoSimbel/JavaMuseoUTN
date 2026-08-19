@@ -46,9 +46,6 @@ integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJ
 						<h5 class = "card-title">
 							<%= cat.getName()%>
 						</h5>
-						<p class = "card-text">
-							<strong>Id: </strong><%=cat.getId() %>
-						</p>
 					</div>
 				</a>
 				<div class= "card-footer">

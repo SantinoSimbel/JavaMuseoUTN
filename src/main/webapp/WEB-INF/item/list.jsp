@@ -47,7 +47,6 @@ integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJ
 						<div class="d-flex flex-column flex-md-row align-items-center">
 							<img src="<%= ite.getPicture() %>" alt="Imagen de <%= ite.getName() %>" style="width: 200px; max-width: 100%; height: 200px; object-fit: contain;">		
 							<div class="ms-0 ms-md-4 mt-3 mt-md-0">
-								<br> <strong>Id: </strong><%=ite.getId() %> 
 								<br> <b>Categoría: </b><%=ite.getCategory().getName() %>
 								<br> <%=ite.getDescription() %>
 						    </div>
