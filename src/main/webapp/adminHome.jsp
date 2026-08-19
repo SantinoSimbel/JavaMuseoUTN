@@ -13,7 +13,7 @@
 	<h1>Admin home</h1>
 	<p>Seleccione que desea administrar:</p>
 	<div style= "display: flex; flex-direction: column;">
-		<a href="">Articulos</a>
+		<a href="ItemServlet?operation=list">Articulos</a>
 		<a href="">Exhibiciones</a>
 		<a href="">Presentaciones</a>
 		<a href="CategoryServlet?operation=list">Categorias</a>

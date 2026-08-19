@@ -44,9 +44,6 @@
 						<h5 class = "card-title">
 							<%= cat.getName()%>
 						</h5>
-						<p class = "card-text">
-							<strong>Id: </strong><%=cat.getId() %>
-						</p>
 					</div>
 				</a>
 				<div class= "card-footer">
