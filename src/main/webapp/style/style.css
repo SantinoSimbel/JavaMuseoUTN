@@ -1,0 +1,9 @@
+@charset "UTF-8";
+
+@media (max-width: 991.98px) {
+    .navbar-links {
+        position: static !important;
+        left: auto !important;
+        transform: none !important;
+    }
+}
