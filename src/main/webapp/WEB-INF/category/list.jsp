@@ -20,7 +20,7 @@
 	
 	<!-- Titulo y botones -->
 	<div class= "container mt-4">
-		<div class="d-flex justify-content-between align-items-center mb-4">
+		<div class="d-flex justify-content-between align-items-center mb-2">
 
 			<h1>Categorias</h1>
 
@@ -34,6 +34,8 @@
 		   class="btn btn-success mb-3">
 			Nueva categoria 
 		</a>
+		
+		<p class="text-muted mb-2">Seleccione una categoria para editarla:</p>
 		
 		<!-- Listado -->
 		<% for (Category cat : categoriesList){ %>

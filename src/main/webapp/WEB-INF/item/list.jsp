@@ -18,7 +18,7 @@
 	
 	<!-- Titulo y botones -->
 	<div class= "container mt-4">
-		<div class="d-flex justify-content-between align-items-center mb-4">
+		<div class="d-flex justify-content-between align-items-center mb-2">
 
 			<h1>Articulos</h1>
 
@@ -32,6 +32,8 @@
 		   class="btn btn-success mb-3">
 			Nuevo Articulo 
 		</a>
+				
+		<p class="text-muted mb-2">Seleccione un articulo para editarlo:</p>
 		
 		<!-- Listado -->
 		<% for (Item ite : itemsList){ %>

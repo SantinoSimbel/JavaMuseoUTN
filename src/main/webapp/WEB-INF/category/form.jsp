@@ -18,7 +18,7 @@
 	
 	<!-- Titulo y botones -->
 	<div class= "container mt-4">
-		<div class= "d-flex justify-content-between align-items-center mb-4 ">
+		<div class= "d-flex justify-content-between align-items-center mb-3 ">
 			<h1>
 				<%=editing ? "Editar categoria" : "Crear categoria" %>
 			</h1>
@@ -28,6 +28,11 @@
 				Volver
 			</a>
 		</div>
+		
+		<p class="text-muted mb-2"><%=editing ? 
+			"Modifique los campos que quiera editar:" : "Complete los campos:" %>
+		</p>
+		
 		
 		<!-- Formularios -->
 		<div class = "card shadow-sm">	
