@@ -40,4 +40,4 @@ DROP USER IF EXISTS 'java'@'%';
 create user java@'%' identified by 'himitsu';
 
 
-grant select, insert, update, delete on javaMuseoUTN.* to java@'%';lete on javaMuseoUTN.* to java@'%';
+grant select, insert, update, delete on javaMuseoUTN.* to java@'%';
