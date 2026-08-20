@@ -31,7 +31,8 @@ public class ItemDAO {
 			
 			rs = stmt.executeQuery("SELECT i.id, i.name, i.description, i.picture, i.category_id, c.name AS category_name "
 					 				+ "FROM item i "
-					 				+ "INNER JOIN category c ON i.category_id = c.id");
+					 				+ "INNER JOIN category c ON i.category_id = c.id "
+					 				+ "ORDER BY i.id ASC");
 
 
 			while (rs != null && rs.next()) {
