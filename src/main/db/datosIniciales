@@ -4,7 +4,7 @@ USE `javaMuseoUTN`;
 
 DROP TABLE IF EXISTS `item`;
 DROP TABLE IF EXISTS `category`;
-
+DROP TABLE IF EXISTS `user`;
 
 
 CREATE TABLE `category` (
@@ -34,7 +34,19 @@ INSERT INTO `item` (`name`, `description`, `picture`, `category_id`) VALUES
 ,('Espadas del Caos','Las Espadas del Caos son un par de hojas curvas de acero oscuro unidas a largas cadenas que se funden con los antebrazos del guerrero espartano Kratos.','https://www.aceros-de-hispania.com/53650-large_default/espadas-del-caos-god-of-war.jpg',2)
 ,('DeLorean DMC-12','El DeLorean DMC-12 es una máquina del tiempo construida por el doctor Emmett Brown. Está modificado con un condensador de flujo, un reactor de plutonio y el sistema de desplazamiento temporal.','https://acnews.blob.core.windows.net/imgnews/medium/NAZ_bf7e3903a04e46daa9d927049d764d97.webp',3);
 
+CREATE TABLE `user` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `dni` varchar(8) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `surname` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `role` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+INSERT INTO `user` (`dni`, `name`, `surname`, `email`,`password`,`role` ) VALUES ('11111111','Admin','Nistrador','admin@gmail.com','admin','admin'),
+('22222222','Uzu','Hario','user@gmail.com','user','user');
 
 DROP USER IF EXISTS 'java'@'%';
 create user java@'%' identified by 'himitsu';
