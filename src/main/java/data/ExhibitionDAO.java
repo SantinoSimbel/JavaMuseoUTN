@@ -34,7 +34,7 @@ public class ExhibitionDAO {
 			rs = stmt.executeQuery("SELECT e.id, e.title, e.description, e.endTime, e.startTime, e.item_id, ex.startDay, ex.endDay, "
 										+ "i.name AS item_name, i.description AS item_desc, i.picture, i.category_id, c.name AS category_name "
 					 				+ "FROM event e "
-									+ "LEFT JOIN exhibition ex ON ex.event_id = e.id "
+									+ "INNER JOIN exhibition ex ON ex.event_id = e.id "
 					 				+ "INNER JOIN item i ON i.id = e.item_id "
 					 				+ "INNER JOIN category c ON i.category_id = c.id "
 					 				+ "ORDER BY i.id ASC");
@@ -114,7 +114,7 @@ public class ExhibitionDAO {
 			stmt = conn.prepareStatement("SELECT e.id, e.title, e.description, e.endTime, e.startTime, e.item_id, ex.startDay, ex.endDay, "
 											+ "i.name AS item_name, i.description AS item_desc, i.picture, i.category_id, c.name AS category_name "
 										+ "FROM event e "
-							            + "LEFT JOIN exhibition ex ON ex.event_id = e.id "
+							            + "INNER JOIN exhibition ex ON ex.event_id = e.id "
 										+ "INNER JOIN item i ON i.id = e.item_id "
 										+ "INNER JOIN category c ON i.category_id = c.id "
 										+ "WHERE e.id = ?");
