@@ -77,7 +77,7 @@ public class CategoryServlet extends HttpServlet {
 		LinkedList<Category> categories = dao.list();
 		
 		// guardo en el request la lista de categorias que le voy a mandar al jsp. ("name", objeto)
-		request.setAttribute("allCategories", categories);;
+		request.setAttribute("allCategories", categories);
 		//le mando el request(con las allCategories) y la response al jsp para que que responda él.
 		request.getRequestDispatcher("/WEB-INF/category/list.jsp").forward(request,response);
 	}

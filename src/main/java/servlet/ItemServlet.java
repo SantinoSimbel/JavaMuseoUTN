@@ -87,7 +87,7 @@ public class ItemServlet extends HttpServlet {
 		ItemDAO dao  = new ItemDAO();
 		LinkedList<Item> items = dao.list();
 		
-		request.setAttribute("allItems", items);;
+		request.setAttribute("allItems", items);
 		request.getRequestDispatcher("/WEB-INF/item/list.jsp").forward(request,response);
 	}
 	
