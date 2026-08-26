@@ -19,6 +19,8 @@ public class EventDAO {
 
 	
 	
+	
+	//NOTA: EL list y search de momento no se han usado. Concideración de elminar u editar: posible
 	//list() -----------------------------------------------------------------------------------------
 	public LinkedList<Event> list() {
 		LinkedList<Event> events = new LinkedList<>();
@@ -33,11 +35,8 @@ public class EventDAO {
 			stmt = conn.createStatement();
 			
 			rs = stmt.executeQuery("SELECT e.id, e.title, e.description, e.endTime, e.startTime, e.item_id, "
-										+ "p.day, p.capacity, ex.startDay, ex.endDay, "
 										+ "i.name AS item_name, i.description AS item_desc, i.picture, i.category_id, c.name AS category_name "
 					 				+ "FROM event e "
-					 				+ "LEFT JOIN presentation p ON p.event_id = e.id "
-									+ "LEFT JOIN exhibition ex ON ex.event_id = e.id "
 					 				+ "INNER JOIN item i ON i.id = e.item_id "
 					 				+ "INNER JOIN category c ON i.category_id = c.id "
 					 				+ "ORDER BY i.id ASC");
@@ -45,24 +44,7 @@ public class EventDAO {
 
 			while (rs != null && rs.next()) {
 				
-				Event e = null;
-						
-				if (rs.getDate("day") != null) {
-					Presentation pre = new Presentation();
-					pre.setCapacity(rs.getInt("capacity"));
-					pre.setDay(rs.getDate("day").toLocalDate());
-					e = pre;
-				}
-				else if (rs.getDate("startDay") != null) {
-					Exhibition exi = new Exhibition();
-					exi.setStartDay(rs.getDate("startDay").toLocalDate());
-					exi.setEndDay(rs.getDate("endDay").toLocalDate());
-					e = exi;
-				}
-				 else {
-					 //En caso de que los datos están corruptos se salta el metodo y se sigue el bucle a los otros eventos. 
-					 continue; 
-				}
+				Event e = new Event();
 				
 				e.setId(rs.getInt("id"));
 				e.setTitle(rs.getString("title"));
@@ -114,11 +96,6 @@ public class EventDAO {
 	
 	
 	
-	
-	
-	
-	
-	
 	//search(Event ev) -----------------------------------------------------------------------------------------
 	public Event search(Event ev) {
 
@@ -132,11 +109,8 @@ public class EventDAO {
 			
 			conn= db.getConnection();
 			stmt = conn.prepareStatement("SELECT e.id, e.title, e.description, e.endTime, e.startTime, e.item_id, "
-											+ "p.day, p.capacity, ex.startDay, ex.endDay, "
 											+ "i.name AS item_name, i.description AS item_desc, i.picture, i.category_id, c.name AS category_name "
 										+ "FROM event e "
-										+ "LEFT JOIN presentation p ON p.event_id = e.id "
-							            + "LEFT JOIN exhibition ex ON ex.event_id = e.id "
 										+ "INNER JOIN item i ON i.id = e.item_id "
 										+ "INNER JOIN category c ON i.category_id = c.id "
 										+ "WHERE e.id = ?");
@@ -146,22 +120,8 @@ public class EventDAO {
 			
 			if(rs!= null && rs.next()) {
 				
-				if (rs.getDate("day") != null) {
-					Presentation pre = new Presentation();
-					pre.setCapacity(rs.getInt("capacity"));
-					pre.setDay(rs.getDate("day").toLocalDate());
-					eve = pre;
-				}
-				else if (rs.getDate("startDay") != null) {
-					Exhibition exi = new Exhibition();
-					exi.setStartDay(rs.getDate("startDay").toLocalDate());
-					exi.setEndDay(rs.getDate("endDay").toLocalDate());
-					eve = exi;
-				}
-				else {
-					return null;
-				}
-				
+				eve = new Event();
+
 				eve.setId(rs.getInt("id"));
 				eve.setTitle(rs.getString("title"));
 				eve.setDescription(rs.getString("description"));
@@ -269,7 +229,7 @@ public class EventDAO {
 			stmt.setString(2, updEve.getDescription());
 			stmt.setTime(3, java.sql.Time.valueOf(updEve.getEndTime()));
 			stmt.setTime(4, java.sql.Time.valueOf(updEve.getStartTime()));
-			stmt.setInt(4, updEve.getItem().getId());
+			stmt.setInt(5, updEve.getItem().getId());
 			stmt.setInt(6, updEve.getId()); 
 			
 
