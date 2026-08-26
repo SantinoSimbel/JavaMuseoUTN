@@ -31,9 +31,8 @@
 			
 			<!-- Exhibiciones -->
 			<div class="col-12 col-md-6 col-lg-4">
-				<a href=""
+				<a href="ExhibitionServlet?operation=list"
 					class="card h-100 text-decoration-none shadow-sm">
-
 					<div class="card-body">
 						<h5 class="card-title">Exhibiciones</h5>
 						<p class="card-text">Administrar las exhibiciones.</p>
@@ -43,9 +42,8 @@
 			
 			<!-- Presentaciones -->
 			<div class="col-12 col-md-6 col-lg-4">
-				<a href=""
+				<a href="PresentationServlet?operation=list"
 					class="card h-100 text-decoration-none shadow-sm">
-
 					<div class="card-body">
 						<h5 class="card-title">Presentaciones</h5>
 						<p class="card-text">Administrar las presentaciones.</p>
