@@ -149,10 +149,22 @@ public class ExhibitionServlet extends HttpServlet {
 		newEx.setEndDay(LocalDate.parse(request.getParameter("endDay")));
 		newEx.setStartDay(LocalDate.parse(request.getParameter("startDay")));
 		
-		Item ite = new Item();
-		ite.setId(Integer.parseInt(request.getParameter("item_id")));
-	    
-		newEx.setItem(ite);
+		
+		String[] itemIds = request.getParameterValues("item_ids");
+		
+		if (itemIds == null || itemIds.length == 0) {
+			request.setAttribute("error", "Debe seleccionar al menos un artículo.");
+			showForm(request, response);
+			return;
+		}
+		
+		LinkedList<Item> selectedItems = new LinkedList<>();
+		for (String itemId : itemIds) {
+		    Item item = new Item();
+		    item.setId(Integer.parseInt(itemId));
+		    selectedItems.add(item);
+		}
+		newEx.setItems(selectedItems);
 		
 		
 		EventDAO daoEv  = new EventDAO();
@@ -186,11 +198,22 @@ public class ExhibitionServlet extends HttpServlet {
 		
 		newEx.setEndDay(LocalDate.parse(request.getParameter("endDay")));
 		newEx.setStartDay(LocalDate.parse(request.getParameter("startDay")));
+
+		String[] itemIds = request.getParameterValues("item_ids");
 		
-		Item ite = new Item();
-		ite.setId(Integer.parseInt(request.getParameter("item_id")));
-	    
-		newEx.setItem(ite);
+		if (itemIds == null || itemIds.length == 0) {
+			request.setAttribute("error", "Debe seleccionar al menos un artículo.");
+			showForm(request, response);
+			return;
+		}
+		
+		LinkedList<Item> selectedItems = new LinkedList<>();
+		for (String itemId : itemIds) {
+		    Item item = new Item();
+		    item.setId(Integer.parseInt(itemId));
+		    selectedItems.add(item);
+		}
+		newEx.setItems(selectedItems);
 		
 		
 		EventDAO daoEv  = new EventDAO();
