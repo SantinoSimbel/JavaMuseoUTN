@@ -10,7 +10,7 @@ public class Event {
 	private String description;
 	private LocalTime endTime;
 	private LocalTime startTime;
-	private LinkedList<Item> items = new LinkedList();
+	private LinkedList<Item> items;
 	
 	
 	public int getId() {
@@ -52,6 +52,10 @@ public class Event {
 	public void addItem(Item ite) {
 		this.items.add(ite);
 	}
+	public Event() {
+	    this.items = new LinkedList<>();
+	}
+
 	
 	  
 
