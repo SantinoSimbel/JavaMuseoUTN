@@ -1,6 +1,7 @@
 package entities;
 
 import java.time.*;
+import java.util.LinkedList;
 
 
 public class Event {
@@ -9,7 +10,7 @@ public class Event {
 	private String description;
 	private LocalTime endTime;
 	private LocalTime startTime;
-	private Item item;
+	private LinkedList<Item> items = new LinkedList();
 	
 	
 	public int getId() {
@@ -42,13 +43,15 @@ public class Event {
 	public void setStartTime(LocalTime startTime) {
 		this.startTime = startTime;
 	}
-	public Item getItem() {
-		return item;
+	public LinkedList<Item> getItems() {
+		return items;
 	}
-	public void setItem(Item item) {
-		this.item = item;
+	public void setItems(LinkedList<Item> items) {
+		this.items = items;
 	}
-	
+	public void addItem(Item ite) {
+		this.items.add(ite);
+	}
 	
 	  
 

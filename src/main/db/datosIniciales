@@ -2,6 +2,10 @@ CREATE DATABASE /*!32312 IF NOT EXISTS*/ `javaMuseoUTN` /*!40100 DEFAULT CHARACT
 
 USE `javaMuseoUTN`;
 
+DROP TABLE IF EXISTS `exhibition`;
+DROP TABLE IF EXISTS `presentation`;
+DROP TABLE IF EXISTS `event_item`;
+DROP TABLE IF EXISTS `event`;
 DROP TABLE IF EXISTS `item`;
 DROP TABLE IF EXISTS `category`;
 
@@ -24,7 +28,7 @@ CREATE TABLE `item` (
   `picture` varchar(500) NOT NULL,
   `category_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`),
-  CONSTRAINT `fk_articule_category` FOREIGN KEY (`category_id`) REFERENCES `category` (`id`) 
+  CONSTRAINT `fk_item_category` FOREIGN KEY (`category_id`) REFERENCES `category` (`id`) 
     ON DELETE RESTRICT 
     ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -32,9 +36,8 @@ CREATE TABLE `item` (
 INSERT INTO `item` (`name`, `description`, `picture`, `category_id`) VALUES
 ('Esferas del dragon','Las Esferas del Dragón son siete misteriosas esferas mágicas de color naranja. Tienen estrellas rojas grabadas en su interior, desde una hasta siete estrellas. Fueron creadas por el pueblo namekiano y tienen el poder de invocar al dragón sagrado Shen Long para conceder deseos.','https://static.wikia.nocookie.net/dragonball/images/8/8e/Esferas_del_Drag%C3%B3n_Blue_Velvet.png/revision/latest?cb=20230214174437&path-prefix=es',1)
 ,('Espadas del Caos','Las Espadas del Caos son un par de hojas curvas de acero oscuro unidas a largas cadenas que se funden con los antebrazos del guerrero espartano Kratos.','https://www.aceros-de-hispania.com/53650-large_default/espadas-del-caos-god-of-war.jpg',2)
-,('DeLorean DMC-12','El DeLorean DMC-12 es una máquina del tiempo construida por el doctor Emmett Brown. Está modificado con un condensador de flujo, un reactor de plutonio y el sistema de desplazamiento temporal.','https://acnews.blob.core.windows.net/imgnews/medium/NAZ_bf7e3903a04e46daa9d927049d764d97.webp',3);
-
-
+,('DeLorean DMC-12','El DeLorean DMC-12 es una máquina del tiempo construida por el doctor Emmett Brown. Está modificado con un condensador de flujo, un reactor de plutonio y el sistema de desplazamiento temporal.','https://acnews.blob.core.windows.net/imgnews/medium/NAZ_bf7e3903a04e46daa9d927049d764d97.webp',3)
+,('Radar del Dragón', 'El Radar del Dragón es un dispositivo de rastreo portátil creado por la científica Bulma de la corporación Capsula. Posee una pantalla verde cuadriculada capaz de detectar la radiación electromagnética única que emiten las Esferas del Dragón, mostrando su ubicación exacta mediante puntos amarillos parpadeantes.', 'https://static.wikia.nocookie.net/dragonball/images/7/78/Dragon_Radar.png/revision/latest?cb=20130311014539&path-prefix=es', 1);
 
 
 
@@ -44,17 +47,31 @@ CREATE TABLE `event` (
   `description` varchar(500) NOT NULL,
   `endTime` time NOT NULL,
   `startTime` time NOT NULL,
-  `item_id` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`id`),
-  CONSTRAINT `fk_event_item` FOREIGN KEY (`item_id`) REFERENCES `item` (`id`) 
-    ON DELETE RESTRICT 
-    ON UPDATE CASCADE
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO `event` (`title`, `description`, `endTime`, `startTime`, `item_id`) VALUES
-('¡Sal de ahí, Shenlong!','Con la ayuda del rastreador de la corporación capsula, hemos podido traerles las esferas del dragon al museo.','21:01:00','15:30:00',1)
-,('¿Alguien quiere volver al futuro?','El gran doc. Emmet Brown ha prestado su gran maquina del tiempo para una exhibición inigualable y proximamente ¡Con uan explicación de su fincionamiento!','19:30:00','15:15:00',3)
-,('Las espadas del caos junto a Kratos','No te pierdas esta fabulosa presentación con el mismo Kratos hablando sobre sus tan poderosas Espadas del Caos.','18:30:00','17:35:00',2);
+INSERT INTO `event` (`title`, `description`, `endTime`, `startTime`) VALUES
+('¡Sal de ahí, Shenlong!','Con la ayuda del rastreador de la corporación capsula, hemos podido traerles las esferas del dragon al museo.','21:01:00','15:30:00')
+,('¿Alguien quiere volver al futuro?','El gran doc. Emmet Brown ha prestado su gran maquina del tiempo para una exhibición inigualable y proximamente ¡Con uan explicación de su fincionamiento!','19:30:00','15:15:00')
+,('Las espadas del caos junto a Kratos','No te pierdas esta fabulosa presentación con el mismo Kratos hablando sobre sus tan poderosas Espadas del Caos.','18:30:00','17:35:00');
+
+
+
+
+CREATE TABLE `event_item` (
+	`item_id` int(10) unsigned NOT NULL,
+	`event_id` int(10) unsigned NOT NULL,
+	PRIMARY KEY (`item_id`, `event_id`),
+	CONSTRAINT `fk_event_item_item` FOREIGN KEY (`item_id`) REFERENCES `item` (`id`)
+		ON DELETE RESTRICT 
+		ON UPDATE CASCADE, 
+	CONSTRAINT `fk_event_item_event` FOREIGN KEY (`event_id`) REFERENCES `event` (`id`) 
+		ON DELETE RESTRICT 
+		ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;    
+INSERT INTO `event_item` (`item_id`, `event_id`) VALUES ('1','1'),('2','3'),('3','2'),('4','1');
+
+
 
 
 
@@ -85,7 +102,6 @@ CREATE TABLE `exhibition` (
 INSERT INTO `exhibition` (`event_id`, `startDay`, `endDay`) VALUES
 ('1','2026-08-28','2026-09-04')
 ,('2','2026-08-29','2026-09-05');
-
 
 
 
