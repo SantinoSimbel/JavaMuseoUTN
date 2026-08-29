@@ -44,6 +44,13 @@
 			"Modifique los campos que quiera editar:" : "Complete los campos:" %>
 		</p>
 		
+		<% if (request.getAttribute("error") != null) { %>
+			<div class="alert alert-danger">
+				<%= request.getAttribute("error") %>
+			</div>
+		<% } %>
+		
+		
 		<!-- Formularios -->
 		<div class = "card shadow-sm">	
 			<div class = "card-body">
@@ -65,16 +72,48 @@
     					<input type="date" name="startDay" class="form-control" required value="<%=startDay%>">
 						<b><label class="form-label">Día de fin:</label></b>
 						<input type="date" name="endDay" class="form-control" required value="<%=endDay%>">
-						<b><label class="form-label">Seleccione el articulo:</label></b>
-						<select name="item_id" class="form-select" required>
+						<b><label class="form-label">Seleccione los artículos:</label></b>
+
+						<div class="border rounded p-2" style="max-height: 250px; overflow-y: auto;" id="itemList">
 							<% for (Item item : items) { %>
-								<option value="<%=item.getId()%>"
-    								<%= exhibition.getItem() != null && exhibition.getItem().getId() == item.getId()
-    								? "selected" : "" %>>
-    								<%=item.getName()%>
-								</option>
+    							<%
+    								boolean selected = false;
+        							if (editing && exhibition.getItems() != null) {
+            							for (Item selectedItem : exhibition.getItems()) {
+                							if (selectedItem.getId() == item.getId()) {
+                    							selected = true;
+                    							break;
+                							}
+            							}
+        							}
+    							%>
+
+    							<div class="form-check item-option">
+        							<input class="form-check-input" type="checkbox" name="item_ids" 
+        								value="<%=item.getId()%>" id="item_<%=item.getId()%>" <%=selected ? "checked" : ""%> >
+
+	    							<label class="form-check-label" for="item_<%=item.getId()%>">
+    	        						<%=item.getName()%>
+        							</label>
+    							</div>
+
 							<% } %>
-						</select>
+						</div>
+
+						<input type="text" id="itemSearch" class="form-control mt-2" placeholder="Buscar artículo..." >
+
+						<script>
+    						const search = document.getElementById("itemSearch");
+    						const itemOptions = document.querySelectorAll(".item-option");
+    						search.addEventListener("input", function () {
+        					const text = search.value.toLowerCase();
+    	    					for (let option of itemOptions) {
+	            					const label = option.querySelector("label");
+            						const name = label.textContent.toLowerCase();
+            						option.style.display = name.includes(text) ? "" : "none";
+        						}
+    						});
+						</script>
 					</div>
 					
 					<button type="submit" class="btn btn-success">Guardar</button>

@@ -1,4 +1,5 @@
 <%@page import="entities.Exhibition"%>
+<%@ page import="entities.Item" %>
 <%@page import="java.util.LinkedList"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
@@ -47,7 +48,14 @@
 						<div class="d-flex flex-column flex-md-row align-items-center">
 							
 							<div class="ms-0 ms-md-4 mt-3 mt-md-0">
-								<br> <b>Artículo: </b> <%= ex.getItem().getName() %>
+								<br> <b>Artículos: </b> 
+								
+									<ul>
+    									<% for (Item item : ex.getItems()) { %>
+        									<li><%= item.getName() %></li>
+    									<% } %>
+									</ul>
+							
 								<br> <%=ex.getDescription() %>
 								<br> Desde el día <%=ex.getStartDay() %> hasta el <%=ex.getEndDay() %>
 								<br> Entre las las <%=ex.getStartTime() %> hasta <%=ex.getEndTime() %>

@@ -1,4 +1,6 @@
 <%@page import="entities.Presentation"%>
+<%@ page import="entities.Item" %>
+
 <%@page import="java.util.LinkedList"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
@@ -47,7 +49,14 @@
 						<div class="d-flex flex-column flex-md-row align-items-center">
 							
 							<div class="ms-0 ms-md-4 mt-3 mt-md-0">
-								<br> <b>Artículo: </b> <%= pre.getItem().getName() %>
+								<div class="ms-0 ms-md-4 mt-3 mt-md-0">
+									<br> <b>Artículos: </b> 
+										<ul>
+    										<% for (Item item : pre.getItems()) { %>
+        										<li><%= item.getName() %></li>
+    										<% } %>
+										</ul>
+								</div>
 								<br> <b>Capacidad: </b><%=pre.getCapacity() %>
 								<br> <%=pre.getDescription() %>
 								<br> El día <%=pre.getDay() %>
