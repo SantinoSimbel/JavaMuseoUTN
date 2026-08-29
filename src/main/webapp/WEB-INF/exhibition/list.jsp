@@ -1,8 +1,7 @@
 <%@page import="entities.Exhibition"%>
 <%@ page import="entities.Item" %>
 <%@page import="java.util.LinkedList"%>
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -18,7 +17,7 @@
 	<%@ include file="/WEB-INF/common/navbar.jsp" %>
 	
 	<!-- Titulo y botones -->
-	<div class= "container mt-4">
+	<div class= "container mt-4 mb-5">
 		<div class="d-flex justify-content-between align-items-center mb-2">
 
 			<h1>Exhibiciones</h1>
@@ -57,8 +56,11 @@
 									</ul>
 							
 								<br> <%=ex.getDescription() %>
-								<br> Desde el día <%=ex.getStartDay() %> hasta el <%=ex.getEndDay() %>
-								<br> Entre las las <%=ex.getStartTime() %> hasta <%=ex.getEndTime() %>
+							<br> <b>Desde el día</b> <%= ex.getStartDay().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")) %>
+							<b>hasta el</b> <%= ex.getEndDay().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")) %>
+
+
+								<br> <b>Desde las</b> <%=ex.getStartTime() %> <b>hasta</b> <%=ex.getEndTime() %>
 						    </div>
 						</div>
 					</div>
