@@ -12,6 +12,7 @@ import entities.Category;
 import entities.Item;
 import entities.Presentation; 
 import entities.Event;
+import entities.Exhibition;
 
 
 public class PresentationDAO {
@@ -31,27 +32,18 @@ public class PresentationDAO {
 			conn = db.getConnection(); 
 			stmt = conn.createStatement();
 			
-			rs = stmt.executeQuery("SELECT e.id, e.title, e.description, e.endTime, e.startTime, e.item_id, p.day, p.capacity, "
+			rs = stmt.executeQuery("SELECT e.id, e.title, e.description, e.endTime, e.startTime, p.day, p.capacity, e_i.item_id, "
 										+ "i.name AS item_name, i.description AS item_desc, i.picture, i.category_id, c.name AS category_name "
 					 				+ "FROM event e "
 									+ "INNER JOIN presentation p ON p.event_id = e.id "
-					 				+ "INNER JOIN item i ON i.id = e.item_id "
-					 				+ "INNER JOIN category c ON i.category_id = c.id "
+									+ "INNER JOIN event_item e_i ON e_i.event_id = e.id "
+					 				+ "INNER JOIN item i ON i.id = e_i.item_id "
+									+ "INNER JOIN category c ON i.category_id = c.id "
 					 				+ "ORDER BY i.id ASC");
 
 
 			while (rs != null && rs.next()) {
 				
-				Presentation e = new Presentation();
-				
-				e.setId(rs.getInt("id"));
-				e.setTitle(rs.getString("title"));
-				e.setDescription(rs.getString("description"));
-				e.setEndTime(rs.getTime("endTime").toLocalTime());
-				e.setStartTime(rs.getTime("startTime").toLocalTime());
-				
-				e.setDay(rs.getDate("day").toLocalDate());
-				e.setCapacity(rs.getInt("capacity"));
 				
 				Item ite = new Item();
 				ite.setId(rs.getInt("item_id"));
@@ -64,9 +56,32 @@ public class PresentationDAO {
 			    cat.setName(rs.getString("category_name"));
 				
 			    ite.setCategory(cat);
-			    e.setItem(ite);
+				
+				
+				boolean exist = false;
+				for (Presentation e : presentations) {
+					if (e.getId() == rs.getInt("id")) {
+						e.addItem(ite);
+						exist = true;
+					}
+				}
+				
+				if (!exist) {
+					Presentation p = new Presentation();
+					
+					p.setId(rs.getInt("id"));
+					p.setTitle(rs.getString("title"));
+					p.setDescription(rs.getString("description"));
+					p.setEndTime(rs.getTime("endTime").toLocalTime());
+					p.setStartTime(rs.getTime("startTime").toLocalTime());
+					
+					p.setDay(rs.getDate("day").toLocalDate());
+					p.setCapacity(rs.getInt("capacity"));
+					p.addItem(ite);
+				    presentations.add(p); 
 
-			    presentations.add(e); 
+					
+				}
 			}
 					
 			return presentations;
@@ -111,12 +126,13 @@ public class PresentationDAO {
 			Presentation pre = null;
 			
 			conn= db.getConnection();
-			stmt = conn.prepareStatement("SELECT e.id, e.title, e.description, e.endTime, e.startTime, e.item_id, p.day, p.capacity, "
+			stmt = conn.prepareStatement("SELECT e.id, e.title, e.description, e.endTime, e.startTime, p.day, p.capacity, e_i.item_id, "
 											+ "i.name AS item_name, i.description AS item_desc, i.picture, i.category_id, c.name AS category_name "
 										+ "FROM event e "
 							            + "INNER JOIN presentation p ON p.event_id = e.id "
-										+ "INNER JOIN item i ON i.id = e.item_id "
-										+ "INNER JOIN category c ON i.category_id = c.id "
+							            + "INNER JOIN event_item e_i ON e_i.event_id = e.id "
+						 				+ "INNER JOIN item i ON i.id = e_i.item_id "
+							            + "INNER JOIN category c ON i.category_id = c.id "
 										+ "WHERE e.id = ?");
 			
 			stmt.setInt(1, p.getId());
@@ -135,8 +151,6 @@ public class PresentationDAO {
 				pre.setStartTime(rs.getTime("startTime").toLocalTime());
 				
 				
-				
-				
 				Item ite = new Item();
 				ite.setId(rs.getInt("item_id"));
 				ite.setName(rs.getString("item_name"));
@@ -148,7 +162,25 @@ public class PresentationDAO {
 			    cat.setName(rs.getString("category_name"));
 				
 			    ite.setCategory(cat);
-			    pre.setItem(ite);
+			    pre.addItem(ite);
+			    
+			    while(rs.next()) {
+					
+					ite = new Item();
+				
+					ite.setId(rs.getInt("item_id"));
+					ite.setName(rs.getString("item_name"));
+					ite.setDescription(rs.getString("item_desc"));
+					ite.setPicture(rs.getString("picture"));
+					
+					cat = new Category();
+					cat.setId(rs.getInt("category_id"));
+					cat.setName(rs.getString("category_name"));
+				
+					ite.setCategory(cat);
+					pre.addItem(ite);
+				}
+			    
 			}					
 					
 			return pre;
@@ -185,7 +217,7 @@ public class PresentationDAO {
 		try {
 			conn= db.getConnection();
 			
-			stmt = conn.prepareStatement("insert into presentation(event_id, day, capacity) values(?, ?, ?)", Statement.RETURN_GENERATED_KEYS); 
+			stmt = conn.prepareStatement("insert into presentation(event_id, day, capacity) values(?, ?, ?)"); 
 			stmt.setInt(1, newPre.getId());
 			stmt.setDate(2, java.sql.Date.valueOf(newPre.getDay()));
 			stmt.setInt(3, newPre.getCapacity());

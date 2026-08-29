@@ -31,27 +31,18 @@ public class ExhibitionDAO {
 			conn = db.getConnection(); 
 			stmt = conn.createStatement();
 			
-			rs = stmt.executeQuery("SELECT e.id, e.title, e.description, e.endTime, e.startTime, e.item_id, ex.startDay, ex.endDay, "
+			rs = stmt.executeQuery("SELECT e.id, e.title, e.description, e.endTime, e.startTime, ex.startDay, ex.endDay, e_i.item_id, "
 										+ "i.name AS item_name, i.description AS item_desc, i.picture, i.category_id, c.name AS category_name "
 					 				+ "FROM event e "
 									+ "INNER JOIN exhibition ex ON ex.event_id = e.id "
-					 				+ "INNER JOIN item i ON i.id = e.item_id "
+									+ "INNER JOIN event_item e_i ON e_i.event_id = e.id "
+					 				+ "INNER JOIN item i ON i.id = e_i.item_id "
 					 				+ "INNER JOIN category c ON i.category_id = c.id "
 					 				+ "ORDER BY i.id ASC");
 
 
 			while (rs != null && rs.next()) {
 				
-				Exhibition e = new Exhibition();
-				
-				e.setId(rs.getInt("id"));
-				e.setTitle(rs.getString("title"));
-				e.setDescription(rs.getString("description"));
-				e.setEndTime(rs.getTime("endTime").toLocalTime());
-				e.setStartTime(rs.getTime("startTime").toLocalTime());
-				
-				e.setStartDay(rs.getDate("startDay").toLocalDate());
-				e.setEndDay(rs.getDate("endDay").toLocalDate());
 				
 				Item ite = new Item();
 				ite.setId(rs.getInt("item_id"));
@@ -64,9 +55,33 @@ public class ExhibitionDAO {
 			    cat.setName(rs.getString("category_name"));
 				
 			    ite.setCategory(cat);
-			    e.setItem(ite);
+				
+				
+				boolean exist = false;
+				for (Exhibition e : exhibitions) {
+					if (e.getId() == rs.getInt("id")) {
+						e.addItem(ite);
+						exist = true;
+					}
+				}
+				
+				if (!exist) {
+					Exhibition e = new Exhibition();
+				
+					e.setId(rs.getInt("id"));
+					e.setTitle(rs.getString("title"));
+					e.setDescription(rs.getString("description"));
+					e.setEndTime(rs.getTime("endTime").toLocalTime());
+					e.setStartTime(rs.getTime("startTime").toLocalTime());
+					
+					e.setStartDay(rs.getDate("startDay").toLocalDate());
+					e.setEndDay(rs.getDate("endDay").toLocalDate());
+				
+			    	e.addItem(ite);
 
-			    exhibitions.add(e); 
+			    	exhibitions.add(e); 
+				}
+
 			}
 					
 			return exhibitions;
@@ -111,12 +126,13 @@ public class ExhibitionDAO {
 			Exhibition exi = null;
 			
 			conn= db.getConnection();
-			stmt = conn.prepareStatement("SELECT e.id, e.title, e.description, e.endTime, e.startTime, e.item_id, ex.startDay, ex.endDay, "
+			stmt = conn.prepareStatement("SELECT e.id, e.title, e.description, e.endTime, e.startTime, ex.startDay, ex.endDay, e_i.item_id, "
 											+ "i.name AS item_name, i.description AS item_desc, i.picture, i.category_id, c.name AS category_name "
 										+ "FROM event e "
 							            + "INNER JOIN exhibition ex ON ex.event_id = e.id "
-										+ "INNER JOIN item i ON i.id = e.item_id "
-										+ "INNER JOIN category c ON i.category_id = c.id "
+							            + "INNER JOIN event_item e_i ON e_i.event_id = e.id "
+						 				+ "INNER JOIN item i ON i.id = e_i.item_id "
+							            + "INNER JOIN category c ON i.category_id = c.id "
 										+ "WHERE e.id = ?");
 			
 			stmt.setInt(1, ex.getId());
@@ -126,29 +142,43 @@ public class ExhibitionDAO {
 				exi = new Exhibition();
 				exi.setStartDay(rs.getDate("startDay").toLocalDate());
 				exi.setEndDay(rs.getDate("endDay").toLocalDate());
-				
-				
+
 				exi.setId(rs.getInt("id"));
 				exi.setTitle(rs.getString("title"));
 				exi.setDescription(rs.getString("description"));
 				exi.setEndTime(rs.getTime("endTime").toLocalTime());
 				exi.setStartTime(rs.getTime("startTime").toLocalTime());
 				
-				
-				
-				
 				Item ite = new Item();
 				ite.setId(rs.getInt("item_id"));
 				ite.setName(rs.getString("item_name"));
 				ite.setDescription(rs.getString("item_desc"));
 				ite.setPicture(rs.getString("picture"));
-				
+			
 				Category cat = new Category();
-			    cat.setId(rs.getInt("category_id"));
-			    cat.setName(rs.getString("category_name"));
+				cat.setId(rs.getInt("category_id"));
+				cat.setName(rs.getString("category_name"));
+			
+				ite.setCategory(cat);
+				exi.addItem(ite);
 				
-			    ite.setCategory(cat);
-			    exi.setItem(ite);
+				while(rs.next()) {
+					
+					ite = new Item();
+				
+					ite.setId(rs.getInt("item_id"));
+					ite.setName(rs.getString("item_name"));
+					ite.setDescription(rs.getString("item_desc"));
+					ite.setPicture(rs.getString("picture"));
+					
+					cat = new Category();
+					cat.setId(rs.getInt("category_id"));
+					cat.setName(rs.getString("category_name"));
+				
+					ite.setCategory(cat);
+					exi.addItem(ite);
+				}
+
 			}					
 					
 			return exi;
@@ -185,7 +215,7 @@ public class ExhibitionDAO {
 		try {
 			conn= db.getConnection();
 			
-			stmt = conn.prepareStatement("insert into exhibition(event_id, startDay, endDay) values(?, ?, ?)", Statement.RETURN_GENERATED_KEYS); 
+			stmt = conn.prepareStatement("insert into exhibition(event_id, startDay, endDay) values(?, ?, ?)"); 
 			stmt.setInt(1, newExi.getId());
 			stmt.setDate(2, java.sql.Date.valueOf(newExi.getStartDay()));
 			stmt.setDate(3, java.sql.Date.valueOf(newExi.getEndDay()));
