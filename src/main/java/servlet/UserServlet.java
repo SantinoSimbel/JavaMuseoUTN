@@ -146,7 +146,7 @@ public class UserServlet extends HttpServlet {
 		
 		UserDAO dao = new UserDAO();
 		dao.add(newUser);
-		//response.sendRedirect("Mandarlo a mi perfil o al menu comun");
+		response.sendRedirect("index.jsp");
 		
 	}
 	
