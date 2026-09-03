@@ -34,7 +34,10 @@
 						</form>
 						<hr>
 						<p class="text-center mb-0">
-							¿No tiene una cuenta? <a href="UserServlet?operation=new" class="text-decoration-none"> Regístrese </a>
+							¿No tiene una cuenta? 
+							<a href="UserServlet?operation=new" class="text-decoration-none">
+								Registrarse
+							</a>
 						</p>
 					</div>
 				</div>

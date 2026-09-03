@@ -13,6 +13,7 @@ import data.CategoryDAO;
 import data.UserDAO;
 import entities.Category;
 import entities.User;
+import logic.UserLogic;
 
 /**
  * Servlet implementation class UserServlet
@@ -113,6 +114,8 @@ public class UserServlet extends HttpServlet {
 	
 	public void addUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		User newUser = new User();
+		UserLogic logic = new UserLogic();
+		
 		// ¿hacer antes un?:
 		//String email = request.getParameter("email");
 		//String password = request.getParameter("password");
@@ -122,8 +125,24 @@ public class UserServlet extends HttpServlet {
 		newUser.setSurname(request.getParameter("surname"));
 		newUser.setEmail(request.getParameter("email"));
 		newUser.setPassword(request.getParameter("password"));
-		//Pensar como manejar rol tambien
-		newUser.setRole(request.getParameter("role"));
+		newUser.setRole("user");
+		
+		if (logic.isUserDniTaken(newUser)) {
+			request.setAttribute("errorMessage", "El DNI ingresado ya se encuentra registrado.");
+			//mando el user con sus datos actuales para que el usuario no escriba todo de nuevo
+			request.setAttribute("oneUser", newUser); 
+			request.setAttribute("editing", false);
+			request.getRequestDispatcher("/WEB-INF/user/form.jsp").forward(request,response);
+			return;
+		};
+		if (logic.isUserEmailTaken(newUser)) {
+			request.setAttribute("errorMessage", "El correo ingresado ya se encuentra registrado.");
+			request.setAttribute("oneUser", newUser);
+			request.setAttribute("editing", false);
+			request.getRequestDispatcher("/WEB-INF/user/form.jsp").forward(request,response);
+			return;
+		};
+		
 		
 		UserDAO dao = new UserDAO();
 		dao.add(newUser);

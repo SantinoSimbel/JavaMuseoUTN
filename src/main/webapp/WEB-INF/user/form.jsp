@@ -14,7 +14,9 @@
 		String surname = user.getSurname() == null ? "" : user.getSurname();
 		String email = user.getEmail() == null ? "" : user.getEmail();
 		String password = user.getPassword() == null ? "" : user.getPassword();
-		String role = user.getRole() == null ? "" : user.getRole();
+		
+		String errorMessage = (String) request.getAttribute("errorMessage");
+		
 	%>
 </head>
 <body>
@@ -25,19 +27,25 @@
 	<div class= "container mt-4">
 		<div class= "d-flex justify-content-between align-items-center mb-3 ">
 			<h1>
-				<%=editing ? "Editar usuario" : "Crear usuario" %>
+				<%=editing ? "Editar usuario(cambiar)" : "Crear cuenta" %>
 			</h1>
 		
-			<a href="login" 
+			<a href="login.jsp" 
 			   class = "btn btn-secondary">
 				Volver
 			</a>
 		</div>
 		
 		<p class="text-muted mb-2"><%=editing ? 
-			"Modifique los campos que quiera editar:" : "Complete los campos:" %>
+			"Modifique los datos que quiera editar:" : "Complete sus datos:" %>
 		</p>
 		
+		<!-- Mensajes de error -->
+		<%if(errorMessage != null){%>
+			<div class="alert alert-danger" role="alert">
+ 				<%= errorMessage %>
+			</div>
+		<%}%>
 		
 		<!-- Formularios -->
 		<div class = "card shadow-sm">	
@@ -62,9 +70,6 @@
 						
 						<b><label class="form-label">Contraseña:</label></b>
 						<input type="password" name="password" class="form-control" required value="<%=password%>">
-						
-						<b><label class="form-label">Role:</label></b>
-						<input type="text" name="role" class="form-control" required value="<%=role%>">
 						
 					</div>
 					
