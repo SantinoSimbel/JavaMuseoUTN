@@ -64,7 +64,7 @@ public class UserDAO {
 
 	}
 	
-	public User search(User c) { //recibimos un User que solo tenga el id
+	public User search(User u) { //recibimos un User que solo tenga el id
 		//definimos estos 2 aca para que pueda encontrlos el finally
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -74,25 +74,107 @@ public class UserDAO {
 		try {
 			//lo definimos aca asi si nunca entra al try puedo devolverlo null (en caso de querer avisar que esta nulo, hacerlo en la interfaz grafica!)
 			conn= db.getConnection();
-			User use = null;
+			User user = null;
 			stmt = conn.prepareStatement("select id, dni, name, surname, email, password, role from user where id = ?");
 			//al primer signo de pregunta(1) le asigno el resultado de getId() (el id que ingreso el usuario)
-			stmt.setInt(1, c.getId());
+			stmt.setInt(1, u.getId());
 			
 			rs = stmt.executeQuery();
 			
 			if(rs!= null && rs.next()) {
-				use = new User();
-				use.setId(rs.getInt("id"));
-				use.setDni(rs.getString("dni"));
-				use.setName(rs.getString("name"));
-				use.setSurname(rs.getString("surname"));
-				use.setEmail(rs.getString("email"));
-				use.setPassword(rs.getString("password"));
-				use.setRole(rs.getString("role"));
+				user = new User();
+				user.setId(rs.getInt("id"));
+				user.setDni(rs.getString("dni"));
+				user.setName(rs.getString("name"));
+				user.setSurname(rs.getString("surname"));
+				user.setEmail(rs.getString("email"));
+				user.setPassword(rs.getString("password"));
+				user.setRole(rs.getString("role"));
 			}
 			
-			return use;
+			return user;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			try {
+				if(rs != null)rs.close();
+				if(stmt != null)stmt.close();
+				db.releaseConnection();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public User searchByEmail(User u) {
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		Connection conn = null;
+		
+		try {
+			conn= db.getConnection();
+			User user = null;
+			stmt = conn.prepareStatement("select id, dni, name, surname, email, password, role from user where email = ?");
+			//al primer signo de pregunta(1) le asigno el resultado de getEmail() (el email que ingreso el usuario)
+			stmt.setString(1, u.getEmail());
+			
+			rs = stmt.executeQuery();
+			
+			if(rs!= null && rs.next()) {
+				user = new User();
+				user.setId(rs.getInt("id"));
+				user.setDni(rs.getString("dni"));
+				user.setName(rs.getString("name"));
+				user.setSurname(rs.getString("surname"));
+				user.setEmail(rs.getString("email"));
+				user.setPassword(rs.getString("password"));
+				user.setRole(rs.getString("role"));
+			}
+			
+			return user;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			try {
+				if(rs != null)rs.close();
+				if(stmt != null)stmt.close();
+				db.releaseConnection();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public User searchByDni(User u) {
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		Connection conn = null;
+		
+		try {
+			conn= db.getConnection();
+			User user = null;
+			stmt = conn.prepareStatement("select id, dni, name, surname, email, password, role from user where dni = ?");
+			//al primer signo de pregunta(1) le asigno el resultado de getEmail() (el email que ingreso el usuario)
+			stmt.setString(1, u.getDni());
+			
+			rs = stmt.executeQuery();
+			
+			if(rs!= null && rs.next()) {
+				user = new User();
+				user.setId(rs.getInt("id"));
+				user.setDni(rs.getString("dni"));
+				user.setName(rs.getString("name"));
+				user.setSurname(rs.getString("surname"));
+				user.setEmail(rs.getString("email"));
+				user.setPassword(rs.getString("password"));
+				user.setRole(rs.getString("role"));
+			}
+			
+			return user;
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
