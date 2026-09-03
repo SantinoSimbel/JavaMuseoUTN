@@ -36,10 +36,10 @@ INSERT INTO `item` (`name`, `description`, `picture`, `category_id`) VALUES
 
 CREATE TABLE `user` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `dni` varchar(8) NOT NULL,
+  `dni` varchar(8) UNIQUE NOT NULL,
   `name` varchar(255) NOT NULL,
   `surname` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL,
+  `email` varchar(255) UNIQUE NOT NULL,
   `password` varchar(255) NOT NULL,
   `role` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
