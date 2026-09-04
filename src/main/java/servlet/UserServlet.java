@@ -13,6 +13,7 @@ import data.CategoryDAO;
 import data.UserDAO;
 import entities.Category;
 import entities.User;
+import entities.UserSessionDTO;
 import logic.UserLogic;
 
 /**
@@ -146,6 +147,11 @@ public class UserServlet extends HttpServlet {
 		
 		UserDAO dao = new UserDAO();
 		dao.add(newUser);
+		
+		UserSessionDTO userDTO = new UserSessionDTO(newUser);
+		
+		//guardamos el usuario en la session y permanece ahi
+		request.getSession().setAttribute("user",userDTO);
 		response.sendRedirect("index.jsp");
 		
 	}
