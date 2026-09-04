@@ -20,8 +20,9 @@
 		<div class="row justify-content-center">
     		<div class="col-12 col-lg-6">
 				<div class = "card shadow-sm">	
-					<div class = "card-body">
-						<form action="###" method="POST">
+					<div class = "card-body">						
+						<form action="LoginServlet" method="POST">
+						<input type="hidden" name="operation" value= "login">
 							<div class= "mb-3">
 								<b><label class="form-label">Email:</label></b>
 								<input type="text" name="email" class="form-control" required>
