@@ -47,7 +47,7 @@ public class UserServlet extends HttpServlet {
 			showForm(request, response);
 			break;
 		case "edit":
-			//showForm(request, response);
+			showForm(request, response);
 			break;
 		}
 	}
@@ -66,7 +66,7 @@ public class UserServlet extends HttpServlet {
 			addUser(request, response);
 			break;
 		case "update":
-			//updateCategory(request, response);
+			updateUser(request, response);
 			break;
 		case "delete":
 			//deleteCategory(request, response);
@@ -128,6 +128,7 @@ public class UserServlet extends HttpServlet {
 		newUser.setPassword(request.getParameter("password"));
 		newUser.setRole("user");
 		
+		//pasar esto a logica, y que sea un create usario o algo asi
 		if (logic.isUserDniTaken(newUser)) {
 			request.setAttribute("errorMessage", "El DNI ingresado ya se encuentra registrado.");
 			//mando el user con sus datos actuales para que el usuario no escriba todo de nuevo
@@ -144,7 +145,7 @@ public class UserServlet extends HttpServlet {
 			return;
 		};
 		
-		
+		//y esto tambien, pasarle el objeto y que lo registre en logic
 		UserDAO dao = new UserDAO();
 		dao.add(newUser);
 		
@@ -156,14 +157,20 @@ public class UserServlet extends HttpServlet {
 		
 	}
 	
-	public void updateCategory(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Category newCat = new Category();
-		newCat.setId(Integer.parseInt(request.getParameter("id")));
-		newCat.setName(request.getParameter("name"));
+	public void updateUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		User newUser = new User();
+		newUser.setId(Integer.parseInt(request.getParameter("id")));
+		newUser.setDni(request.getParameter("dni"));
+		newUser.setName(request.getParameter("name"));
+		newUser.setSurname(request.getParameter("surname"));
+		newUser.setEmail(request.getParameter("email"));
+		newUser.setPassword(request.getParameter("password"));
+		newUser.setRole(request.getParameter("role"));
 		
-		CategoryDAO dao  = new CategoryDAO();
-		dao.update(newCat);
-		response.sendRedirect("CategoryServlet?operation=list");
+		
+		UserDAO dao  = new UserDAO();
+		dao.update(newUser);
+		response.sendRedirect("UserServlet?operation=edit&id=" + newUser.getId());
 	}
 	
 	public void deleteCategory(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

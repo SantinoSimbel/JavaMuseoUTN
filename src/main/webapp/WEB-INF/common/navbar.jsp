@@ -28,7 +28,7 @@
 				<%if (userDTO == null) {%>
 					<li class="nav-item"><a class="nav-link" href="login.jsp"><i class="bi bi-person-circle"></i> Iniciar sesión</a></li>
 				<%} else {%>
-					<li class="nav-item"><a class="nav-link" href="###"><i class="bi bi-person-circle"></i> Mi cuenta</a></li>
+					<li class="nav-item"><a class="nav-link" href="UserServlet?operation=edit&id=<%=userDTO.getId()%>"><i class="bi bi-person-circle"></i> Mi cuenta</a></li>
 				<%}%>
 			</ul>
 		</div>
