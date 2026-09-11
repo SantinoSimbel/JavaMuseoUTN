@@ -125,7 +125,7 @@ public class UserServlet extends HttpServlet {
 		UserLogic logic = new UserLogic();
 		
 		try {
-			logic.register(newUser);
+			logic.registerUser(newUser);
 			
 			UserSessionDTO userDTO = new UserSessionDTO(newUser);
 			
@@ -153,12 +153,25 @@ public class UserServlet extends HttpServlet {
 		newUser.setSurname(request.getParameter("surname"));
 		newUser.setEmail(request.getParameter("email"));
 		newUser.setPassword(request.getParameter("password"));
-		newUser.setRole(request.getParameter("role"));
 		
+		UserLogic logic = new UserLogic();
 		
-		UserDAO dao  = new UserDAO();
-		dao.update(newUser);
-		response.sendRedirect("UserServlet?operation=edit&id=" + newUser.getId());
+		try {
+			logic.updateUser(newUser);
+			
+			UserSessionDTO userDTO = new UserSessionDTO(newUser);
+			request.getSession().setAttribute("user",userDTO);
+			
+			response.sendRedirect("UserServlet?operation=edit&id=" + newUser.getId());
+		} catch (Exception e) {
+			request.setAttribute("errorMessage", e.getMessage());
+			
+			//mando el user con sus datos actuales para que el usuario no escriba todo de nuevo
+			request.setAttribute("oneUser", newUser); 
+			request.setAttribute("editing", true);
+			request.getRequestDispatcher("/WEB-INF/user/form.jsp").forward(request,response);
+		}
+				
 	}
 	
 	public void deleteCategory(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

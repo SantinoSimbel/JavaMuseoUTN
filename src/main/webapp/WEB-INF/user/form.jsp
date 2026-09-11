@@ -27,10 +27,10 @@
 	<div class= "container mt-4">
 		<div class= "d-flex justify-content-between align-items-center mb-3 ">
 			<h1>
-				<%=editing ? "Editar usuario(cambiar)" : "Crear cuenta" %>
+				<%=editing ? "Mi cuenta" : "Crear cuenta" %>
 			</h1>
 		
-			<a href="login.jsp" 
+			<a href= <%=editing ? "index.jsp" : "login.jsp" %> 
 			   class = "btn btn-secondary">
 				Volver
 			</a>
@@ -54,10 +54,11 @@
 					<input type= "hidden" name="operation" value = "<%=editing ? "update" : "add"%>">
 					<%if(editing){ %>
 						<input type="hidden" name="id" value="<%=user.getId()%>">
+						<input type="hidden" name="dni" value="<%=user.getDni()%>">
 					<%}%>
 					<div class= "mb-3">
 						<b><label class="form-label">Dni:</label></b>
-						<input type="text" name="dni" class="form-control" required value="<%=dni%>">
+						<input type="text" name="dni" class="form-control" <%= editing ? "disabled" : "" %> required value="<%=dni%>">
 						
 						<b><label class="form-label">Nombre:</label></b>
 						<input type="text" name="name" class="form-control" required value="<%=name%>">
@@ -72,8 +73,9 @@
 						<input type="password" name="password" class="form-control" required value="<%=password%>">
 						
 					</div>
-					
-					<button type="submit" class="btn btn-success">Registrarse</button>
+					<div class="text-center">
+					<button type="submit" class="btn btn-success"><%= editing ? "Guardar datos" : "Registrarse" %></button>
+					</div>
 				</form>		
 			</div>
 		</div>

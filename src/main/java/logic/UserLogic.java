@@ -7,20 +7,35 @@ public class UserLogic {
 
 	private UserDAO dao = new UserDAO();
 	
-	public void register(User user) throws Exception{
+	public void registerUser(User newUser) throws Exception{
 		
 		//validaciones
-		if (isUserDniTaken(user)) {
+		if (isUserDniTaken(newUser)) {
 			throw new Exception("El DNI ingresado ya se encuentra registrado.");
 		}
 		
-		if (isUserEmailTaken(user)) {
+		if (isUserEmailTaken(newUser)) {
 			throw new Exception("El correo ingresado ya se encuentra registrado.");
 		}
 		//logica negocio
-		user.setRole("user");
+		newUser.setRole("user");
 		
-		dao.add(user);
+		dao.add(newUser);
+	}
+	
+	public void updateUser(User newUser) throws Exception{
+		//busco su rol viejo y le pongo el mismo (por si mandan un http malisioso)
+		User oldUser = dao.search(newUser);
+		
+		newUser.setRole(oldUser.getRole());
+		
+		//valido que el nuevo mail no pertenezca a otro usuario
+		User registerUser = dao.searchByEmail(newUser);
+		
+		if(registerUser != null && registerUser.getId() != newUser.getId() ) {
+			throw new Exception("El correo ingresado ya pertenece a otra cuenta.");
+		}
+		dao.update(newUser);
 	}
 	
 	public boolean isUserDniTaken(User user){
