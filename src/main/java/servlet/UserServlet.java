@@ -115,45 +115,33 @@ public class UserServlet extends HttpServlet {
 	
 	public void addUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		User newUser = new User();
-		UserLogic logic = new UserLogic();
-		
-		// ¿hacer antes un?:
-		//String email = request.getParameter("email");
-		//String password = request.getParameter("password");
-		// ¿y aca validar en el logic UserLogic o LoginLogic que esten bien y luego setearlos?
+
 		newUser.setDni(request.getParameter("dni"));
 		newUser.setName(request.getParameter("name"));
 		newUser.setSurname(request.getParameter("surname"));
 		newUser.setEmail(request.getParameter("email"));
 		newUser.setPassword(request.getParameter("password"));
-		newUser.setRole("user");
 		
-		//pasar esto a logica, y que sea un create usario o algo asi
-		if (logic.isUserDniTaken(newUser)) {
-			request.setAttribute("errorMessage", "El DNI ingresado ya se encuentra registrado.");
+		UserLogic logic = new UserLogic();
+		
+		try {
+			logic.register(newUser);
+			
+			UserSessionDTO userDTO = new UserSessionDTO(newUser);
+			
+			//guardamos el usuario en la session y permanece ahi
+			request.getSession().setAttribute("user",userDTO);
+			response.sendRedirect("index.jsp");
+		} catch (Exception e) {
+			
+			request.setAttribute("errorMessage", e.getMessage());
+			
 			//mando el user con sus datos actuales para que el usuario no escriba todo de nuevo
 			request.setAttribute("oneUser", newUser); 
 			request.setAttribute("editing", false);
 			request.getRequestDispatcher("/WEB-INF/user/form.jsp").forward(request,response);
-			return;
-		};
-		if (logic.isUserEmailTaken(newUser)) {
-			request.setAttribute("errorMessage", "El correo ingresado ya se encuentra registrado.");
-			request.setAttribute("oneUser", newUser);
-			request.setAttribute("editing", false);
-			request.getRequestDispatcher("/WEB-INF/user/form.jsp").forward(request,response);
-			return;
-		};
-		
-		//y esto tambien, pasarle el objeto y que lo registre en logic
-		UserDAO dao = new UserDAO();
-		dao.add(newUser);
-		
-		UserSessionDTO userDTO = new UserSessionDTO(newUser);
-		
-		//guardamos el usuario en la session y permanece ahi
-		request.getSession().setAttribute("user",userDTO);
-		response.sendRedirect("index.jsp");
+		}
+
 		
 	}
 	

@@ -5,10 +5,26 @@ import entities.User;
 
 public class UserLogic {
 
-	UserDAO dao = new UserDAO();
+	private UserDAO dao = new UserDAO();
 	
-	public boolean isUserDniTaken(User u){
-		User userWithDni = dao.searchByDni(u);
+	public void register(User user) throws Exception{
+		
+		//validaciones
+		if (isUserDniTaken(user)) {
+			throw new Exception("El DNI ingresado ya se encuentra registrado.");
+		}
+		
+		if (isUserEmailTaken(user)) {
+			throw new Exception("El correo ingresado ya se encuentra registrado.");
+		}
+		//logica negocio
+		user.setRole("user");
+		
+		dao.add(user);
+	}
+	
+	public boolean isUserDniTaken(User user){
+		User userWithDni = dao.searchByDni(user);
 		
 		//si encontro el dni devuelve true
 		if (userWithDni != null) {
@@ -18,8 +34,8 @@ public class UserLogic {
 		}
 	}
 	
-	public boolean isUserEmailTaken(User u){
-		User userWithEmail = dao.searchByEmail(u);
+	public boolean isUserEmailTaken(User user){
+		User userWithEmail = dao.searchByEmail(user);
 		
 		if (userWithEmail != null) {
 			return true;
