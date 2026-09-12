@@ -69,7 +69,7 @@ public class UserServlet extends HttpServlet {
 			updateUser(request, response);
 			break;
 		case "delete":
-			//deleteCategory(request, response);
+			deleteUser(request, response);
 			break;
 		}
 	}
@@ -174,13 +174,17 @@ public class UserServlet extends HttpServlet {
 				
 	}
 	
-	public void deleteCategory(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Category delCat = new Category();
-		delCat.setId(Integer.parseInt(request.getParameter("id")));
+	public void deleteUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		User delUser = new User();
+		delUser.setId(Integer.parseInt(request.getParameter("id")));
 		
-		CategoryDAO dao  = new CategoryDAO();
-		dao.delete(delCat);
-		response.sendRedirect("CategoryServlet?operation=list");
+		UserDAO dao  = new UserDAO();
+		dao.delete(delUser);
+		
+		//cierro la session
+		request.getSession().invalidate();
+		
+		response.sendRedirect("index.jsp");
 	}
 
 }

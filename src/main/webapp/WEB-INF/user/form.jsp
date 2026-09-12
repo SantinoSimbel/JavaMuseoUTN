@@ -74,11 +74,37 @@
 						
 					</div>
 					<div class="text-center">
-					<button type="submit" class="btn btn-success"><%= editing ? "Guardar datos" : "Registrarse" %></button>
+					<button type="submit" class="btn btn-success">
+						<%= editing ? "Guardar datos" : "Registrarse" %>
+					</button>
 					</div>
-				</form>		
+				</form>	
 			</div>
 		</div>
+		<!-- Eliminar cuenta -->
+		<%if(editing){ %>
+			<div class="card border-danger my-4">
+			    <div class="card-body">
+			        <h5 class="card-title text-danger">Eliminar cuenta</h5>
+		
+			        <p class="card-text">
+			            Esta acción eliminará tu cuenta y no podrás recuperar tus datos.
+			        </p>
+			
+			        <form action="UserServlet" method="POST"
+			              onsubmit="return confirm('¿Está seguro de que desea eliminar su cuenta?');">
+			              
+			            <input type="hidden" name="operation" value="delete">
+			            <input type="hidden" name="id" value="<%=user.getId()%>">
+			
+			            <button type="submit" class="btn btn-outline-danger">
+			                Eliminar mi cuenta
+			            </button>
+			        </form>
+			    </div>
+			</div>
+		<%}%>
+		
 	</div>
 	
 <!--Script para que funcione el js de bootstrap-->	
