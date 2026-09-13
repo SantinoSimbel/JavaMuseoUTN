@@ -21,6 +21,8 @@
 		LocalDate startDay = exhibition.getStartDay() == null ? LocalDate.now() : exhibition.getStartDay();
 		LocalDate endDay = exhibition.getEndDay() == null ? LocalDate.now() : exhibition.getEndDay();
 	 	LinkedList<Item> items = (LinkedList<Item>) request.getAttribute("allItems");
+	 	
+		String errorMessage = (String) request.getAttribute("errorMessage");
 	%>
 </head>
 <body>
@@ -43,6 +45,13 @@
 		<p class="text-muted mb-2"><%=editing ? 
 			"Modifique los campos que quiera editar:" : "Complete los campos:" %>
 		</p>
+		
+		<!-- Mensajes de error -->
+		<%if(errorMessage != null){%>
+			<div class="alert alert-danger" role="alert">
+ 				<%= errorMessage %>
+			</div>
+		<%}%>
 		
 		<% if (request.getAttribute("error") != null) { %>
 			<div class="alert alert-danger">
@@ -78,7 +87,7 @@
 							<% for (Item item : items) { %>
     							<%
     								boolean selected = false;
-        							if (editing && exhibition.getItems() != null) {
+        							if (exhibition.getItems() != null) {
             							for (Item selectedItem : exhibition.getItems()) {
                 							if (selectedItem.getId() == item.getId()) {
                     							selected = true;

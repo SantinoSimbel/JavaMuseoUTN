@@ -21,6 +21,8 @@
 		LocalDate day = presentation.getDay() == null ? LocalDate.now() : presentation.getDay();
 		int capacity = presentation.getCapacity() == 0 ? 0 : presentation.getCapacity();
 	 	LinkedList<Item> items = (LinkedList<Item>) request.getAttribute("allItems");
+	 	
+		String errorMessage = (String) request.getAttribute("errorMessage");
 	%>
 </head>
 <body>
@@ -43,6 +45,14 @@
 		<p class="text-muted mb-2"><%=editing ? 
 			"Modifique los campos que quiera editar:" : "Complete los campos:" %>
 		</p>
+		
+		
+		<!-- Mensajes de error -->
+		<%if(errorMessage != null){%>
+			<div class="alert alert-danger" role="alert">
+ 				<%= errorMessage %>
+			</div>
+		<%}%>
 		
 		
 		<% if (request.getAttribute("error") != null) { %>
@@ -80,7 +90,7 @@
 							<% for (Item item : items) { %>
     							<%
     								boolean selected = false;
-        							if (editing && presentation.getItems() != null) {
+        							if (presentation.getItems() != null) {
             							for (Item selectedItem : presentation.getItems()) {
                 							if (selectedItem.getId() == item.getId()) {
                     							selected = true;
