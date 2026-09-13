@@ -16,6 +16,8 @@ import data.EventDAO;
 import data.PresentationDAO;
 import entities.Item;
 import entities.Presentation;
+import logic.EventLogic;
+import logic.PresentationLogic;
 
 
 
@@ -150,29 +152,35 @@ public class PresentationServlet extends HttpServlet {
 		newPre.setCapacity(Integer.parseInt(request.getParameter("capacity")));
 		
 		String[] itemIds = request.getParameterValues("item_ids");
-		
-		if (itemIds == null || itemIds.length == 0) {
-			request.setAttribute("error", "Debe seleccionar al menos un artículo.");
-			showForm(request, response);
-			return;
-		}
-		
+
 		LinkedList<Item> selectedItems = new LinkedList<>();
-		for (String itemId : itemIds) {
-		    Item item = new Item();
-		    item.setId(Integer.parseInt(itemId));
-		    selectedItems.add(item);
+		if (itemIds != null) {
+		    for (String itemId : itemIds) {
+		        Item item = new Item();
+		        item.setId(Integer.parseInt(itemId));
+		        selectedItems.add(item);
+		    }
 		}
 		newPre.setItems(selectedItems);
 		
 		
-		EventDAO daoEv  = new EventDAO();
-		daoEv.add(newPre);	
-		PresentationDAO daoPre = new PresentationDAO();
-		daoPre.add(newPre);
+		EventLogic logicEv = new EventLogic();
+		PresentationLogic logicPre = new PresentationLogic();
 		
-		
-		response.sendRedirect("PresentationServlet?operation=list");
+		try {
+			logicEv.registerEvent(newPre);	
+			logicPre.registerPresentation(newPre);
+			
+			response.sendRedirect("PresentationServlet?operation=list");
+		} catch (Exception e) {
+			
+			ItemDAO itemDAO = new ItemDAO();
+		    request.setAttribute("allItems", itemDAO.list());
+			request.setAttribute("errorMessage", e.getMessage());
+			request.setAttribute("onePresentation", newPre); 
+			request.setAttribute("editing", false);
+			request.getRequestDispatcher("/WEB-INF/presentation/form.jsp").forward(request,response);
+		}
 		
 	}
 	
@@ -199,29 +207,35 @@ public class PresentationServlet extends HttpServlet {
 		newPre.setCapacity(Integer.parseInt(request.getParameter("capacity")));
 		
 		String[] itemIds = request.getParameterValues("item_ids");
-		
-		if (itemIds == null || itemIds.length == 0) {
-			request.setAttribute("error", "Debe seleccionar al menos un artículo.");
-			showForm(request, response);
-			return;
-		}
-		
+
 		LinkedList<Item> selectedItems = new LinkedList<>();
-		for (String itemId : itemIds) {
-		    Item item = new Item();
-		    item.setId(Integer.parseInt(itemId));
-		    selectedItems.add(item);
+		if (itemIds != null) {
+		    for (String itemId : itemIds) {
+		        Item item = new Item();
+		        item.setId(Integer.parseInt(itemId));
+		        selectedItems.add(item);
+		    }
 		}
 		newPre.setItems(selectedItems);
 		
 		
-		EventDAO daoEv  = new EventDAO();
-		daoEv.update(newPre);	
-		PresentationDAO daoPre = new PresentationDAO();
-		daoPre.update(newPre);
+		EventLogic logicEv = new EventLogic();
+		PresentationLogic logicPre = new PresentationLogic();
 		
-		
-		response.sendRedirect("PresentationServlet?operation=list");
+		try {
+			logicEv.updateEvent(newPre);	
+			logicPre.updatePresentation(newPre);
+			
+			response.sendRedirect("PresentationServlet?operation=list");
+		} catch (Exception e) {
+			
+			ItemDAO itemDAO = new ItemDAO();
+		    request.setAttribute("allItems", itemDAO.list());
+			request.setAttribute("errorMessage", e.getMessage());
+			request.setAttribute("onePresentation", newPre); 
+			request.setAttribute("editing", false);
+			request.getRequestDispatcher("/WEB-INF/presentation/form.jsp").forward(request,response);
+		}
 	}
 	
 	

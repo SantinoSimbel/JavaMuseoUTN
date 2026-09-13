@@ -16,7 +16,8 @@ import data.EventDAO;
 import data.ExhibitionDAO;
 import entities.Item;
 import entities.Exhibition;
-
+import logic.EventLogic;
+import logic.ExhibitionLogic;
 
 
 
@@ -149,31 +150,35 @@ public class ExhibitionServlet extends HttpServlet {
 		newEx.setEndDay(LocalDate.parse(request.getParameter("endDay")));
 		newEx.setStartDay(LocalDate.parse(request.getParameter("startDay")));
 		
-		
 		String[] itemIds = request.getParameterValues("item_ids");
-		
-		if (itemIds == null || itemIds.length == 0) {
-			request.setAttribute("error", "Debe seleccionar al menos un artículo.");
-			showForm(request, response);
-			return;
-		}
-		
+
 		LinkedList<Item> selectedItems = new LinkedList<>();
-		for (String itemId : itemIds) {
-		    Item item = new Item();
-		    item.setId(Integer.parseInt(itemId));
-		    selectedItems.add(item);
+		if (itemIds != null) {
+		    for (String itemId : itemIds) {
+		        Item item = new Item();
+		        item.setId(Integer.parseInt(itemId));
+		        selectedItems.add(item);
+		    }
 		}
 		newEx.setItems(selectedItems);
 		
+		EventLogic logicEv = new EventLogic();
+		ExhibitionLogic logicEx = new ExhibitionLogic();
 		
-		EventDAO daoEv  = new EventDAO();
-		daoEv.add(newEx);	
-		ExhibitionDAO daoEx = new ExhibitionDAO();
-		daoEx.add(newEx);
-		
-		
-		response.sendRedirect("ExhibitionServlet?operation=list");
+		try {
+			logicEv.registerEvent(newEx);	
+			logicEx.registerExhibition(newEx);
+			
+			response.sendRedirect("ExhibitionServlet?operation=list");
+		} catch (Exception e) {
+			
+			ItemDAO itemDAO = new ItemDAO();
+		    request.setAttribute("allItems", itemDAO.list());
+			request.setAttribute("errorMessage", e.getMessage());
+			request.setAttribute("oneExhibition", newEx); 
+			request.setAttribute("editing", false);
+			request.getRequestDispatcher("/WEB-INF/exhibition/form.jsp").forward(request,response);
+		}
 		
 	}
 	
@@ -200,29 +205,36 @@ public class ExhibitionServlet extends HttpServlet {
 		newEx.setStartDay(LocalDate.parse(request.getParameter("startDay")));
 
 		String[] itemIds = request.getParameterValues("item_ids");
-		
-		if (itemIds == null || itemIds.length == 0) {
-			request.setAttribute("error", "Debe seleccionar al menos un artículo.");
-			showForm(request, response);
-			return;
-		}
-		
+
 		LinkedList<Item> selectedItems = new LinkedList<>();
-		for (String itemId : itemIds) {
-		    Item item = new Item();
-		    item.setId(Integer.parseInt(itemId));
-		    selectedItems.add(item);
+		if (itemIds != null) {
+		    for (String itemId : itemIds) {
+		        Item item = new Item();
+		        item.setId(Integer.parseInt(itemId));
+		        selectedItems.add(item);
+		    }
 		}
 		newEx.setItems(selectedItems);
 		
+
+		EventLogic logicEv = new EventLogic();
+		ExhibitionLogic logicEx = new ExhibitionLogic();
 		
-		EventDAO daoEv  = new EventDAO();
-		daoEv.update(newEx);	
-		ExhibitionDAO daoEx = new ExhibitionDAO();
-		daoEx.update(newEx);
+		try {
+			logicEv.updateEvent(newEx);	
+			logicEx.updateExhibition(newEx);
+			
+			response.sendRedirect("ExhibitionServlet?operation=list");
+		} catch (Exception e) {
+			
+			ItemDAO itemDAO = new ItemDAO();
+		    request.setAttribute("allItems", itemDAO.list());
+			request.setAttribute("errorMessage", e.getMessage());
+			request.setAttribute("oneExhibition", newEx); 
+			request.setAttribute("editing", true);
+			request.getRequestDispatcher("/WEB-INF/exhibition/form.jsp").forward(request,response);
+		}
 		
-		
-		response.sendRedirect("ExhibitionServlet?operation=list");
 	}
 	
 	
