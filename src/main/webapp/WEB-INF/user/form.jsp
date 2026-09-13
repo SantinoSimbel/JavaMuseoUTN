@@ -81,30 +81,56 @@
 				</form>	
 			</div>
 		</div>
-		<!-- Eliminar cuenta -->
-		<%if(editing){ %>
-			<div class="card border-danger my-4">
-			    <div class="card-body">
-			        <h5 class="card-title text-danger">Eliminar cuenta</h5>
-		
-			        <p class="card-text">
-			            Esta acción eliminará tu cuenta y no podrás recuperar tus datos.
-			        </p>
-			
-			        <form action="UserServlet" method="POST"
-			              onsubmit="return confirm('¿Está seguro de que desea eliminar su cuenta?');">
-			              
-			            <input type="hidden" name="operation" value="delete">
-			            <input type="hidden" name="id" value="<%=user.getId()%>">
-			
-			            <button type="submit" class="btn btn-outline-danger">
-			                Eliminar mi cuenta
-			            </button>
-			        </form>
-			    </div>
-			</div>
-		<%}%>
-		
+		<!-- Otras acciones -->
+		<div class= "row mb-4">
+			<%if(editing){ %>
+				<!-- Cerrar session -->
+				<div class= "col-12 col-md-6 mt-4">	
+					<div class="card border-dark h-100 ">
+					    <div class="card-body d-flex flex-column justify-content-between">
+					        <h5 class="card-title text-dark">Cerrar sesión</h5>
+				
+					        <p class="card-text">
+					            Cierra tu sesión temporalmente.
+					        </p>
+					
+					        <form action="LoginServlet" method="POST"
+					              onsubmit="return confirm('¿Está seguro de que desea cerrar sesión?');">
+					              
+					            <input type="hidden" name="operation" value="logout">
+					
+					            <button type="submit" class="btn btn-outline-dark">
+					                Cerrar mi sesión
+					            </button>
+					        </form>
+					    </div>
+					</div>
+				</div>
+				<!-- Eliminar cuenta -->
+				<div class= "col-12 col-md-6 mt-4">
+					<div class="card border-danger h-100 ">
+					    <div class="card-body d-flex flex-column justify-content-between">
+					        <h5 class="card-title text-danger">Eliminar cuenta</h5>
+				
+					        <p class="card-text">
+					            Esta acción eliminará tu cuenta y no podrás recuperar tus datos.
+					        </p>
+					
+					        <form action="UserServlet" method="POST"
+					              onsubmit="return confirm('¿Está seguro de que desea eliminar su cuenta?');">
+					              
+					            <input type="hidden" name="operation" value="delete">
+					            <input type="hidden" name="id" value="<%=user.getId()%>">
+					
+					            <button type="submit" class="btn btn-outline-danger">
+					                Eliminar mi cuenta
+					            </button>
+					        </form>
+					    </div>
+					</div>
+				</div>
+			<%}%>
+		</div>
 	</div>
 	
 <!--Script para que funcione el js de bootstrap-->	

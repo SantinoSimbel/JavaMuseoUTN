@@ -32,17 +32,7 @@ public class LoginServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		
-		String operation = request.getParameter("operation");
-		
-		switch (operation) {
-		case "login":
-			//getAllCategories(request, response);
-			break;
-		case "logout":
-			//showForm(request, response);
-			break;
-		}
+		response.sendRedirect("login.jsp");
 	}
 
 	/**
@@ -58,11 +48,8 @@ public class LoginServlet extends HttpServlet {
 		case "login":
 			login(request, response);
 			break;
-		case "update":
-			//updateCategory(request, response);
-			break;
-		case "delete":
-			//deleteCategory(request, response);
+		case "logout":
+			logout(request, response);
 			break;
 		}
 	}
@@ -80,6 +67,13 @@ public class LoginServlet extends HttpServlet {
 		
 		//guardamos el usuario en la session y permanece ahi
 		request.getSession().setAttribute("user",userDTO);
+		response.sendRedirect("index.jsp");
+		
+	}
+	
+	public void logout(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		request.getSession().invalidate();
 		response.sendRedirect("index.jsp");
 		
 	}
