@@ -39,8 +39,10 @@
 		<!-- Listado -->
 		<% for (Presentation pre : presentationList){ %>
 			<div class= "card mb-3 shadow-sm">
-				<a href ="PresentationServlet?operation=edit&id=<%=pre.getId()%>"
-				class="text-decoration-none text-dark">
+				
+				<% if (pre.getStatus().equals("Creado")) { %> <a href ="PresentationServlet?operation=edit&id=<%=pre.getId()%>" class="text-decoration-none text-dark">
+				<% } else { %> <div class="text-dark"> <% } %>
+			
 					<div class= "card-body">
 						<h5 class = "card-title">
 							<%= pre.getTitle()%>
@@ -56,6 +58,7 @@
     										<% } %>
 										</ul>
 								</div>
+								<br> <b>Estado:</b> <%=pre.getStatus() %>
 								<br> <b>Capacidad: </b><%=pre.getCapacity() %>
 								<br> <%=pre.getDescription() %>
 								<br> <b>El día</b> <%= pre.getDay().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")) %>
@@ -64,14 +67,23 @@
 						    </div>
 						</div>
 					</div>
-				</a>
+				
+
+				<% if (pre.getStatus().equals("Creado")) { %> </a>
+				<% } else { %> </div> <% } %>
+
 				<div class= "card-footer">
 					<div class= "d-flex justify-content-end">
-						<form action="PresentationServlet" method="POST" onsubmit="return confirm('¿Eliminar Precentación?');">
-							<input type="hidden" name="operation" value= "delete">
-							<input type="hidden" name="id" value="<%= pre.getId() %>">
-							<button class = "btn btn-danger">Eliminar</button>
-						</form>
+					
+					<% if (pre.getStatus().equals("Empezado")) { %>
+							<span class="text-muted small">No se puede eliminar una exhibición en curso</span>
+						<% } else { %>
+							<form action="PresentationServlet" method="POST" onsubmit="return confirm('¿Eliminar Precentación?');">
+								<input type="hidden" name="operation" value= "delete">
+								<input type="hidden" name="id" value="<%= pre.getId() %>">
+								<button class = "btn btn-danger">Eliminar</button>
+							</form>
+						<% } %>
 					</div>
 				</div>
 			</div>

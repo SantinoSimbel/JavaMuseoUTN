@@ -38,8 +38,11 @@
 		<!-- Listado -->
 		<% for (Exhibition ex : exhibitionList){ %>
 			<div class= "card mb-3 shadow-sm">
-				<a href ="ExhibitionServlet?operation=edit&id=<%=ex.getId()%>"
-				class="text-decoration-none text-dark">
+			
+			<% if (ex.getStatus().equals("Creado")) { %> <a href ="ExhibitionServlet?operation=edit&id=<%=ex.getId()%>" class="text-decoration-none text-dark">
+				<% } else { %> <div class="text-dark"> <% } %>
+				
+
 					<div class= "card-body">
 						<h5 class = "card-title">
 							<%= ex.getTitle()%>
@@ -54,7 +57,7 @@
         									<li><%= item.getName() %></li>
     									<% } %>
 									</ul>
-							
+								<br> <b>Estado:</b> <%=ex.getStatus() %>
 								<br> <%=ex.getDescription() %>
 							<br> <b>Desde el día</b> <%= ex.getStartDay().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")) %>
 							<b>hasta el</b> <%= ex.getEndDay().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")) %>
@@ -64,14 +67,27 @@
 						    </div>
 						</div>
 					</div>
-				</a>
+					
+				<% if (ex.getStatus().equals("Creado")) { %> </a>
+				<% } else { %> </div> <% } %>
+				
 				<div class= "card-footer">
 					<div class= "d-flex justify-content-end">
-						<form action="ExhibitionServlet" method="POST" onsubmit="return confirm('¿Eliminar Exhibición?');">
-							<input type="hidden" name="operation" value= "delete">
-							<input type="hidden" name="id" value="<%= ex.getId() %>">
-							<button class = "btn btn-danger">Eliminar</button>
-						</form>
+					
+					
+						<% if (ex.getStatus().equals("Empezado")) { %>
+							<span class="text-muted small">No se puede eliminar una exhibición en curso</span>
+						<% } else { %>
+							<form action="ExhibitionServlet" method="POST" onsubmit="return confirm('¿Eliminar Exhibición?');">
+								<input type="hidden" name="operation" value= "delete">
+								<input type="hidden" name="id" value="<%= ex.getId() %>">
+								<button class = "btn btn-danger">Eliminar</button>
+							</form>
+						<% } %>
+					
+					
+					
+						
 					</div>
 				</div>
 			</div>
