@@ -47,13 +47,14 @@ CREATE TABLE `event` (
   `description` varchar(500) NOT NULL,
   `endTime` time NOT NULL,
   `startTime` time NOT NULL,
+  `status` varchar(20) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO `event` (`title`, `description`, `endTime`, `startTime`) VALUES
-('¡Sal de ahí, Shenlong!','Con la ayuda del rastreador de la corporación capsula, hemos podido traerles las esferas del dragon al museo.','21:01:00','15:30:00')
-,('¿Alguien quiere volver al futuro?','El gran doc. Emmet Brown ha prestado su gran maquina del tiempo para una exhibición inigualable y proximamente ¡Con uan explicación de su fincionamiento!','19:30:00','15:15:00')
-,('Las espadas del caos junto a Kratos','No te pierdas esta fabulosa presentación con el mismo Kratos hablando sobre sus tan poderosas Espadas del Caos.','18:30:00','17:35:00');
+INSERT INTO `event` (`title`, `description`, `endTime`, `startTime`,`status`) VALUES
+('¡Sal de ahí, Shenlong!','Con la ayuda del rastreador de la corporación capsula, hemos podido traerles las esferas del dragon al museo.','21:01:00','15:30:00','Creado')
+,('¿Alguien quiere volver al futuro?','El gran doc. Emmet Brown ha prestado su gran maquina del tiempo para una exhibición inigualable y proximamente ¡Con uan explicación de su fincionamiento!','19:30:00','15:15:00','Creado')
+,('Las espadas del caos junto a Kratos','No te pierdas esta fabulosa presentación con el mismo Kratos hablando sobre sus tan poderosas Espadas del Caos.','18:30:00','17:35:00','Creado');
 
 
 

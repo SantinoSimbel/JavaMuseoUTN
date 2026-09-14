@@ -4,11 +4,11 @@ import java.time.*;
 import java.util.LinkedList;
 
 
-public class Event {
+public abstract class Event {
 	private int id;
 	private String title;
 	private String description;
-	/*private String status;*/
+	private String status;
 	private LocalTime endTime;
 	private LocalTime startTime;
 	private LinkedList<Item> items;
@@ -32,12 +32,12 @@ public class Event {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	/*public String getStatus() {
+	public String getStatus() {
 		return status;
 	}
 	public void setStatus(String status) {
 		this.status = status;
-	}*/
+	}
 	public LocalTime getEndTime() {
 		return endTime;
 	}
@@ -62,8 +62,10 @@ public class Event {
 	public Event() {
 	    this.items = new LinkedList<>();
 	}
-
 	
+
+	public abstract void updateStatus();
+
 	  
 
 }
