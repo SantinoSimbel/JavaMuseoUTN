@@ -2,14 +2,26 @@ package logic;
 
 import data.EventDAO;
 import data.PresentationDAO;
+import entities.Exhibition;
 import entities.Presentation;
 import java.time.*;
+import java.util.LinkedList;
 
 public class PresentationLogic {
 
 	
 	private PresentationDAO dao = new PresentationDAO();
 	private EventDAO daoEv = new EventDAO();
+	
+	
+	public LinkedList<Presentation> getPresentations(){
+		LinkedList<Presentation> presentations = dao.list();
+		for (Presentation pre : presentations) {
+			pre.updateStatus();
+		}
+		return presentations;
+	}
+	
 	
 	public void registerPresentation(Presentation newPresentation) throws Exception{
 		

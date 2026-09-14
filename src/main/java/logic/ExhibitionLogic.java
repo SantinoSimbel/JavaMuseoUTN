@@ -4,10 +4,19 @@ import data.EventDAO;
 import data.ExhibitionDAO;
 import entities.Exhibition;
 import java.time.*;
+import java.util.LinkedList;
 
 public class ExhibitionLogic {
 	private ExhibitionDAO dao = new ExhibitionDAO();
 	private EventDAO daoEv = new EventDAO();
+	
+	public LinkedList<Exhibition> getExhibitions(){
+		LinkedList<Exhibition> exhibitions = dao.list();
+		for (Exhibition ex : exhibitions) {
+			ex.updateStatus();
+		}
+		return exhibitions;
+	}
 	
 	public void registerExhibition(Exhibition newExhibition) throws Exception{
 		

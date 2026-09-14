@@ -19,6 +19,7 @@ public class EventLogic {
 			throw new Exception("La hora de fin no puede ser menor a la de inicio.");
 		}
 		
+		newEvent.setStatus("Creado");
 	}
 	
 	public void updateEvent(Event newEvent) throws Exception{
@@ -32,12 +33,9 @@ public class EventLogic {
 			throw new Exception("La hora de fin no puede ser menor a la de inicio.");
 		}
 		
+		newEvent.setStatus("Creado");
 				
 	}
 	
-	/*if (newEvent.getStatus().equals("Empezado") || newEvent.getStatus().equals("Terminado")) {
-			throw new Exception("No es posible editar este Evento.");
-		}*/
 
-	
 }
