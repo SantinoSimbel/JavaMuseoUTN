@@ -89,8 +89,8 @@ public class ExhibitionServlet extends HttpServlet {
 	//GETALL
 	public void getAllExhibition(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		ExhibitionDAO dao  = new ExhibitionDAO();
-		LinkedList<Exhibition> exhibitions = dao.list();
+		ExhibitionLogic logicEx = new ExhibitionLogic();
+		LinkedList<Exhibition> exhibitions = logicEx.getExhibitions();
 		
 		request.setAttribute("allExhibitions", exhibitions);
 		request.getRequestDispatcher("/WEB-INF/exhibition/list.jsp").forward(request,response);

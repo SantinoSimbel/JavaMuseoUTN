@@ -90,8 +90,8 @@ public class PresentationServlet extends HttpServlet {
 	//GETALL
 	public void getAllPresentation(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		PresentationDAO dao  = new PresentationDAO();
-		LinkedList<Presentation> presentations = dao.list();
+		PresentationLogic logicPre = new PresentationLogic();
+		LinkedList<Presentation> presentations = logicPre.getPresentations();
 		
 		request.setAttribute("allPresentations", presentations);
 		request.getRequestDispatcher("/WEB-INF/presentation/list.jsp").forward(request,response);
