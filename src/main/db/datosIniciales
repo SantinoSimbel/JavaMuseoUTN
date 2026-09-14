@@ -52,9 +52,9 @@ CREATE TABLE `event` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `event` (`title`, `description`, `endTime`, `startTime`,`status`) VALUES
-('¡Sal de ahí, Shenlong!','Con la ayuda del rastreador de la corporación capsula, hemos podido traerles las esferas del dragon al museo.','21:01:00','15:30:00','Creado')
-,('¿Alguien quiere volver al futuro?','El gran doc. Emmet Brown ha prestado su gran maquina del tiempo para una exhibición inigualable y proximamente ¡Con uan explicación de su fincionamiento!','19:30:00','15:15:00','Creado')
-,('Las espadas del caos junto a Kratos','No te pierdas esta fabulosa presentación con el mismo Kratos hablando sobre sus tan poderosas Espadas del Caos.','18:30:00','17:35:00','Creado');
+('¡Sal de ahí, Shenlong!','Con la ayuda del rastreador de la corporación capsula, hemos podido traerles las esferas del dragon al museo.','21:01:00','15:30:00','Empezado')
+,('¿Alguien quiere volver al futuro?','El gran doc. Emmet Brown ha prestado su gran maquina del tiempo para una exhibición inigualable y proximamente ¡Con una explicación de su funcionamiento!','19:30:00','15:15:00','Creado')
+,('Las espadas del caos junto a Kratos','No te pierdas esta fabulosa presentación con el mismo Kratos hablando sobre sus tan poderosas Espadas del Caos.','18:30:00','17:35:00','Terminado');
 
 
 
@@ -101,8 +101,8 @@ CREATE TABLE `exhibition` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `exhibition` (`event_id`, `startDay`, `endDay`) VALUES
-('1','2026-08-28','2026-09-04')
-,('2','2026-08-29','2026-09-05');
+('1','2026-08-28','2026-10-04')
+,('2','2026-12-05','2026-12-29');
 
 
 

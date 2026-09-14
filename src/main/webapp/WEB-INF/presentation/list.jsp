@@ -41,7 +41,9 @@
 			<div class= "card mb-3 shadow-sm">
 				
 				<% if (pre.getStatus().equals("Creado")) { %> <a href ="PresentationServlet?operation=edit&id=<%=pre.getId()%>" class="text-decoration-none text-dark">
-				<% } else { %> <div class="text-dark"> <% } %>
+								
+				<% } else { %> <div class="text-dark"> <span class="text-danger small"> No es posible edirar una presentación que ya inició/terminó</span> <% } %>
+
 			
 					<div class= "card-body">
 						<h5 class = "card-title">
@@ -76,7 +78,7 @@
 					<div class= "d-flex justify-content-end">
 					
 					<% if (pre.getStatus().equals("Empezado")) { %>
-							<span class="text-muted small">No se puede eliminar una exhibición en curso</span>
+							<span class="text-muted small">No se puede eliminar una presentación en curso</span>
 						<% } else { %>
 							<form action="PresentationServlet" method="POST" onsubmit="return confirm('¿Eliminar Precentación?');">
 								<input type="hidden" name="operation" value= "delete">

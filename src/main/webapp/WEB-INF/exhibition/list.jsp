@@ -40,7 +40,8 @@
 			<div class= "card mb-3 shadow-sm">
 			
 			<% if (ex.getStatus().equals("Creado")) { %> <a href ="ExhibitionServlet?operation=edit&id=<%=ex.getId()%>" class="text-decoration-none text-dark">
-				<% } else { %> <div class="text-dark"> <% } %>
+				<% } else { %> <div class="text-dark"> 
+					<span class="text-danger small"> No es posible editar una exhibición que ya inició/terminó</span> <% } %>
 				
 
 					<div class= "card-body">
