@@ -32,7 +32,7 @@ public class PresentationDAO {
 			conn = db.getConnection(); 
 			stmt = conn.createStatement();
 			
-			rs = stmt.executeQuery("SELECT e.id, e.title, e.description, e.endTime, e.startTime, p.day, p.capacity, e_i.item_id, "
+			rs = stmt.executeQuery("SELECT e.id, e.title, e.description, e.endTime, e.startTime, e.status, p.day, p.capacity, e_i.item_id, "
 										+ "i.name AS item_name, i.description AS item_desc, i.picture, i.category_id, c.name AS category_name "
 					 				+ "FROM event e "
 									+ "INNER JOIN presentation p ON p.event_id = e.id "
@@ -74,6 +74,7 @@ public class PresentationDAO {
 					p.setDescription(rs.getString("description"));
 					p.setEndTime(rs.getTime("endTime").toLocalTime());
 					p.setStartTime(rs.getTime("startTime").toLocalTime());
+					p.setStatus(rs.getString("status"));
 					
 					p.setDay(rs.getDate("day").toLocalDate());
 					p.setCapacity(rs.getInt("capacity"));
@@ -126,7 +127,7 @@ public class PresentationDAO {
 			Presentation pre = null;
 			
 			conn= db.getConnection();
-			stmt = conn.prepareStatement("SELECT e.id, e.title, e.description, e.endTime, e.startTime, p.day, p.capacity, e_i.item_id, "
+			stmt = conn.prepareStatement("SELECT e.id, e.title, e.description, e.endTime, e.startTime, e.status, p.day, p.capacity, e_i.item_id, "
 											+ "i.name AS item_name, i.description AS item_desc, i.picture, i.category_id, c.name AS category_name "
 										+ "FROM event e "
 							            + "INNER JOIN presentation p ON p.event_id = e.id "
@@ -149,7 +150,8 @@ public class PresentationDAO {
 				pre.setDescription(rs.getString("description"));
 				pre.setEndTime(rs.getTime("endTime").toLocalTime());
 				pre.setStartTime(rs.getTime("startTime").toLocalTime());
-				
+				pre.setStatus(rs.getString("status"));
+
 				
 				Item ite = new Item();
 				ite.setId(rs.getInt("item_id"));

@@ -20,9 +20,10 @@ public class EventDAO {
 	
 	
 	
-	//NOTA: EL list y search de momento no se han usado. Concideración de elminar u editar: posible
+	//NOTA: EL list y search de momento no se han usado. Concideración de elminar u editar: ALTA
+	
 	//list() -----------------------------------------------------------------------------------------
-	public LinkedList<Event> list() {
+	/*public LinkedList<Event> list() {
 		LinkedList<Event> events = new LinkedList<>();
 
 		Statement stmt = null;
@@ -107,7 +108,7 @@ public class EventDAO {
 	
 	
 	
-	//search(Event ev) -----------------------------------------------------------------------------------------
+	search(Event ev) -----------------------------------------------------------------------------------------
 	public Event search(Event ev) {
 
 		PreparedStatement stmt = null;
@@ -186,7 +187,7 @@ public class EventDAO {
 			}
 		}
 	}
-	
+	*/
 	
 	
 	
@@ -207,12 +208,12 @@ public class EventDAO {
 		try {
 			conn= db.getConnection();
 			
-			stmt = conn.prepareStatement("insert into event(title, description, endTime, startTime) values(?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS); 
+			stmt = conn.prepareStatement("insert into event(title, description, endTime, startTime, status) values(?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS); 
 			stmt.setString(1, newEve.getTitle());
 			stmt.setString(2, newEve.getDescription());
 			stmt.setTime(3, java.sql.Time.valueOf(newEve.getEndTime()));
 			stmt.setTime(4, java.sql.Time.valueOf(newEve.getStartTime()));
-			
+			stmt.setString(5, newEve.getStatus());
 			
 			stmt.executeUpdate();
 			
@@ -260,12 +261,13 @@ public class EventDAO {
 
 		try {
 			conn= db.getConnection();
-			stmt = conn.prepareStatement("update event set title = ?, description = ?, endTime = ?, startTime = ? where id = ?");
+			stmt = conn.prepareStatement("update event set title = ?, description = ?, endTime = ?, startTime = ?, status = ? where id = ?");
 			stmt.setString(1, updEve.getTitle());
 			stmt.setString(2, updEve.getDescription());
 			stmt.setTime(3, java.sql.Time.valueOf(updEve.getEndTime()));
 			stmt.setTime(4, java.sql.Time.valueOf(updEve.getStartTime()));
-			stmt.setInt(5, updEve.getId()); 
+			stmt.setString(5, updEve.getStatus());
+			stmt.setInt(6, updEve.getId()); 
 
 			stmt.executeUpdate();
 			

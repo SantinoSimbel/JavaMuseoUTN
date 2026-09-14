@@ -31,7 +31,7 @@ public class ExhibitionDAO {
 			conn = db.getConnection(); 
 			stmt = conn.createStatement();
 			
-			rs = stmt.executeQuery("SELECT e.id, e.title, e.description, e.endTime, e.startTime, ex.startDay, ex.endDay, e_i.item_id, "
+			rs = stmt.executeQuery("SELECT e.id, e.title, e.description, e.endTime, e.startTime, e.status, ex.startDay, ex.endDay, e_i.item_id, "
 										+ "i.name AS item_name, i.description AS item_desc, i.picture, i.category_id, c.name AS category_name "
 					 				+ "FROM event e "
 									+ "INNER JOIN exhibition ex ON ex.event_id = e.id "
@@ -73,6 +73,7 @@ public class ExhibitionDAO {
 					e.setDescription(rs.getString("description"));
 					e.setEndTime(rs.getTime("endTime").toLocalTime());
 					e.setStartTime(rs.getTime("startTime").toLocalTime());
+					e.setStatus(rs.getString("status"));
 					
 					e.setStartDay(rs.getDate("startDay").toLocalDate());
 					e.setEndDay(rs.getDate("endDay").toLocalDate());
@@ -126,7 +127,7 @@ public class ExhibitionDAO {
 			Exhibition exi = null;
 			
 			conn= db.getConnection();
-			stmt = conn.prepareStatement("SELECT e.id, e.title, e.description, e.endTime, e.startTime, ex.startDay, ex.endDay, e_i.item_id, "
+			stmt = conn.prepareStatement("SELECT e.id, e.title, e.description, e.endTime, e.startTime, e.status, ex.startDay, ex.endDay, e_i.item_id, "
 											+ "i.name AS item_name, i.description AS item_desc, i.picture, i.category_id, c.name AS category_name "
 										+ "FROM event e "
 							            + "INNER JOIN exhibition ex ON ex.event_id = e.id "
@@ -148,6 +149,7 @@ public class ExhibitionDAO {
 				exi.setDescription(rs.getString("description"));
 				exi.setEndTime(rs.getTime("endTime").toLocalTime());
 				exi.setStartTime(rs.getTime("startTime").toLocalTime());
+				exi.setStatus(rs.getString("status"));
 				
 				Item ite = new Item();
 				ite.setId(rs.getInt("item_id"));
