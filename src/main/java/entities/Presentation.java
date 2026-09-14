@@ -21,6 +21,15 @@ public class Presentation extends Event {
 	}
 	
 	
+	@Override
+	public void updateStatus() {
+		if (day.isBefore(LocalDate.now())) {
+			this.setStatus("Terminado"); 
+		}
+		else if (day.isEqual(LocalDate.now())) {
+			this.setStatus("Empezado"); 
+		}
+	}
 	
 	
 

@@ -22,6 +22,18 @@ public class Exhibition extends Event {
 	}
 	
 	
+	@Override
+	public void updateStatus() {
+		if (endDay.isBefore(LocalDate.now())) {
+			this.setStatus("Terminado"); 
+		}
+		else if (startDay.isBefore(LocalDate.now()) || startDay.isEqual(LocalDate.now())) {
+			this.setStatus("Empezado"); 
+		}
+	}
+	
+	
+	
 	
 
 }
