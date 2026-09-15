@@ -99,6 +99,46 @@ public class CategoryDAO {
 		}
 	}
 	
+
+	public Category searchByName(Category c) { 
+		
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		Connection conn = null;
+		
+		try {
+			conn= db.getConnection();
+			Category cat = null;
+			stmt = conn.prepareStatement("select id, name from category where LOWER(TRIM(name)) = LOWER(TRIM(?))");
+			stmt.setString(1, c.getName().trim().toLowerCase());
+			
+			rs = stmt.executeQuery();
+			
+			if(rs!= null && rs.next()) {
+				cat = new Category();
+				cat.setId(rs.getInt("id"));
+				cat.setName(rs.getString("name"));
+			}
+			
+			return cat;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			try {
+				if(rs != null)rs.close();
+				if(stmt != null)stmt.close();
+				db.releaseConnection();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	
+	
+	
 	public void add(Category newCat) {
 		PreparedStatement stmt = null;
 		//le pongo keyRs para tener nombre mas amigable con lo que estoy haciendo. (en el stmt no hace falta saber que es un preparedStatement.)

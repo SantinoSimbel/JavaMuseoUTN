@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import data.CategoryDAO;
 import entities.Category;
+import logic. CategoryLogic;
 
 /**
  * Servlet implementation class CategoryServlet
@@ -114,10 +115,19 @@ public class CategoryServlet extends HttpServlet {
 		Category newCat = new Category();
 		newCat.setName(request.getParameter("name"));
 		
-		CategoryDAO dao  = new CategoryDAO();
-		dao.add(newCat);
-		response.sendRedirect("CategoryServlet?operation=list");
+		CategoryLogic logic = new CategoryLogic();
 		
+		try {
+			logic.addCategory(newCat);
+			
+			response.sendRedirect("CategoryServlet?operation=list");
+		} catch (Exception e) {
+			
+			request.setAttribute("errorMessage", e.getMessage());
+			request.setAttribute("oneCategory", newCat); 
+			request.setAttribute("editing", false);
+			request.getRequestDispatcher("/WEB-INF/category/form.jsp").forward(request,response);
+		}
 	}
 	
 	public void updateCategory(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -125,10 +135,21 @@ public class CategoryServlet extends HttpServlet {
 		newCat.setId(Integer.parseInt(request.getParameter("id")));
 		newCat.setName(request.getParameter("name"));
 		
-		CategoryDAO dao  = new CategoryDAO();
-		dao.update(newCat);
-		response.sendRedirect("CategoryServlet?operation=list");
+		CategoryLogic logic = new CategoryLogic();
+		
+		try {
+			logic.updateCategory(newCat);
+			
+			response.sendRedirect("CategoryServlet?operation=list");
+		} catch (Exception e) {
+			
+			request.setAttribute("errorMessage", e.getMessage());
+			request.setAttribute("oneCategory", newCat); 
+			request.setAttribute("editing", true);
+			request.getRequestDispatcher("/WEB-INF/category/form.jsp").forward(request,response);
+		}
 	}
+	
 	
 	public void deleteCategory(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Category delCat = new Category();
