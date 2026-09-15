@@ -14,6 +14,7 @@ public class ExhibitionLogic {
 		LinkedList<Exhibition> exhibitions = dao.list();
 		for (Exhibition ex : exhibitions) {
 			ex.updateStatus();
+			daoEv.update(ex);
 		}
 		return exhibitions;
 	}

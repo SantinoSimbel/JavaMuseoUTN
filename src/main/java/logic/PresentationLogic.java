@@ -18,6 +18,7 @@ public class PresentationLogic {
 		LinkedList<Presentation> presentations = dao.list();
 		for (Presentation pre : presentations) {
 			pre.updateStatus();
+			daoEv.update(pre);
 		}
 		return presentations;
 	}
