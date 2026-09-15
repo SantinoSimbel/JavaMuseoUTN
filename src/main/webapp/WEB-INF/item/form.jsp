@@ -20,9 +20,7 @@
 	%>
 </head>
 <body>
-	<!-- Navbar -->
-	<%@ include file="/WEB-INF/common/navbar.jsp" %>
-	
+
 	<!-- Titulo y botones -->
 	<div class= "container mt-4">
 		<div class= "d-flex justify-content-between align-items-center mb-3 ">
