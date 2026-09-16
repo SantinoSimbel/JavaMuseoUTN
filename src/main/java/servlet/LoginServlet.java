@@ -54,20 +54,28 @@ public class LoginServlet extends HttpServlet {
 		}
 	}
 	public void login(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		User newUser = new User();
+		User loginUser = new User();
+
+		loginUser.setEmail(request.getParameter("email"));
+		loginUser.setPassword(request.getParameter("password"));
+		
 		UserLogic logic = new UserLogic();
 		
-		newUser.setEmail(request.getParameter("email"));
-		newUser.setPassword(request.getParameter("password"));
-		
-		UserDAO dao = new UserDAO();
-		User actualUser = dao.searchByEmail(newUser);
-		
-		UserSessionDTO userDTO = new UserSessionDTO(actualUser);
-		
-		//guardamos el usuario en la session y permanece ahi
-		request.getSession().setAttribute("user",userDTO);
-		response.sendRedirect("index.jsp");
+		try {
+			User currentUser = logic.loginUser(loginUser);
+			
+			UserSessionDTO userDTO = new UserSessionDTO(currentUser);
+			
+			//guardamos el usuario en la session y permanece ahi
+			request.getSession().setAttribute("user",userDTO);
+			response.sendRedirect("index.jsp");
+			
+		} catch (Exception e) {
+			request.setAttribute("errorMessage", e.getMessage());
+			request.setAttribute("oneUser", loginUser);
+			request.getRequestDispatcher("login.jsp").forward(request,response);
+		}
+
 		
 	}
 	

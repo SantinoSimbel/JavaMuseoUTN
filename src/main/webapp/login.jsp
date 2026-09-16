@@ -1,10 +1,18 @@
+<%@page import="entities.User"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
-<title>Login</title>
-<%@ include file="/WEB-INF/common/head.jsp"%>
+	<title>Login</title>
+	<%@ include file="/WEB-INF/common/head.jsp"%>
+	<% 
+		User user = (User) request.getAttribute("oneUser");
+		String email = (user !=null && user.getEmail() != null) ? user.getEmail() : "";
+		String password = (user !=null && user.getPassword() != null) ? user.getPassword() : "";
+		
+		String errorMessage = (String) request.getAttribute("errorMessage");
+	%>
 </head>
 <body>
 
@@ -15,19 +23,27 @@
 	<div class="container mt-4">
 		<h1 class="mb-2 text-center">Iniciar sesión</h1>
 		<p class="text-muted mb-4 text-center">Ingrese sus datos para continuar:</p>
-		
+	
 		<!-- Formulario -->
 		<div class="row justify-content-center">
     		<div class="col-12 col-lg-6">
+    		
+    			<!-- Mensaje de error -->
+				<%if(errorMessage != null){%>
+					<div class="alert alert-danger" role="alert">
+ 						<%= errorMessage %>
+					</div>
+				<%}%>
+				
 				<div class = "card shadow-sm">	
 					<div class = "card-body">						
 						<form action="LoginServlet" method="POST">
 						<input type="hidden" name="operation" value= "login">
 							<div class= "mb-3">
 								<b><label class="form-label">Email:</label></b>
-								<input type="text" name="email" class="form-control" required>
+								<input type="text" name="email" class="form-control" required value="<%=email%>" >
 								<b><label class="form-label">Contraseña:</label></b>
-								<input type="password" name="password" class="form-control" required>
+								<input type="password" name="password" class="form-control" required value="<%=password%>">
 							</div>
 							<div class="text-center">
 								<button type="submit" class="btn btn-success">Iniciar sesión</button>

@@ -38,6 +38,16 @@ public class UserLogic {
 		dao.update(newUser);
 	}
 	
+	public User loginUser(User loginUser) throws Exception{
+		
+		User dbUser = dao.searchByEmail(loginUser);
+		
+		if (dbUser == null || !isPasswordCorrect(loginUser, dbUser)) {
+			throw new Exception("El correo o la contraseña ingresados no son correctos.");
+		}
+		return dbUser;
+	} 
+	
 	public boolean isUserDniTaken(User user){
 		User userWithDni = dao.searchByDni(user);
 		
@@ -53,6 +63,14 @@ public class UserLogic {
 		User userWithEmail = dao.searchByEmail(user);
 		
 		if (userWithEmail != null) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public boolean isPasswordCorrect(User loginUser, User dbUser) {
+		if (loginUser.getPassword().equals(dbUser.getPassword())) {
 			return true;
 		} else {
 			return false;
