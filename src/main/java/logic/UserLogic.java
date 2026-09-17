@@ -1,5 +1,7 @@
 package logic;
 
+import com.password4j.Password;
+
 import data.UserDAO;
 import entities.User;
 
@@ -17,6 +19,12 @@ public class UserLogic {
 		if (isUserEmailTaken(newUser)) {
 			throw new Exception("El correo ingresado ya se encuentra registrado.");
 		}
+		
+		// hasheamos la contraseña con Bcrypt
+		String hashedPassword = Password.hash(newUser.getPassword()).withBcrypt().getResult();
+		
+		newUser.setPassword(hashedPassword);
+		
 		//logica negocio
 		newUser.setRole("user");
 		
@@ -35,6 +43,15 @@ public class UserLogic {
 		if(registerUser != null && registerUser.getId() != newUser.getId() ) {
 			throw new Exception("El correo ingresado ya pertenece a otra cuenta.");
 		}
+		
+		// si no escribio nueva contraseña usamos el hash anterior, si la edito hacemos uno nuevo
+		if (newUser.getPassword() ==null) {
+			newUser.setPassword(oldUser.getPassword());
+		} else {
+			String hashedPassword = Password.hash(newUser.getPassword()).withBcrypt().getResult();
+			newUser.setPassword(hashedPassword);
+		}
+		
 		dao.update(newUser);
 	}
 	
@@ -70,7 +87,7 @@ public class UserLogic {
 	}
 	
 	public boolean isPasswordCorrect(User loginUser, User dbUser) {
-		if (loginUser.getPassword().equals(dbUser.getPassword())) {
+		if (Password.check(loginUser.getPassword(), dbUser.getPassword()).withBcrypt()) {
 			return true;
 		} else {
 			return false;

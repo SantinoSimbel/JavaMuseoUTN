@@ -13,7 +13,6 @@
 		String name = user.getName() == null ? "" : user.getName();
 		String surname = user.getSurname() == null ? "" : user.getSurname();
 		String email = user.getEmail() == null ? "" : user.getEmail();
-		String password = user.getPassword() == null ? "" : user.getPassword();
 		
 		String errorMessage = (String) request.getAttribute("errorMessage");
 		
@@ -70,7 +69,8 @@
 						<input type="text" name="email" class="form-control" required value="<%=email%>">
 						
 						<b><label class="form-label">Contraseña:</label></b>
-						<input type="password" name="password" class="form-control" required value="<%=password%>">
+						<input type="password" name="password" class="form-control"
+							placeholder="<%= editing ? "••••••" : "" %>" <%= editing ? "" : "required" %>>
 						
 					</div>
 					<div class="text-center">
