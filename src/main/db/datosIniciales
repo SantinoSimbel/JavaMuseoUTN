@@ -45,9 +45,10 @@ CREATE TABLE `user` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO `user` (`dni`, `name`, `surname`, `email`,`password`,`role` ) VALUES ('11111111','Admin','Nistrador','admin@gmail.com','admin','admin'),
-('22222222','Uzu','Hario','user@gmail.com','user','user'),
-('33333333','Juan','Cito','juan@gmail.com','juan','user');
+INSERT INTO `user` (`dni`, `name`, `surname`, `email`,`password`,`role` ) VALUES
+('11111111','Admin','Nistrador','admin@gmail.com','$2b$10$PMKRvFgk.AH4/AphjK7NeOh8MuMJOKqg/aishVXD4iQCJ4mjgp/cO','admin'),
+('22222222','Uzu','Hario','user@gmail.com','$2b$10$rE1OlLxGwjXRPyG.CLbr8.sXIJKfPmqnk2pVg0ZYTUBcXkQFz6zP6','user'),
+('33333333','Juan','Cito','juan@gmail.com','$2b$10$b3UZms0rsA7eU062mvlp.OiqSIgqZ43rt2Kou7DUeYtUCIxBvShoG','user');
 
 DROP USER IF EXISTS 'java'@'%';
 create user java@'%' identified by 'himitsu';
