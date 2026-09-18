@@ -45,7 +45,7 @@ public class UserLogic {
 		}
 		
 		// si no escribio nueva contraseña usamos el hash anterior, si la edito hacemos uno nuevo
-		if (newUser.getPassword() ==null) {
+		if (newUser.getPassword() ==null || newUser.getPassword().isEmpty()) {
 			newUser.setPassword(oldUser.getPassword());
 		} else {
 			String hashedPassword = Password.hash(newUser.getPassword()).withBcrypt().getResult();
