@@ -97,10 +97,12 @@ public class UserServlet extends HttpServlet {
 			editing =  false;
 		} else {
 			editing = true;
-			int id = Integer.parseInt(request.getParameter("id"));
+			
+			//En vez de sacar el id del link lo saco de la session
+			UserSessionDTO userDTO = (UserSessionDTO) request.getSession().getAttribute("user");
 			
 			User u = new User();
-			u.setId(id);
+			u.setId(userDTO.getId());
 			
 			UserDAO dao = new UserDAO();
 			user = dao.search(u);
@@ -147,7 +149,11 @@ public class UserServlet extends HttpServlet {
 	
 	public void updateUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		User newUser = new User();
-		newUser.setId(Integer.parseInt(request.getParameter("id")));
+		//En vez de sacar el id del link lo saco de la session
+	    UserSessionDTO userDTO = (UserSessionDTO) request.getSession().getAttribute("user");
+	    
+		newUser.setId(userDTO.getId());
+		
 		newUser.setDni(request.getParameter("dni"));
 		newUser.setName(request.getParameter("name"));
 		newUser.setSurname(request.getParameter("surname"));
@@ -159,10 +165,10 @@ public class UserServlet extends HttpServlet {
 		try {
 			logic.updateUser(newUser);
 			
-			UserSessionDTO userDTO = new UserSessionDTO(newUser);
-			request.getSession().setAttribute("user",userDTO);
+			UserSessionDTO updatedUserDTO = new UserSessionDTO(newUser);
+			request.getSession().setAttribute("user",updatedUserDTO);
 			
-			response.sendRedirect("UserServlet?operation=edit&id=" + newUser.getId());
+			response.sendRedirect("UserServlet?operation=edit");
 		} catch (Exception e) {
 			request.setAttribute("errorMessage", e.getMessage());
 			
@@ -176,7 +182,11 @@ public class UserServlet extends HttpServlet {
 	
 	public void deleteUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		User delUser = new User();
-		delUser.setId(Integer.parseInt(request.getParameter("id")));
+		
+		//En vez de sacar el id del link lo saco de la session
+	    UserSessionDTO userDTO = (UserSessionDTO) request.getSession().getAttribute("user");
+	    
+		delUser.setId(userDTO.getId());
 		
 		UserDAO dao  = new UserDAO();
 		dao.delete(delUser);

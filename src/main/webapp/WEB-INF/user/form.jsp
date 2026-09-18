@@ -52,7 +52,6 @@
 				<form action="UserServlet" method="POST">
 					<input type= "hidden" name="operation" value = "<%=editing ? "update" : "add"%>">
 					<%if(editing){ %>
-						<input type="hidden" name="id" value="<%=user.getId()%>">
 						<input type="hidden" name="dni" value="<%=user.getDni()%>">
 					<%}%>
 					<div class= "mb-3">
@@ -120,7 +119,6 @@
 					              onsubmit="return confirm('¿Está seguro de que desea eliminar su cuenta?');">
 					              
 					            <input type="hidden" name="operation" value="delete">
-					            <input type="hidden" name="id" value="<%=user.getId()%>">
 					
 					            <button type="submit" class="btn btn-outline-danger">
 					                Eliminar mi cuenta
