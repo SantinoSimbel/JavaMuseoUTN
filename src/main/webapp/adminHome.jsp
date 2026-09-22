@@ -13,7 +13,7 @@
 	
 	<!-- Titulo -->
 	<div class="container mt-4">
-		<h1 class="mb-2 text-center">Admin Home</h1>
+		<h1 class="mb-2 text-center">Panel de administración</h1>
 		<p class="text-muted mb-4 text-center">Seleccione qué desea administrar:</p>
 		
 		<!-- Admin menu -->

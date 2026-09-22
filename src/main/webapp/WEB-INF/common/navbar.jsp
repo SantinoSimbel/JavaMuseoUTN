@@ -14,13 +14,17 @@
 		
 		<div class="collapse navbar-collapse" id="navbarNav">
 			<!--Centro-->
-			<ul class="navbar-nav position-absolute start-50 translate-middle-x navbar-links fs-5 gap-lg-5">
-				<li class="nav-item"><a class="nav-link" href="#"><i class="bi bi-bank"></i> Museo virtual</a>
+			<ul class="navbar-nav position-absolute start-50 translate-middle-x navbar-links fs-5 gap-xl-5 ">
+				<li class="nav-item"><a class="nav-link text-nowrap" href="#"><i class="bi bi-bank"></i> Museo virtual</a>
 				</li>
-				<li class="nav-item"><a class="nav-link" href="#"><i class="bi bi-easel"></i> Exhibiciones</a>
+				<li class="nav-item"><a class="nav-link text-nowrap" href="#"><i class="bi bi-easel"></i> Exhibiciones</a>
 				</li>
-				<li class="nav-item"><a class="nav-link" href="#"><i class="bi bi-person-video3"></i> Presentaciones</a>
+				<li class="nav-item"><a class="nav-link text-nowrap" href="#"><i class="bi bi-person-video3"></i> Presentaciones</a>
 				</li>
+				<%if (userDTO != null && "admin".equals(userDTO.getRole())){%>
+					<li class="nav-item"><a class="nav-link text-nowrap" href="adminHome.jsp"><i class="bi bi-house-gear"></i> Administracion</a>
+					</li>
+				<%}%>
 			</ul>
 			
 			<!--Derecha-->
@@ -28,7 +32,7 @@
 				<%if (userDTO == null) {%>
 					<li class="nav-item"><a class="nav-link" href="login.jsp"><i class="bi bi-person-circle"></i> Iniciar sesión</a></li>
 				<%} else {%>
-					<li class="nav-item"><a class="nav-link" href="UserServlet?operation=edit&id=<%=userDTO.getId()%>"><i class="bi bi-person-circle"></i> Mi cuenta</a></li>
+					<li class="nav-item"><a class="nav-link" href="UserServlet?operation=edit"><i class="bi bi-person-circle"></i> Mi cuenta</a></li>
 				<%}%>
 			</ul>
 		</div>
