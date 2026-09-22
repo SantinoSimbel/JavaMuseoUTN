@@ -18,7 +18,7 @@ import entities.UserSessionDTO;
 /**
  * Servlet Filter implementation class AdminFilter
  */
-@WebFilter(urlPatterns = {"/CategoryServlet", "/ItemServlet"})
+@WebFilter(urlPatterns = {"/CategoryServlet", "/ItemServlet", "/adminHome.jsp"})
 public class AdminFilter extends HttpFilter implements Filter {
        
     public AdminFilter() {
