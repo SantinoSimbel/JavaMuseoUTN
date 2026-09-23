@@ -18,7 +18,7 @@ import entities.UserSessionDTO;
 /**
  * Servlet Filter implementation class AdminFilter
  */
-@WebFilter(urlPatterns = {"/CategoryServlet", "/ItemServlet", "/adminHome.jsp"})
+@WebFilter(urlPatterns = {"/CategoryServlet", "/ItemServlet", "/adminHome.jsp", "/UserServlet"})
 public class AdminFilter extends HttpFilter implements Filter {
        
     public AdminFilter() {
@@ -33,6 +33,19 @@ public class AdminFilter extends HttpFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse resp = (HttpServletResponse) response;
 
+        String operation = req.getParameter("operation");
+        
+        //si es UserServlet filtramos solo por las operaciones
+        
+        if (req.getRequestURI().endsWith("/UserServlet")) {
+            // si NO son list o changeRole lo dejamos pasar y que se encarge authFilter
+            if (!"list".equals(operation) && !"changeRole".equals(operation)) {
+                chain.doFilter(request, response);
+                return;
+            }
+        }
+        
+        
         HttpSession session = req.getSession(false);
 
         UserSessionDTO userDTO = null;
