@@ -66,12 +66,12 @@
 			
 			<!-- Usuarios -->
 			<div class="col-12 col-md-6 col-lg-4">
-				<a href=""
+				<a href="UserServlet?operation=list"
 					class="card h-100 text-decoration-none shadow-sm">
 
 					<div class="card-body">
 						<h5 class="card-title">Usuarios</h5>
-						<p class="card-text">Administrar los usuarios.</p>
+						<p class="card-text">Cambiar el rol de los usuarios.</p>
 					</div>
 				</a>
 			</div>

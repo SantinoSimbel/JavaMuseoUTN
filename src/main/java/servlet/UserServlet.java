@@ -41,7 +41,7 @@ public class UserServlet extends HttpServlet {
 		
 		switch (operation) {
 		case "list":
-			//getAllCategories(request, response);
+			getAllUsers(request, response);
 			break;
 		case "new":
 			showForm(request, response);
@@ -71,18 +71,19 @@ public class UserServlet extends HttpServlet {
 		case "delete":
 			deleteUser(request, response);
 			break;
+		case "changeRole":
+			//changeUserRole(request, response);
+			break;
 		}
 	}
 	
-	public void getAllCategories(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void getAllUsers(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		CategoryDAO dao  = new CategoryDAO();
-		LinkedList<Category> categories = dao.list();
+		UserDAO dao  = new UserDAO();
+		LinkedList<User> users = dao.list();
 		
-		// guardo en el request la lista de categorias que le voy a mandar al jsp. ("name", objeto)
-		request.setAttribute("allCategories", categories);;
-		//le mando el request(con las allCategories) y la response al jsp para que que responda él.
-		request.getRequestDispatcher("/WEB-INF/category/list.jsp").forward(request,response);
+		request.setAttribute("allUsers", users);
+		request.getRequestDispatcher("/WEB-INF/user/list.jsp").forward(request,response);
 	}
 	
 	public void showForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -196,6 +197,41 @@ public class UserServlet extends HttpServlet {
 		
 		response.sendRedirect("index.jsp");
 	}
+	
+//	public void changeUserRole(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+//		
+//		//esto es el update, editalo para que funcione bien
+//		User newUser = new User();
+//		//En vez de sacar el id del link lo saco de la session
+//	    UserSessionDTO userDTO = (UserSessionDTO) request.getSession().getAttribute("user");
+//	    
+//		newUser.setId(userDTO.getId());
+//		
+//		newUser.setDni(request.getParameter("dni"));
+//		newUser.setName(request.getParameter("name"));
+//		newUser.setSurname(request.getParameter("surname"));
+//		newUser.setEmail(request.getParameter("email"));
+//		newUser.setPassword(request.getParameter("password"));
+//		
+//		UserLogic logic = new UserLogic();
+//		
+//		try {
+//			logic.updateUser(newUser);
+//			
+//			UserSessionDTO updatedUserDTO = new UserSessionDTO(newUser);
+//			request.getSession().setAttribute("user",updatedUserDTO);
+//			
+//			response.sendRedirect("UserServlet?operation=edit");
+//		} catch (Exception e) {
+//			request.setAttribute("errorMessage", e.getMessage());
+//			
+//			//mando el user con sus datos actuales para que el usuario no escriba todo de nuevo
+//			request.setAttribute("oneUser", newUser); 
+//			request.setAttribute("editing", true);
+//			request.getRequestDispatcher("/WEB-INF/user/form.jsp").forward(request,response);
+//		}
+//				
+//	}
 
 }
 
