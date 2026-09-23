@@ -4,6 +4,7 @@ import com.password4j.Password;
 
 import data.UserDAO;
 import entities.User;
+import entities.UserSessionDTO;
 
 public class UserLogic {
 
@@ -64,6 +65,23 @@ public class UserLogic {
 		}
 		return dbUser;
 	} 
+	
+	public void changeUserRole (User u, UserSessionDTO userDto) throws Exception{
+		
+		User userEdit = dao.search(u);
+		
+		//me fijo si el usuario logeado es distinto al que quiere editar
+		if (userDto.getId() != userEdit.getId()) {
+			if("admin".equals(userEdit.getRole())) {
+				userEdit.setRole("user");
+			} else {
+				userEdit.setRole("admin");
+			}
+			dao.update(userEdit);
+		} else {
+			throw new Exception("No puede cambiarse el rol a si mismo.");
+		}
+	}
 	
 	public boolean isUserDniTaken(User user){
 		User userWithDni = dao.searchByDni(user);

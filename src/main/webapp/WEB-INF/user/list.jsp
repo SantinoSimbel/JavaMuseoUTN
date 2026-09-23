@@ -9,6 +9,7 @@
 	<%@ include file="/WEB-INF/common/head.jsp" %>
 	<%
 		LinkedList<User> usersList = (LinkedList<User>) request.getAttribute("allUsers");
+		String errorMessage = (String) request.getAttribute("errorMessage");
 	%>
 </head>
 
@@ -28,12 +29,14 @@
 			</a>
 		</div>
 		
-		<a href="CategoryServlet?operation=new" 
-		   class="btn btn-success mb-3">
-			Nueva categoria 
-		</a>
+		<p class="text-muted mt-3 mb-2">Seleccione un usuario para editar su rol:</p>
 		
-		<p class="text-muted mb-2">Seleccione un usuario para editar su rol:</p>
+		<!-- Mensaje de error -->
+		<%if(errorMessage != null){%>
+			<div class="alert alert-danger" role="alert">
+ 				<%= errorMessage %>
+			</div>
+		<%}%>
 		
 		<!-- Listado -->
 		<div class= "row g-3">
@@ -48,18 +51,13 @@
 									 <b>Dni: </b><%=use.getDni() %>
 								<br> <b>Nombre: </b><%=use.getName() %>
 								<br> <b>Apellido: </b><%=use.getSurname() %>
-								<br> <b>Rol:</b>
-									<% if ("admin".equals(use.getRole())) { %>
-									    <span class="badge text-bg-warning">Administrador</span>
-									<% } else { %>
-									    <span class="badge text-bg-info">Usuario</span>
-									<% } %>
+								<br> <b>Rol: </b><%= "admin".equals(use.getRole()) ? "Administrador" : "Usuario" %>
 							</div>
 						</div>
 						<div class= "card-footer">
 							<div class= "d-flex justify-content-end">
-								<form action="CategoryServlet" method="POST" onsubmit="return confirm('¿Eliminar categoria?');">
-									<input type="hidden" name="operation" value= "delete">
+								<form action="UserServlet" method="POST" onsubmit="return confirm('¿Desea cambiar el rol de este usuario?');">
+									<input type="hidden" name="operation" value= "changeRole">
 									<input type="hidden" name="id" value="<%= use.getId() %>">
 									<button class = "btn btn-dark">Cambiar rol</button>
 								</form>

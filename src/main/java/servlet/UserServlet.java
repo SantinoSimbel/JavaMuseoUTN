@@ -72,7 +72,7 @@ public class UserServlet extends HttpServlet {
 			deleteUser(request, response);
 			break;
 		case "changeRole":
-			//changeUserRole(request, response);
+			changeUserRole(request, response);
 			break;
 		}
 	}
@@ -198,40 +198,25 @@ public class UserServlet extends HttpServlet {
 		response.sendRedirect("index.jsp");
 	}
 	
-//	public void changeUserRole(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//		
-//		//esto es el update, editalo para que funcione bien
-//		User newUser = new User();
-//		//En vez de sacar el id del link lo saco de la session
-//	    UserSessionDTO userDTO = (UserSessionDTO) request.getSession().getAttribute("user");
-//	    
-//		newUser.setId(userDTO.getId());
-//		
-//		newUser.setDni(request.getParameter("dni"));
-//		newUser.setName(request.getParameter("name"));
-//		newUser.setSurname(request.getParameter("surname"));
-//		newUser.setEmail(request.getParameter("email"));
-//		newUser.setPassword(request.getParameter("password"));
-//		
-//		UserLogic logic = new UserLogic();
-//		
-//		try {
-//			logic.updateUser(newUser);
-//			
-//			UserSessionDTO updatedUserDTO = new UserSessionDTO(newUser);
-//			request.getSession().setAttribute("user",updatedUserDTO);
-//			
-//			response.sendRedirect("UserServlet?operation=edit");
-//		} catch (Exception e) {
-//			request.setAttribute("errorMessage", e.getMessage());
-//			
-//			//mando el user con sus datos actuales para que el usuario no escriba todo de nuevo
-//			request.setAttribute("oneUser", newUser); 
-//			request.setAttribute("editing", true);
-//			request.getRequestDispatcher("/WEB-INF/user/form.jsp").forward(request,response);
-//		}
-//				
-//	}
-
+	public void changeUserRole(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		User editUser = new User();
+		editUser.setId(Integer.parseInt(request.getParameter("id")));
+		
+		UserSessionDTO userDTO = (UserSessionDTO) request.getSession().getAttribute("user");
+		
+		UserLogic logic = new UserLogic();
+		try {
+			logic.changeUserRole(editUser, userDTO);
+			response.sendRedirect("UserServlet?operation=list");
+			
+		} catch (Exception e) {
+			request.setAttribute("errorMessage", e.getMessage());
+			  getAllUsers(request, response);
+		}
+		
+	}
+				
 }
+
 
