@@ -52,15 +52,13 @@
 						<div class="d-flex flex-column flex-md-row align-items-center">
 							
 							<div class="ms-0 ms-md-4 mt-3 mt-md-0">
-								<div class="ms-0 ms-md-4 mt-3 mt-md-0">
-									<br> <b>Artículos: </b> 
+									<b>Artículos: </b> 
 										<ul>
     										<% for (Item item : pre.getItems()) { %>
         										<li><%= item.getName() %></li>
     										<% } %>
 										</ul>
-								</div>
-								<br> <b>Estado:</b> <%=pre.getStatus() %>
+								<b>Estado:</b> <%=pre.getStatus() %>
 								<br> <b>Capacidad: </b><%=pre.getCapacity() %>
 								<br> <%=pre.getDescription() %>
 								<br> <b>El día</b> <%= pre.getDay().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")) %>

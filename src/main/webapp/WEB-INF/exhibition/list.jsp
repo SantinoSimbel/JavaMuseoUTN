@@ -50,15 +50,15 @@
 						</h5>
 						<div class="d-flex flex-column flex-md-row align-items-center">
 							
-							<div class="ms-0 ms-md-4 mt-3 mt-md-0">
-								<br> <b>Artículos: </b> 
+							<div class="ms-0 ms-md-4 mb-3 mt-md-0">
+								<b>Artículos: </b> 
 								
 									<ul>
     									<% for (Item item : ex.getItems()) { %>
         									<li><%= item.getName() %></li>
     									<% } %>
 									</ul>
-								<br> <b>Estado:</b> <%=ex.getStatus() %>
+								<b>Estado:</b> <%=ex.getStatus() %>
 								<br> <%=ex.getDescription() %>
 							<br> <b>Desde el día</b> <%= ex.getStartDay().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")) %>
 							<b>hasta el</b> <%= ex.getEndDay().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")) %>
