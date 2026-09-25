@@ -18,6 +18,9 @@ public class EventLogic {
 		if (newEvent.getEndTime().isBefore(newEvent.getStartTime())){
 			throw new Exception("La hora de fin no puede ser menor a la de inicio.");
 		}
+		if (newEvent.getEndTime().equals(newEvent.getStartTime())){
+			throw new Exception("La hora de fin no puede ser igual a la de inicio.");
+		} 
 		
 		newEvent.setStatus("Creado");
 	}
@@ -32,7 +35,9 @@ public class EventLogic {
 		if (newEvent.getEndTime().isBefore(newEvent.getStartTime())){
 			throw new Exception("La hora de fin no puede ser menor a la de inicio.");
 		}
-		
+		if (newEvent.getEndTime().equals(newEvent.getStartTime())){
+			throw new Exception("La hora de fin no puede ser igual a la de inicio.");
+		} 
 		newEvent.setStatus("Creado");
 				
 	}

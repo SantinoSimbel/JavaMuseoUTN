@@ -1,10 +1,13 @@
 package logic;
 
+
 import data.EventDAO;
 import data.ExhibitionDAO;
 import entities.Exhibition;
 import java.time.*;
 import java.util.LinkedList;
+import java.util.Comparator;
+
 
 public class ExhibitionLogic {
 	private ExhibitionDAO dao = new ExhibitionDAO();
@@ -16,6 +19,10 @@ public class ExhibitionLogic {
 			ex.updateStatus();
 			daoEv.update(ex);
 		}
+
+		exhibitions.sort(Comparator.<Exhibition>comparingInt(e -> obtenerPrioridad(e)).thenComparing(Exhibition::getStartDay));
+
+		
 		return exhibitions;
 	}
 	
@@ -26,8 +33,8 @@ public class ExhibitionLogic {
 			throw new Exception("La fecha de fin no puede ser menor a la de inicio.");
 		}
 		
-		if (newExhibition.getEndDay().isBefore(LocalDate.now()) || newExhibition.getStartDay().isBefore(LocalDate.now())){
-			throw new Exception("Las fechas no pueden ser menor al día de hoy.");
+		if (newExhibition.getEndDay().isBefore(LocalDate.now()) || newExhibition.getStartDay().isBefore(LocalDate.now()) || newExhibition.getStartDay().equals(LocalDate.now())){
+			throw new Exception("Las fechas deben ser superiores al día de hoy.");
 		}
 		
 		daoEv.add(newExhibition);
@@ -41,8 +48,8 @@ public class ExhibitionLogic {
 			throw new Exception("La fecha de fin no puede ser menor a la de inicio.");
 		}
 				
-		if (newExhibition.getEndDay().isBefore(LocalDate.now()) || newExhibition.getStartDay().isBefore(LocalDate.now())){
-			throw new Exception("Las fechas no pueden ser menor al día de hoy.");
+		if (newExhibition.getEndDay().isBefore(LocalDate.now()) || newExhibition.getStartDay().isBefore(LocalDate.now()) || newExhibition.getStartDay().equals(LocalDate.now())){
+			throw new Exception("Las fechas deben ser superiores al día de hoy.");
 		}
 				
 		daoEv.update(newExhibition);				
@@ -50,5 +57,23 @@ public class ExhibitionLogic {
 	}
 	
 	
+	public int obtenerPrioridad(Exhibition e) {
+        
+		
+		// Grupo 1: Creado"
+        if ("Creado".equals(e.getStatus())) {
+            return 1; 
+        }
+        // Grupo 2: Terminadas
+        else if ("Terminado".equals(e.getStatus())) {
+            return 2;
+        }
+        // Grupo 3: Empezadas
+        else if ("Empezado".equals(e.getStatus())) {
+            return 3;
+        }
+        
+        return 4; // Por si acaso hay un estado inválido
+    }
 
 }
