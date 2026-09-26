@@ -1,8 +1,5 @@
 <!-- Solo contiene el codigo navbar para no generar problemas html -->
-<%@page import="entities.UserSessionDTO"%>
-<%
-	UserSessionDTO userDTO = (UserSessionDTO) session.getAttribute("user");
-%>
+
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
 	<div class="container">
 	
@@ -30,7 +27,7 @@
 			<!--Derecha-->
 			<ul class="navbar-nav ms-auto fs-5">
 				<%if (userDTO == null) {%>
-					<li class="nav-item"><a class="nav-link" href="login.jsp"><i class="bi bi-person-circle"></i> Iniciar sesión</a></li>
+					<li class="nav-item"><a class="nav-link" href="login.jsp"><i class="bi bi-person-circle"></i> Iniciar sesiï¿½n</a></li>
 				<%} else {%>
 					<li class="nav-item"><a class="nav-link" href="UserServlet?operation=edit"><i class="bi bi-person-circle"></i> Mi cuenta</a></li>
 				<%}%>
