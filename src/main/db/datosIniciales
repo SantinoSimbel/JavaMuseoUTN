@@ -37,8 +37,13 @@ INSERT INTO `item` (`name`, `description`, `picture`, `category_id`) VALUES
 ('Esferas del dragon','Las Esferas del Dragón son siete misteriosas esferas mágicas de color naranja. Tienen estrellas rojas grabadas en su interior, desde una hasta siete estrellas. Fueron creadas por el pueblo namekiano y tienen el poder de invocar al dragón sagrado Shen Long para conceder deseos.','https://static.wikia.nocookie.net/dragonball/images/8/8e/Esferas_del_Drag%C3%B3n_Blue_Velvet.png/revision/latest?cb=20230214174437&path-prefix=es',1)
 ,('Espadas del Caos','Las Espadas del Caos son un par de hojas curvas de acero oscuro unidas a largas cadenas que se funden con los antebrazos del guerrero espartano Kratos.','https://www.aceros-de-hispania.com/53650-large_default/espadas-del-caos-god-of-war.jpg',2)
 ,('DeLorean DMC-12','El DeLorean DMC-12 es una máquina del tiempo construida por el doctor Emmett Brown. Está modificado con un condensador de flujo, un reactor de plutonio y el sistema de desplazamiento temporal.','https://acnews.blob.core.windows.net/imgnews/medium/NAZ_bf7e3903a04e46daa9d927049d764d97.webp',3)
-,('Radar del Dragón', 'El Radar del Dragón es un dispositivo de rastreo portátil creado por la científica Bulma de la corporación Capsula. Posee una pantalla verde cuadriculada capaz de detectar la radiación electromagnética única que emiten las Esferas del Dragón, mostrando su ubicación exacta mediante puntos amarillos parpadeantes.', 'https://static.wikia.nocookie.net/dragonball/images/7/78/Dragon_Radar.png/revision/latest?cb=20130311014539&path-prefix=es', 1);
-
+,('Radar del Dragón', 'El Radar del Dragón es un dispositivo de rastreo portátil creado por la científica Bulma de la corporación Capsula. Posee una pantalla verde cuadriculada capaz de detectar la radiación electromagnética única que emiten las Esferas del Dragón, mostrando su ubicación exacta mediante puntos amarillos parpadeantes.', 'https://static.wikia.nocookie.net/dragonball/images/7/78/Dragon_Radar.png/revision/latest?cb=20130311014539&path-prefix=es', 1)
+,('Death Note', 'Un cuaderno sobrenatural de cubierta negra perteneciente a un Shinigami. Tiene la capacidad de causar la muerte de cualquier ser humano cuyo nombre sea escrito en sus páginas, siempre que el portador visualice el rostro de la víctima en su mente.', 'https://unsplash.com', 1)
+,('Ocarina del Tiempo', 'Un antiguo instrumento musical de viento hecho de cerámica azul con el emblema de la Trifuerza grabado. Permite a su portador manipular el flujo del tiempo, abrir portales mágicos y alterar el clima mediante la interpretación de melodías sagradas.', 'https://unsplash.com', 2)
+,('Espada Maestra', 'La legendaria Espada Destructora del Mal. Forjada por la diosa Hylia, posee una hoja de doble filo reluciente, una empuñadura púrpura con alas y la capacidad única de repeler la magia oscura y romper maldiciones ancestrales.', 'https://unsplash.com', 2)
+,('Sable de Luz de Luke Skywalker', 'Un arma elegante para una era más civilizada. Este sable de luz emite una hoja de plasma verde puro concentrada a través de un cristal Kyber. Fue construido manualmente por el caballero Jedi Luke Skywalker tras perder su primera arma en Bespin.', 'https://unsplash.com', 3)
+,('Anillo Único', 'Un anillo de oro liso forjado por el Señor Oscuro Sauron en los fuegos del Monte del Destino. Concede invisibilidad a los mortales que lo portan, corrompe la mente de quien lo posee y busca constantemente regresar a las manos de su creador.', 'https://unsplash.com', 3)
+,('Cristal Kyber', 'Un cristal raro, resonante con la Fuerza, que crece de manera natural en varios planetas. Son el corazón de los sables de luz, capaces de canalizar la energía de plasma concentrada que da forma a la hoja cromática.', 'https://unsplash.com', 3);
 
 
 CREATE TABLE `event` (
@@ -54,7 +59,11 @@ CREATE TABLE `event` (
 INSERT INTO `event` (`title`, `description`, `endTime`, `startTime`,`status`) VALUES
 ('¡Sal de ahí, Shenlong!','Con la ayuda del rastreador de la corporación capsula, hemos podido traerles las esferas del dragon al museo.','21:01:00','15:30:00','Empezado')
 ,('¿Alguien quiere volver al futuro?','El gran doc. Emmet Brown ha prestado su gran maquina del tiempo para una exhibición inigualable y proximamente ¡Con una explicación de su funcionamiento!','19:30:00','15:15:00','Creado')
-,('Las espadas del caos junto a Kratos','No te pierdas esta fabulosa presentación con el mismo Kratos hablando sobre sus tan poderosas Espadas del Caos.','18:30:00','17:35:00','Terminado');
+,('Las espadas del caos junto a Kratos','No te pierdas esta fabulosa presentación con el mismo Kratos hablando sobre sus tan poderosas Espadas del Caos.','18:30:00','17:35:00','Creado')
+,('El Juicio del Shinigami', 'Una función interactiva y debate con el público sobre los peligros del poder absoluto. Ven a conocer las reglas del cuaderno y participa en el veredicto final.', '22:00:00', '16:00:00', 'Creado')
+,('Ecos de Hyrule: Tesoros de la Leyenda', 'Una gran exhibición histórica donde podrás contemplar de cerca la Ocarina del Tiempo y la mística Espada Maestra, acompañadas de galerías de arte conceptual.', '20:30:00', '18:00:00', 'Creado')
+,('La Forja de la Fuerza', 'Una clase magistral de cupo limitado que repasa los planos de ingeniería de los sables de luz y la historia de los Cristales Kyber.', '17:00:00', '14:00:00', 'Empezado')
+,('El Destino de la Tierra Media', 'Presentación exclusiva sobre la caída de Mordor. Se exhibirá la réplica exacta del Anillo Único bajo extremas medidas de seguridad debido a su naturaleza corruptora.', '19:00:00', '17:30:00', 'Terminado');
 
 
 
@@ -70,7 +79,7 @@ CREATE TABLE `event_item` (
 		ON DELETE RESTRICT 
 		ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;    
-INSERT INTO `event_item` (`item_id`, `event_id`) VALUES ('1','1'),('2','3'),('3','2'),('4','1');
+INSERT INTO `event_item` (`item_id`, `event_id`) VALUES ('1','1'),('2','3'),('3','2'),('4','1'), (5, 4), (6, 5), (7, 5), (8, 6), (9, 7), (10,6);
 
 
 
@@ -87,7 +96,7 @@ CREATE TABLE `presentation` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `presentation` (`event_id`, `day`, `capacity`) VALUES
-('3','2026-09-04','60');
+('3','2026-12-04','60'), (4, '2026-10-10', 80), (6, '2026-09-01', 30), (7, '2026-09-20', 45);
 
 
 CREATE TABLE `exhibition` (
@@ -101,9 +110,7 @@ CREATE TABLE `exhibition` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `exhibition` (`event_id`, `startDay`, `endDay`) VALUES
-('1','2026-08-28','2026-10-04')
-,('2','2026-12-05','2026-12-29');
-
+('1','2026-08-28','2026-10-04') ,('2','2026-12-05','2026-12-29'), (5, '2026-10-15', '2026-11-30');
 
 
 
