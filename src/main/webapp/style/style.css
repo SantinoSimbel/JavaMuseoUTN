@@ -1,9 +1,37 @@
 @charset "UTF-8";
 
+@media (min-width: 992px) {
+
+    .navbar-links {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        gap: clamp(1rem, 3vw, 3rem);
+    }
+
+}
+
+/* Ajuste específico para pantallas entre 992 y 1200 */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+
+    .navbar-brand {
+        margin-left: -20px;
+    }
+
+    .navbar-links {
+        gap: 1rem;
+        font-size: 1.1rem !important;
+    }
+
+}
+
+/* Navbar responsive */
 @media (max-width: 991.98px) {
+
     .navbar-links {
         position: static !important;
         left: auto !important;
         transform: none !important;
     }
+
 }

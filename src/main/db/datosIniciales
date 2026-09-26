@@ -8,7 +8,7 @@ DROP TABLE IF EXISTS `event_item`;
 DROP TABLE IF EXISTS `event`;
 DROP TABLE IF EXISTS `item`;
 DROP TABLE IF EXISTS `category`;
-
+DROP TABLE IF EXISTS `user`;
 
 CREATE TABLE `category` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -44,6 +44,21 @@ INSERT INTO `item` (`name`, `description`, `picture`, `category_id`) VALUES
 ,('Anillo Único', 'Un anillo de oro liso forjado por el Señor Oscuro Sauron en los fuegos del Monte del Destino. Concede invisibilidad a los mortales que lo portan, corrompe la mente de quien lo posee y busca constantemente regresar a las manos de su creador.', 'https://unsplash.com', 3)
 ,('Cristal Kyber', 'Un cristal raro, resonante con la Fuerza, que crece de manera natural en varios planetas. Son el corazón de los sables de luz, capaces de canalizar la energía de plasma concentrada que da forma a la hoja cromática.', 'https://unsplash.com', 3);
 
+CREATE TABLE `user` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `dni` varchar(8) UNIQUE NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `surname` varchar(255) NOT NULL,
+  `email` varchar(255) UNIQUE NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `role` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO `user` (`dni`, `name`, `surname`, `email`,`password`,`role` ) VALUES
+('11111111','Admin','Nistrador','admin@gmail.com','$2b$10$PMKRvFgk.AH4/AphjK7NeOh8MuMJOKqg/aishVXD4iQCJ4mjgp/cO','admin'),
+('22222222','Uzu','Hario','user@gmail.com','$2b$10$rE1OlLxGwjXRPyG.CLbr8.sXIJKfPmqnk2pVg0ZYTUBcXkQFz6zP6','user'),
+('33333333','Juan','Cito','juan@gmail.com','$2b$10$b3UZms0rsA7eU062mvlp.OiqSIgqZ43rt2Kou7DUeYtUCIxBvShoG','user');
 
 CREATE TABLE `event` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -110,6 +125,8 @@ CREATE TABLE `exhibition` (
 
 INSERT INTO `exhibition` (`event_id`, `startDay`, `endDay`) VALUES
 ('1','2026-08-28','2026-10-04') ,('2','2026-12-05','2026-12-29'), (5, '2026-10-15', '2026-11-30');
+
+
 
 DROP USER IF EXISTS 'java'@'%';
 create user java@'%' identified by 'himitsu';
