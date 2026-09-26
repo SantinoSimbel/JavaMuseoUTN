@@ -23,9 +23,32 @@
                class="btn btn-secondary">
                 Regresar al menu
             </a>
+            
+            
 
         </div>
-        <a href="PresentationServlet?operation=new" class="btn btn-success mb-3"> Nueva Presentación </a>
+        
+		<div class="d-flex flex-column flex-md-row align-items-md-center gap-4 mb-3">
+
+    		<a href="PresentationServlet?operation=new" class="btn btn-success"> Nueva Presentación </a>
+
+    		<form action="PresentationServlet" method="GET"	class="d-flex flex-column flex-sm-row align-items-sm-center gap-2">
+
+        		<input type="hidden" name="operation" value="list">
+       			<label for="status" class="form-label mb-0 text-nowrap"> Filtrar por estado: </label>
+        		<select name="status" id="status" class="form-select">
+            		<option value="">Todos</option>
+            		<option value="Creado">Creado</option>
+            		<option value="Empezado">Empezado</option>
+            		<option value="Terminado">Terminado</option>
+        		</select>
+
+        		<button type="submit" class="btn btn-primary"> Filtrar </button>
+
+    		</form>
+
+		</div>
+        
         <p class="text-muted mb-2"> Presentaciones registradas: </p>
 
         <!-- Listado -->
@@ -55,12 +78,12 @@
                                     <li> <%= item.getName() %> </li>
                                 <% } %>
                             </ul>
-                            <b>Estado:</b><%= pre.getStatus() %><br>
-                            <b>Capacidad:</b> <%= pre.getCapacity() %>
+                            <b>Estado: </b><%= pre.getStatus() %><br>
+                            <b>Capacidad: </b> <%= pre.getCapacity() %>
                             <br><%= pre.getDescription() %> <br>
-                            <b>El día</b><%= pre.getDay().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")) %> <br>
-                            <b>Desde las</b> <%= pre.getStartTime() %>
-                            <b>hasta</b> <%= pre.getEndTime() %>
+                            <b>El día </b><%= pre.getDay().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")) %> <br>
+                            <b>Desde las </b> <%= pre.getStartTime() %>
+                            <b> hasta </b> <%= pre.getEndTime() %>
                         </div>
                     </div>
                 </div>
