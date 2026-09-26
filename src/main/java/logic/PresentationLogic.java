@@ -2,7 +2,6 @@ package logic;
 
 import data.EventDAO;
 import data.PresentationDAO;
-import entities.Exhibition;
 import entities.Presentation;
 import java.time.*;
 import java.util.Comparator;
@@ -15,16 +14,25 @@ public class PresentationLogic {
 	private EventDAO daoEv = new EventDAO();
 	
 	
-	public LinkedList<Presentation> getPresentations(){
+	public LinkedList<Presentation> getPresentations(String status){
 		LinkedList<Presentation> presentations = dao.list();
 		for (Presentation pre : presentations) {
 			pre.updateStatus();
 			daoEv.update(pre);
 		}
 		
-		
-		presentations.sort(Comparator.<Presentation>comparingInt(p -> obtenerPrioridad(p)).thenComparing(Presentation::getDay));
-
+		if (status == null || status.isEmpty()) {
+			presentations.sort(Comparator.<Presentation>comparingInt(p -> obtenerPrioridad(p)).thenComparing(Presentation::getDay));
+		} else {
+			LinkedList<Presentation> filtered = new LinkedList<>();
+			for (Presentation ex  : presentations) {
+				if (ex.getStatus().equals(status)) {
+					filtered.add(ex);
+				} 	
+			}
+			filtered.sort(Comparator.comparing(Presentation::getDay));
+			return filtered;
+		} 
 		
 		return presentations;
 	}

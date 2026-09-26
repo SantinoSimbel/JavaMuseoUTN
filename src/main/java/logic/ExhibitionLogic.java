@@ -13,16 +13,25 @@ public class ExhibitionLogic {
 	private ExhibitionDAO dao = new ExhibitionDAO();
 	private EventDAO daoEv = new EventDAO();
 	
-	public LinkedList<Exhibition> getExhibitions(){
+	public LinkedList<Exhibition> getExhibitions(String status){
 		LinkedList<Exhibition> exhibitions = dao.list();
 		for (Exhibition ex : exhibitions) {
 			ex.updateStatus();
 			daoEv.update(ex);
 		}
 
-		exhibitions.sort(Comparator.<Exhibition>comparingInt(e -> obtenerPrioridad(e)).thenComparing(Exhibition::getStartDay));
-
-		
+		if (status == null || status.isEmpty()) {
+			exhibitions.sort(Comparator.<Exhibition>comparingInt(e -> obtenerPrioridad(e)).thenComparing(Exhibition::getStartDay));
+		} else {
+			LinkedList<Exhibition> filtered = new LinkedList<>();
+			for (Exhibition ex  : exhibitions) {
+				if (ex.getStatus().equals(status)) {
+					filtered.add(ex);
+				} 	
+			}
+			filtered.sort(Comparator.comparing(Exhibition::getStartDay));
+			return filtered;
+		} 
 		return exhibitions;
 	}
 	
