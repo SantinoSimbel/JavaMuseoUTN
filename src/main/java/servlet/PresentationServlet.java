@@ -91,7 +91,7 @@ public class PresentationServlet extends HttpServlet {
 	public void getAllPresentation(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		PresentationLogic logicPre = new PresentationLogic();
-		LinkedList<Presentation> presentations = logicPre.getPresentations();
+		LinkedList<Presentation> presentations = logicPre.getPresentations(request.getParameter("status"));
 		
 		request.setAttribute("allPresentations", presentations);
 		request.getRequestDispatcher("/WEB-INF/presentation/list.jsp").forward(request,response);

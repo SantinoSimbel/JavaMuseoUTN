@@ -90,7 +90,7 @@ public class ExhibitionServlet extends HttpServlet {
 	public void getAllExhibition(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		ExhibitionLogic logicEx = new ExhibitionLogic();
-		LinkedList<Exhibition> exhibitions = logicEx.getExhibitions();
+		LinkedList<Exhibition> exhibitions = logicEx.getExhibitions(request.getParameter("status"));
 		
 		request.setAttribute("allExhibitions", exhibitions);
 		request.getRequestDispatcher("/WEB-INF/exhibition/list.jsp").forward(request,response);
