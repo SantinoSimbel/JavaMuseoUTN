@@ -10,11 +10,11 @@
 		Category category = (Category) request.getAttribute("oneCategory");
 		boolean editing = (boolean) request.getAttribute("editing");
 		String name = category.getName() == null ? "" : category.getName();
+		
+		String errorMessage = (String) request.getAttribute("errorMessage");
 	%>
 </head>
 <body>
-	<!-- Navbar -->
-	<%@ include file="/WEB-INF/common/navbar.jsp" %>
 	
 	<!-- Titulo y botones -->
 	<div class= "container mt-4">
@@ -33,7 +33,13 @@
 			"Modifique los campos que quiera editar:" : "Complete los campos:" %>
 		</p>
 		
-		
+		<!-- Mensajes de error -->
+		<%if(errorMessage != null){%>
+			<div class="alert alert-danger" role="alert">
+ 				<%= errorMessage %>
+			</div>
+		<%}%>
+
 		<!-- Formularios -->
 		<div class = "card shadow-sm">	
 			<div class = "card-body">
