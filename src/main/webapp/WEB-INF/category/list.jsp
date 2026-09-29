@@ -38,27 +38,31 @@
 		<p class="text-muted mb-2">Seleccione una categoria para editarla:</p>
 		
 		<!-- Listado -->
-		<% for (Category cat : categoriesList){ %>
-			<div class= "card mb-3 shadow-sm">
-				<a href ="CategoryServlet?operation=edit&id=<%=cat.getId()%>"
-				class="text-decoration-none text-dark">
-					<div class= "card-body">
-						<h5 class = "card-title">
-							<%= cat.getName()%>
-						</h5>
-					</div>
-				</a>
-				<div class= "card-footer">
-					<div class= "d-flex justify-content-end">
-						<form action="CategoryServlet" method="POST" onsubmit="return confirm('¿Eliminar categoria?');">
-							<input type="hidden" name="operation" value= "delete">
-							<input type="hidden" name="id" value="<%= cat.getId() %>">
-							<button class = "btn btn-danger">Eliminar</button>
-						</form>
+		<div class= "row g-3">
+			<% for (Category cat : categoriesList){ %>
+				<div class="col-12 col-md-6 col-lg-4">
+					<div class= "card mb-3 shadow-sm">
+						<a href ="CategoryServlet?operation=edit&id=<%=cat.getId()%>"
+						class="text-decoration-none text-dark">
+							<div class= "card-body">
+								<h5 class = "card-title">
+									<%= cat.getName()%>
+								</h5>
+							</div>
+						</a>
+						<div class= "card-footer">
+							<div class= "d-flex justify-content-end">
+								<form action="CategoryServlet" method="POST" onsubmit="return confirm('¿Eliminar categoria?');">
+									<input type="hidden" name="operation" value= "delete">
+									<input type="hidden" name="id" value="<%= cat.getId() %>">
+									<button class = "btn btn-danger">Eliminar</button>
+								</form>
+							</div>
+						</div>
 					</div>
 				</div>
-			</div>
-		<% } %>		
+			<% } %>	
+		</div>	
 	</div>
 <!--Script para que funcione el js de bootstrap-->
 <%@ include file="/WEB-INF/common/scripts.jsp" %>
