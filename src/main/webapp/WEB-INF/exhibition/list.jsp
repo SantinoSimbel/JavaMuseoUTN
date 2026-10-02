@@ -11,7 +11,8 @@
 <head>
     <title>List exhibition</title>
     <%@ include file="/WEB-INF/common/head.jsp" %>
-    <% LinkedList<Exhibition> exhibitionList = (LinkedList<Exhibition>) request.getAttribute("allExhibitions"); %>
+    <% LinkedList<Exhibition> exhibitionList = (LinkedList<Exhibition>) request.getAttribute("allExhibitions"); 
+    String currentStatus = request.getParameter("status");%>
 </head>
 
 <body>
@@ -22,33 +23,39 @@
     <!-- Titulo y botones -->
     <div class="container mt-4 mb-5">
 
-        <div class="d-flex justify-content-between align-items-center mb-2">
-            <h1>Exhibiciones</h1>
-            <a href="adminHome.jsp" class="btn btn-secondary"> Regresar al menu </a>
-        </div>
-
+		<div class="d-flex justify-content-between align-items-center gap-2 mb-2">
+    		<h1>Exhibiciones</h1>
+    		<a href="adminHome.jsp" class="btn btn-secondary text-nowrap"> Regresar al menu </a>
+		</div>
         
         
-		<div class="d-flex flex-column flex-md-row align-items-md-center gap-4 mb-3">
+		<div class="d-flex flex-column flex-md-row align-items-md-center align-items-start gap-4 mb-3">
 
     		<a href="ExhibitionServlet?operation=new" class="btn btn-success"> Nueva Exhibición </a>
 
-    		<form action="ExhibitionServlet" method="GET"	class="d-flex flex-column flex-sm-row align-items-sm-center gap-2">
+    		<form action="ExhibitionServlet" method="GET" class="d-flex flex-column flex-sm-row align-items-sm-center gap-2">
 
         		<input type="hidden" name="operation" value="list">
        			<label for="status" class="form-label mb-0 text-nowrap"> Filtrar por estado: </label>
         		<select name="status" id="status" class="form-select">
-            		<option value="">Todos</option>
-            		<option value="Creado">Creado</option>
-            		<option value="Empezado">Empezado</option>
-            		<option value="Terminado">Terminado</option>
-        		</select>
+    				<option value="" <%= (currentStatus == null || currentStatus.isEmpty()) ? "selected" : "" %>>Todos</option>
+    				<option value="Creado" <%= "Creado".equals(currentStatus) ? "selected" : "" %>>Creado</option>
+    				<option value="Empezado" <%= "Empezado".equals(currentStatus) ? "selected" : "" %>>Empezado</option>
+    				<option value="Terminado" <%= "Terminado".equals(currentStatus) ? "selected" : "" %>>Terminado</option>
+				</select>
 
         		<button type="submit" class="btn btn-primary"> Filtrar </button>
 
     		</form>
 
 		</div>
+		
+		
+		<%if(exhibitionList.isEmpty()){%>
+			<div class="alert alert-danger" role="alert">
+ 				No hay exhibiciones disponibles
+			</div>
+		<%}%>
         
 
         <!-- Listado -->
@@ -80,9 +87,7 @@
                             <ul>
 
                                 <% for (Item item : ex.getItems()) { %>
-                                    <li>
-                                        <%= item.getName() %>
-                                    </li>
+                                    <li> <%= item.getName() %> </li>
                                 <% } %>
                             </ul>
                             <b>Estado: </b> <%= ex.getStatus() %>
@@ -104,7 +109,7 @@
                         <% if (ex.getStatus().equals("Creado")) { %>
                             <span class="text-muted small"> La exhibición aún no ha comenzado. </span>
 
-                            <div>
+                            <div class="d-flex align-items-center gap-2">
                                 <!-- Editar -->
                                 <a href="ExhibitionServlet?operation=edit&id=<%=ex.getId()%>" class="btn btn-primary"> Editar </a>
 
