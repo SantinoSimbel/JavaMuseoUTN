@@ -47,6 +47,9 @@ public class PresentationLogic {
 		if (newPresentation.getCapacity() <= 0){
 			throw new Exception("Los cupos no pueden ser menor o igual a 0.");
 		}
+		if (newPresentation.getPrice().intValue() <= 0.00){
+			throw new Exception("El precio no puede ser menor o igual a 0.");
+		}
 		
 		daoEv.add(newPresentation);
 		dao.add(newPresentation);
@@ -62,6 +65,9 @@ public class PresentationLogic {
 		}
 		if (newPresentation.getCapacity() <= 0){
 			throw new Exception("Los cupos no pueden ser menor o igual a 0.");
+		}
+		if (newPresentation.getPrice().intValue() <= 0.00){
+			throw new Exception("El precio no puede ser menor o igual a 0.");
 		}
 		
 		daoEv.update(newPresentation);		

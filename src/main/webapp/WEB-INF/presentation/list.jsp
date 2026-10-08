@@ -80,8 +80,8 @@
                                     <li> <%= item.getName() %> </li>
                                 <% } %>
                             </ul>
-                            <b>Estado: </b><%= pre.getStatus() %><br>
-                            <b>Capacidad: </b> <%= pre.getCapacity() %>
+                            <b>Capacidad: </b> <%= pre.getCapacity() %><br>
+                            <b>Precio: </b> $<%= pre.getPrice().intValue() %>
                             <br><%= pre.getDescription() %> <br>
                             <b>El día </b><%= pre.getDay().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")) %> <br>
                             <b>Desde las </b> <%= pre.getStartTime() %>

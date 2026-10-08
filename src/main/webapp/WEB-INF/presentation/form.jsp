@@ -1,3 +1,4 @@
+<%@page import="java.math.BigDecimal"%>
 <%@page import="entities.Item"%>
 <%@page import="entities.Presentation"%>
 <%@page import="java.util.LinkedList" %>
@@ -20,6 +21,7 @@
 		LocalTime endTime = presentation.getEndTime() == null ? LocalTime.MIDNIGHT : presentation.getEndTime();
 		LocalDate day = presentation.getDay() == null ? LocalDate.now() : presentation.getDay();
 		int capacity = presentation.getCapacity() == 0 ? 0 : presentation.getCapacity();
+		BigDecimal price = presentation.getPrice() == null ? BigDecimal.ZERO : presentation.getPrice();
 	 	LinkedList<Item> items = (LinkedList<Item>) request.getAttribute("allItems");
 	 	
 		String errorMessage = (String) request.getAttribute("errorMessage");
@@ -84,6 +86,8 @@
     					<input type="date" name="day" class="form-control" required value="<%=day%>">
 						<b><label class="form-label">Capacidad:</label></b>
 						<input type="number" name="capacity" class="form-control" required value="<%=capacity%>">
+						<b><label class="form-label">Precio:</label></b>
+						<input type="number" name="price" class="form-control"  min="0" step="1" required value="<%=price.intValue()%>">
 						<b><label class="form-label">Seleccione los artículos:</label></b>
 
 						<div class="border rounded p-2" style="max-height: 250px; overflow-y: auto;" id="itemList">

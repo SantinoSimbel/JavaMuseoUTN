@@ -32,7 +32,7 @@ public class PresentationDAO {
 			conn = db.getConnection(); 
 			stmt = conn.createStatement();
 			
-			rs = stmt.executeQuery("SELECT e.id, e.title, e.description, e.endTime, e.startTime, e.status, p.day, p.capacity, e_i.item_id, "
+			rs = stmt.executeQuery("SELECT e.id, e.title, e.description, e.endTime, e.startTime, e.status, p.day, p.capacity, p.price, e_i.item_id, "
 										+ "i.name AS item_name, i.description AS item_desc, i.picture, i.category_id, c.name AS category_name "
 					 				+ "FROM event e "
 									+ "INNER JOIN presentation p ON p.event_id = e.id "
@@ -78,6 +78,7 @@ public class PresentationDAO {
 					
 					p.setDay(rs.getDate("day").toLocalDate());
 					p.setCapacity(rs.getInt("capacity"));
+					p.setPrice(rs.getBigDecimal("price"));
 					p.addItem(ite);
 				    presentations.add(p); 
 
@@ -127,7 +128,7 @@ public class PresentationDAO {
 			Presentation pre = null;
 			
 			conn= db.getConnection();
-			stmt = conn.prepareStatement("SELECT e.id, e.title, e.description, e.endTime, e.startTime, e.status, p.day, p.capacity, e_i.item_id, "
+			stmt = conn.prepareStatement("SELECT e.id, e.title, e.description, e.endTime, e.startTime, e.status, p.day, p.capacity, p.price, e_i.item_id, "
 											+ "i.name AS item_name, i.description AS item_desc, i.picture, i.category_id, c.name AS category_name "
 										+ "FROM event e "
 							            + "INNER JOIN presentation p ON p.event_id = e.id "
@@ -143,6 +144,7 @@ public class PresentationDAO {
 				pre = new Presentation();
 				pre.setDay(rs.getDate("day").toLocalDate());
 				pre.setCapacity(rs.getInt("capacity"));
+				pre.setPrice(rs.getBigDecimal("price"));
 				
 				
 				pre.setId(rs.getInt("id"));
@@ -219,10 +221,11 @@ public class PresentationDAO {
 		try {
 			conn= db.getConnection();
 			
-			stmt = conn.prepareStatement("insert into presentation(event_id, day, capacity) values(?, ?, ?)"); 
+			stmt = conn.prepareStatement("insert into presentation(event_id, day, capacity, price) values(?, ?, ?, ?)"); 
 			stmt.setInt(1, newPre.getId());
 			stmt.setDate(2, java.sql.Date.valueOf(newPre.getDay()));
 			stmt.setInt(3, newPre.getCapacity());
+			stmt.setBigDecimal(4, newPre.getPrice());
 			
 
 			
@@ -255,10 +258,12 @@ public class PresentationDAO {
 
 		try {
 			conn= db.getConnection();
-			stmt = conn.prepareStatement("update presentation set day = ?, capacity = ? where event_id = ?");
+			stmt = conn.prepareStatement("update presentation set day = ?, capacity = ?, price = ? where event_id = ?");
 			stmt.setDate(1, java.sql.Date.valueOf(updPre.getDay()));
 			stmt.setInt(2, updPre.getCapacity());
-			stmt.setInt(3, updPre.getId());
+			stmt.setBigDecimal(3, updPre.getPrice());
+			stmt.setInt(4, updPre.getId());
+
 			
 
 			stmt.executeUpdate();
