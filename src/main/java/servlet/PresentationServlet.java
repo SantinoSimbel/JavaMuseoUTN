@@ -1,6 +1,7 @@
 package servlet;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.LinkedList;
 import java.time.*;
 
@@ -150,6 +151,7 @@ public class PresentationServlet extends HttpServlet {
 		
 		newPre.setDay(LocalDate.parse(request.getParameter("day")));
 		newPre.setCapacity(Integer.parseInt(request.getParameter("capacity")));
+		newPre.setPrice(new BigDecimal(request.getParameter("price")));
 		
 		String[] itemIds = request.getParameterValues("item_ids");
 
@@ -205,6 +207,7 @@ public class PresentationServlet extends HttpServlet {
 		
 		newPre.setDay(LocalDate.parse(request.getParameter("day")));
 		newPre.setCapacity(Integer.parseInt(request.getParameter("capacity")));
+		newPre.setPrice(new BigDecimal(request.getParameter("price")));
 		
 		String[] itemIds = request.getParameterValues("item_ids");
 
@@ -233,7 +236,7 @@ public class PresentationServlet extends HttpServlet {
 		    request.setAttribute("allItems", itemDAO.list());
 			request.setAttribute("errorMessage", e.getMessage());
 			request.setAttribute("onePresentation", newPre); 
-			request.setAttribute("editing", false);
+			request.setAttribute("editing", true);
 			request.getRequestDispatcher("/WEB-INF/presentation/form.jsp").forward(request,response);
 		}
 	}

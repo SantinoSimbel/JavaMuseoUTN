@@ -1,10 +1,12 @@
 package entities;
 
+import java.math.BigDecimal;
 import java.time.*;
 
 public class Presentation extends Event {
 	private LocalDate day;
 	private int capacity;
+	private BigDecimal  price;
 	
 	
 	public LocalDate getDay() {
@@ -20,7 +22,12 @@ public class Presentation extends Event {
 		this.capacity = capacity;
 	}
 	
-	
+	public BigDecimal getPrice() {
+		return price;
+	}
+	public void setPrice(BigDecimal price) {
+		this.price = price;
+	}
 	@Override
 	public void updateStatus() {
 		if (day.isBefore(LocalDate.now())) {
