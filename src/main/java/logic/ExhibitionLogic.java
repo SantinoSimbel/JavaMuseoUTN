@@ -13,27 +13,42 @@ public class ExhibitionLogic {
 	private ExhibitionDAO dao = new ExhibitionDAO();
 	private EventDAO daoEv = new EventDAO();
 	
-	public LinkedList<Exhibition> getExhibitions(String status){
+	public LinkedList<Exhibition> getExhibitions(String status, String operation){
 		LinkedList<Exhibition> exhibitions = dao.list();
 		for (Exhibition ex : exhibitions) {
 			ex.updateStatus();
 			daoEv.update(ex);
 		}
 
+		
+		LinkedList<Exhibition> filtered = new LinkedList<>();
+		
 		if (status == null || status.isEmpty()) {
-			exhibitions.sort(Comparator.<Exhibition>comparingInt(e -> obtenerPrioridad(e)).thenComparing(Exhibition::getStartDay));
+			
+			if (operation.equals("userList")) {
+				for (Exhibition ex  : exhibitions) {
+					if (!ex.getStatus().equals("Terminado")) {
+						filtered.add(ex);
+					} 	
+				}				
+			}
+			else { filtered = exhibitions; }
+			
+			filtered.sort(Comparator.<Exhibition>comparingInt(e -> obtenerPrioridad(e)).thenComparing(Exhibition::getStartDay));
 		} else {
-			LinkedList<Exhibition> filtered = new LinkedList<>();
 			for (Exhibition ex  : exhibitions) {
 				if (ex.getStatus().equals(status)) {
 					filtered.add(ex);
 				} 	
 			}
 			filtered.sort(Comparator.comparing(Exhibition::getStartDay));
-			return filtered;
 		} 
-		return exhibitions;
+		return filtered;
 	}
+	
+	
+	
+	
 	
 	public void registerExhibition(Exhibition newExhibition) throws Exception{
 		
@@ -49,6 +64,10 @@ public class ExhibitionLogic {
 		daoEv.add(newExhibition);
 		dao.add(newExhibition);
 	}
+	
+	
+	
+	
 	
 	public void updateExhibition(Exhibition newExhibition) throws Exception{
 		
@@ -66,8 +85,11 @@ public class ExhibitionLogic {
 	}
 	
 	
+	
+	
+	
+	
 	public int obtenerPrioridad(Exhibition e) {
-        
 		
 		// Grupo 1: Creado"
         if ("Creado".equals(e.getStatus())) {

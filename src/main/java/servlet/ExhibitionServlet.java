@@ -46,8 +46,14 @@ public class ExhibitionServlet extends HttpServlet {
 		String operation = request.getParameter("operation");
 		
 		switch (operation) {
+		case "userList":
+		    getAllExhibition(request, response);
+		    break;
 		case "list":
 			getAllExhibition(request, response);
+			break;
+		case "detail":
+			getOneExhibition(request, response);
 			break;
 		case "new":
 			showForm(request, response);
@@ -90,10 +96,34 @@ public class ExhibitionServlet extends HttpServlet {
 	public void getAllExhibition(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		ExhibitionLogic logicEx = new ExhibitionLogic();
-		LinkedList<Exhibition> exhibitions = logicEx.getExhibitions(request.getParameter("status"));
+	    String operation = request.getParameter("operation");
+		LinkedList<Exhibition> exhibitions = logicEx.getExhibitions(request.getParameter("status"), request.getParameter("operation"));
 		
 		request.setAttribute("allExhibitions", exhibitions);
-		request.getRequestDispatcher("/WEB-INF/exhibition/list.jsp").forward(request,response);
+		
+	    String jsp = "userList".equals(operation)
+	            ? "/WEB-INF/exhibition/userList.jsp"
+	            : "/WEB-INF/exhibition/list.jsp";
+
+	    request.getRequestDispatcher(jsp).forward(request, response);
+	}
+	
+	
+	
+	
+	
+	//GETONE
+	public void getOneExhibition(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		ExhibitionDAO exDAO = new ExhibitionDAO();
+		
+		Exhibition ex = new Exhibition();
+		ex.setId(Integer.parseInt(request.getParameter("id")));
+		ex = exDAO.search(ex);
+		
+		request.setAttribute("oneExhibition", ex);
+		request.getRequestDispatcher("/WEB-INF/exhibition/detail.jsp").forward(request,response);
+
 	}
 	
 	
