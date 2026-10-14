@@ -97,7 +97,7 @@ public class ExhibitionServlet extends HttpServlet {
 		
 		ExhibitionLogic logicEx = new ExhibitionLogic();
 	    String operation = request.getParameter("operation");
-		LinkedList<Exhibition> exhibitions = logicEx.getExhibitions(request.getParameter("status"), request.getParameter("operation"));
+		LinkedList<Exhibition> exhibitions = logicEx.getExhibitions(request.getParameter("status"), operation);
 		
 		request.setAttribute("allExhibitions", exhibitions);
 		
