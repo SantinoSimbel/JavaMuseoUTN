@@ -48,8 +48,13 @@ public class PresentationServlet extends HttpServlet {
 		String operation = request.getParameter("operation");
 		
 		switch (operation) {
+		case "userList":
+			getAllPresentation(request, response);
 		case "list":
 			getAllPresentation(request, response);
+			break;
+		case "detail":
+			getOnePresentation(request, response);
 			break;
 		case "new":
 			showForm(request, response);
@@ -92,13 +97,30 @@ public class PresentationServlet extends HttpServlet {
 	public void getAllPresentation(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		PresentationLogic logicPre = new PresentationLogic();
+	    String operation = request.getParameter("operation");
 		LinkedList<Presentation> presentations = logicPre.getPresentations(request.getParameter("status"));
 		
 		request.setAttribute("allPresentations", presentations);
-		request.getRequestDispatcher("/WEB-INF/presentation/list.jsp").forward(request,response);
+		String jsp = "userList".equals(operation)
+				? "/WEB-INF/presentation/userList.jsp"
+			    : "/WEB-INF/presentation/list.jsp";
+		
+		request.getRequestDispatcher(jsp).forward(request,response);
 	}
 	
-	
+	//GETONE
+	public void getOnePresentation(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		PresentationDAO preDAO = new PresentationDAO();
+		
+		Presentation pre = new Presentation();
+		pre.setId(Integer.parseInt(request.getParameter("id")));
+		pre = preDAO.search(pre);
+		
+		request.setAttribute("onePresentation", pre);
+		request.getRequestDispatcher("/WEB-INF/presentation/detail.jsp").forward(request,response);
+
+	}
 	
 	//SHOWFORM
 	public void showForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

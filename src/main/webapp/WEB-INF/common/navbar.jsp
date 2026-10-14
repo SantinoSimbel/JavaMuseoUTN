@@ -19,7 +19,7 @@
 				</li>
 				<li class="nav-item"><a class="nav-link text-nowrap" href="ExhibitionServlet?operation=userList"><i class="bi bi-easel"></i> Exhibiciones</a>
 				</li>
-				<li class="nav-item"><a class="nav-link text-nowrap" href="#"><i class="bi bi-person-video3"></i> Presentaciones</a>
+				<li class="nav-item"><a class="nav-link text-nowrap" href="PresentationServlet?operation=userList"><i class="bi bi-person-video3"></i> Presentaciones</a>
 				</li>
 				<%if (userDTO != null && "admin".equals(userDTO.getRole())){%>
 					<li class="nav-item"><a class="nav-link text-nowrap" href="adminHome.jsp"><i class="bi bi-house-gear"></i> Administracion</a>
