@@ -98,7 +98,7 @@ public class PresentationServlet extends HttpServlet {
 		
 		PresentationLogic logicPre = new PresentationLogic();
 	    String operation = request.getParameter("operation");
-		LinkedList<Presentation> presentations = logicPre.getPresentations(request.getParameter("status"));
+		LinkedList<Presentation> presentations = logicPre.getPresentations(request.getParameter("status"), operation);
 		
 		request.setAttribute("allPresentations", presentations);
 		String jsp = "userList".equals(operation)
