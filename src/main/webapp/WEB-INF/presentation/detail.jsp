@@ -18,7 +18,7 @@
 		<%=pre.getDescription()%>
 		
 		<form action="PurchaseServlet" method="POST">
-			<input type="hidden" name="operation" value= "buy">
+			<input type="hidden" name="operation" value= "add">
 			<input type="hidden" name="id" value="<%= pre.getId() %>">
 			<button class = "btn btn-primary">Comprar</button>
 		</form>
