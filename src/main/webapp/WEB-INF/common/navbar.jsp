@@ -17,7 +17,7 @@
 			<ul class="navbar-nav position-absolute start-50 translate-middle-x navbar-links fs-5 gap-xl-5 ">
 				<li class="nav-item"><a class="nav-link text-nowrap" href="#"><i class="bi bi-bank"></i> Museo virtual</a>
 				</li>
-				<li class="nav-item"><a class="nav-link text-nowrap" href="#"><i class="bi bi-easel"></i> Exhibiciones</a>
+				<li class="nav-item"><a class="nav-link text-nowrap" href="ExhibitionServlet?operation=userList"><i class="bi bi-easel"></i> Exhibiciones</a>
 				</li>
 				<li class="nav-item"><a class="nav-link text-nowrap" href="#"><i class="bi bi-person-video3"></i> Presentaciones</a>
 				</li>
