@@ -14,29 +14,40 @@ public class PresentationLogic {
 	private EventDAO daoEv = new EventDAO();
 	
 	
-	public LinkedList<Presentation> getPresentations(String status){
+	public LinkedList<Presentation> getPresentations(String status, String operation){
 		LinkedList<Presentation> presentations = dao.list();
 		for (Presentation pre : presentations) {
 			pre.updateStatus();
 			daoEv.update(pre);
-		}
+		}		
+		LinkedList<Presentation> filtered = new LinkedList<>();
+
 		
 		if (status == null || status.isEmpty()) {
-			presentations.sort(Comparator.<Presentation>comparingInt(p -> obtenerPrioridad(p)).thenComparing(Presentation::getDay));
+			
+			if (operation.equals("userList")) {
+				for (Presentation ex  : presentations) {
+					if (!ex.getStatus().equals("Terminado")) {
+						filtered.add(ex);
+					} 	
+				}				
+			}
+			else { filtered = presentations; }
+			
+			filtered.sort(Comparator.<Presentation>comparingInt(p -> obtenerPrioridad(p)).thenComparing(Presentation::getDay));
 		} else {
-			LinkedList<Presentation> filtered = new LinkedList<>();
 			for (Presentation ex  : presentations) {
 				if (ex.getStatus().equals(status)) {
 					filtered.add(ex);
 				} 	
 			}
 			filtered.sort(Comparator.comparing(Presentation::getDay));
-			return filtered;
 		} 
 		
-		return presentations;
+		return filtered;
 	}
 	
+
 	
 	public void registerPresentation(Presentation newPresentation) throws Exception{
 		
