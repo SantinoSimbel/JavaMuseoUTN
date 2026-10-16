@@ -18,7 +18,7 @@ import entities.UserSessionDTO;
 /**
  * Servlet Filter implementation class AuthFilter
  */
-@WebFilter("/UserServlet")
+@WebFilter(urlPatterns = {"/UserServlet", "/PurchaseServlet"})
 public class AuthFilter extends HttpFilter implements Filter {
     public AuthFilter() {
         super();
@@ -35,11 +35,13 @@ public class AuthFilter extends HttpFilter implements Filter {
         HttpServletResponse resp = (HttpServletResponse) response;
         
         String operation = req.getParameter("operation");
-
-        // acciones de registro, no necesitan estar logueado
-        if ("new".equals(operation) || "add".equals(operation)) {
-            chain.doFilter(request, response);
-            return;
+        
+        if (req.getRequestURI().endsWith("/UserServlet")) {
+            // acciones de registro, no necesitan estar logueado
+            if ("new".equals(operation) || "add".equals(operation)) {
+                chain.doFilter(request, response);
+                return;
+            }
         }
 
         // el resto de operaciones necesita tener una sesion con un UserDTO
