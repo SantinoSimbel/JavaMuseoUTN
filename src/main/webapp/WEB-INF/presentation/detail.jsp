@@ -11,7 +11,10 @@
 <head>
     <title>One presentation</title>
     <%@ include file="/WEB-INF/common/head.jsp" %>
-    <% Presentation pre = (Presentation) request.getAttribute("onePresentation"); %>
+    <% 
+    	Presentation pre = (Presentation) request.getAttribute("onePresentation"); 
+    
+    %>
 </head>
 
 <body>
@@ -26,11 +29,6 @@
     		<h1><%= pre.getTitle() %></h1>
     		<div class="d-flex gap-2 ms-sm-auto">
         		<a href="PresentationServlet?operation=userList" class="btn btn-secondary text-nowrap text-center"> Regresar </a>
-        		<form action="PurchaseServlet" method="POST" class="m-0">
-		            <input type="hidden" name="operation" value="buy">
-	    	        <input type="hidden" name="id" value="<%= pre.getId() %>">
-        	    	<button class="btn btn-success text-nowrap">Comprar</button>
-        		</form>
     		</div>
 		</div>
 
@@ -115,12 +113,96 @@
 
             </div>
         <% } %>
+        <!-- Boton compra -->
+		<div class="d-flex justify-content-center mt-4">
+		<% if (userDTO != null){ %>
+		    <button type="button" class="btn btn-success text-nowrap" data-bs-toggle="modal" data-bs-target="#purchaseModal">
+		        Comprar Entradas
+		    </button>
+		<%} else{ %>
+			<a  href="login.jsp" class="btn btn-primary text-nowrap">
+		        Iniciar sesion para comprar
+		    </a>
+		<%} %>
+		</div>
+		
+		<!-- Modal -->
+		<div class="modal fade" id="purchaseModal" tabindex="-1" aria-labelledby="purchaseModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered">
+		    	<div class="modal-content">
+		    	
+		      	<!-- header del modal -->
+		      		<div class="modal-header">
+		        		<h5 class="modal-title" id="purchaseModalLabel">Comprar Entradas</h5>
+		        		<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+		     		</div>
+		
+			      	<!-- formulario -->
+			      	<form action="PurchaseServlet" method="POST"> 
+			        	<div class="modal-body">
 
-    
-
-
+			            	<input type="hidden" name="operation" value="buy">
+				            <input type="hidden" name="presentationId" value="<%= pre.getId() %>">
+				
+				            <p class="mb-2">Vas a comprar entradas para <b><%= pre.getTitle() %></b></p>
+				            <p class="text-muted small">Valor de entrada: <b>$<%= pre.getPrice() %></b></p>
+				
+				            <div class="mb-3">
+				                <label class="form-label fw-bold">Cantidad de entradas:</label>
+				                <input type="number"
+				                	   id="quantity" 
+				                       name="quantity" 
+				                       class="form-control" 
+				                       value="1" 
+				                       min="1" 
+				                       max="<%= pre.getCapacity() %>" 
+				                       required>
+				                       
+				                <p class="mt-3">
+								    <b>Total a pagar:</b> $<span id="totalPrice"><%= pre.getPrice() %></span>
+								</p>
+				            </div>
+				        </div>
+						<!-- Footer modal -->
+				        <div class="modal-footer">
+				            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+				            <button type="submit" class="btn btn-success">Confirmar Compra</button>
+				        </div>
+			
+			      </form>
+		
+		    </div>
+		  </div>
+		</div>
+	</div>
     <%@ include file="/WEB-INF/common/scripts.jsp" %>
-
+    
+    <!-- calculamos el total de la compra para mostarlo-->
+	<script>
+	    const quantityInput = document.getElementById("quantity");
+	    const totalPrice = document.getElementById("totalPrice");
+	
+	    const price = Number("<%= pre.getPrice() %>");
+	
+	    function updateTotal() {
+	        let quantity = Number(quantityInput.value);
+	
+	        if (!Number.isFinite(quantity) || quantity < 1) {
+	            quantity = 1;
+	        }
+	
+	        totalPrice.textContent = (price * quantity).toLocaleString(
+	            "es-AR",
+	            {
+	                minimumFractionDigits: 2,
+	                maximumFractionDigits: 2
+	            }
+	        );
+	    }
+	
+	    quantityInput.addEventListener("input", updateTotal);
+	    updateTotal();
+	</script>
 </body>
 
 </html>
