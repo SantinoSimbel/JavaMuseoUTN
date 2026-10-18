@@ -11,6 +11,7 @@
 		//codigo java para que la pagina funcione correctamente ponerlo en head (segun profe)
 		//no los que tengan comportamientos o animaciones 
 		LinkedList<Category> categoriesList = (LinkedList<Category>) request.getAttribute("allCategories");
+		String errorMessage = (String) request.getAttribute("errorMessage");
 	%>
 </head>
 
@@ -36,6 +37,13 @@
 		</a>
 		
 		<p class="text-muted mb-2">Seleccione una categoria para editarla:</p>
+		
+		<!-- Mensajes de error -->
+		<%if(errorMessage != null){%>
+			<div class="alert alert-danger" role="alert">
+ 				<%= errorMessage %>
+			</div>
+		<%}%>
 		
 		<!-- Listado -->
 		<div class= "row g-3">

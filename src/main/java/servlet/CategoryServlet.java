@@ -152,12 +152,18 @@ public class CategoryServlet extends HttpServlet {
 	
 	
 	public void deleteCategory(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Category delCat = new Category();
-		delCat.setId(Integer.parseInt(request.getParameter("id")));
-		
-		CategoryDAO dao  = new CategoryDAO();
-		dao.delete(delCat);
-		response.sendRedirect("CategoryServlet?operation=list");
+	    Category delCat = new Category();
+	    delCat.setId(Integer.parseInt(request.getParameter("id")));
+
+	    CategoryLogic logic = new CategoryLogic();
+
+	    try {
+	        logic.deleteCategory(delCat);
+	        response.sendRedirect("CategoryServlet?operation=list");
+	    } catch (Exception e) {
+	        request.setAttribute("errorMessage", e.getMessage());
+	        getAllCategories(request, response); // vuelve a mostrar la lista, ahora con el mensaje
+	    }
 	}
 
 }

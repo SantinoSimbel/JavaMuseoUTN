@@ -214,6 +214,34 @@ public class ItemDAO {
 	} 
 	
 	
+
+	//existsByCategory(Category c) -----------------------------------------------------------------------------------------
+	public boolean existsByCategory(Category c) {
+	    PreparedStatement stmt = null;
+	    ResultSet rs = null;
+	    Connection conn = null;
+
+	    try {
+	        conn = db.getConnection();
+	        stmt = conn.prepareStatement("select 1 from item where category_id = ? limit 1");
+	        stmt.setInt(1, c.getId());
+	        rs = stmt.executeQuery();
+
+	        return rs.next(); // devuelve true si encontró al menos una fila
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        return true; // ante un error, por dudas, bloqueamos el borrado
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (stmt != null) stmt.close();
+	            db.releaseConnection();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+	}
+	
 	
 	
 	
