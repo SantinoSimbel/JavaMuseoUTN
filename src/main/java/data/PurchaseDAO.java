@@ -1,5 +1,6 @@
 package data;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -168,6 +169,116 @@ public class PurchaseDAO {
 		}
 	}
 	
+	public void addWithCapacityCheck(Purchase newPur) throws Exception {
+		//Primero lo hago con solo la logica de la primera compra
+		PreparedStatement stmtSelectPresentations = null;
+		ResultSet rsSelectPresentations = null;
+		
+		PreparedStatement stmtTicketsSold = null;
+		ResultSet rsTicketsSold = null;
+		
+		PreparedStatement stmtSavePurchase = null;
+		
+		
+	    Connection conn = null;
+	    
+
+	    try {
+	        conn = db.getConnection();
+	        //como vamos a hacer varias consultas juntas, desactivamos el autocomit para que solo se ejecutecuando hacemos el conn.commit()
+	        conn.setAutoCommit(false);
+
+	        //declaro estas variables para usarlos en los calculos (luego las relleno)
+	        int capacity;
+	        BigDecimal price;
+
+	        // 1. busco la presentación y bloqueo su fila con el for update. hace esperar a otra transaccion que quiera hacer algo con esos datos hasta que la transaccion actual termine
+	        stmtSelectPresentations = conn.prepareStatement("SELECT capacity, price " +
+		            "FROM presentation " +
+		            "WHERE event_id = ? FOR UPDATE");
+	        
+	        stmtSelectPresentations.setInt(1, newPur.getPresentationId());
+	        
+	        rsSelectPresentations = stmtSelectPresentations.executeQuery();
+	        
+	        if (rsSelectPresentations != null && rsSelectPresentations.next()) {
+	            capacity = rsSelectPresentations.getInt("capacity");
+	            price = rsSelectPresentations.getBigDecimal("price");
+	        } else {
+	            throw new Exception("La presentación no existe.");
+	        }
+	        
+	        // 2. Sumo todas las entradas compradas para esa presentación
+	        int ticketsSold = 0;
+
+	        stmtTicketsSold = conn.prepareStatement("SELECT COALESCE(SUM(quantity), 0) AS ticketsSold " +
+		            "FROM purchase WHERE presentation_id = ?");
+	        
+	        stmtTicketsSold.setInt(1, newPur.getPresentationId());
+	        
+	        rsTicketsSold = stmtTicketsSold.executeQuery();
+	        
+	        if (rsTicketsSold != null && rsTicketsSold.next()) {
+	        	ticketsSold = rsTicketsSold.getInt("ticketsSold");
+	        } else {
+				// ? nada creo...
+			}
+
+	        // 3. Compruebo si alcanza el cupo
+	        int availableTickets = capacity - ticketsSold;
+
+	        if (newPur.getQuantity() > availableTickets) {
+	            throw new Exception("No hay cupo suficiente. Solo quedan: " + availableTickets +" disponibles.");
+	        }
+
+	        // 4. Calculo el total usando el precio de la base de datos
+	        BigDecimal totalPrice = price.multiply(BigDecimal.valueOf(newPur.getQuantity()));
+
+	        newPur.setTotalPrice(totalPrice);
+
+	        // 5. Inserto la compra
+	        stmtSavePurchase = conn.prepareStatement("INSERT INTO purchase " +
+	            "(user_id, presentation_id, quantity, total_price) " +
+	            "VALUES (?, ?, ?, ?)");
+
+	        stmtSavePurchase.setInt(1, newPur.getUserId());
+	        stmtSavePurchase.setInt(2, newPur.getPresentationId());
+	        stmtSavePurchase.setInt(3, newPur.getQuantity());
+	        stmtSavePurchase.setBigDecimal(4, newPur.getTotalPrice());
+
+	        stmtSavePurchase.executeUpdate();
+
+	        // 6. Confirmo la transacción
+	        conn.commit();
+
+	    } catch (Exception e) {
+	    	//el catch agarra cualquier exepcion y trata de hacer un rollback
+	        if (conn != null) {
+	            try {
+	                conn.rollback();
+	                //este rollback puede fallar por eso esta con un try-catch tambien
+	            } catch (SQLException rollbackError) {
+	                e.addSuppressed(rollbackError); //addSuppressed lo guarda como error secundario
+	            }
+	        }
+
+	        throw e; //al mandarlo asi en vez de con e.printStackTrace() el error se propaga a las otras capas, por lo que puedo recuperarlo y mostrarlo.
+	     // REVISAR LO DEL FINALLY Y VER BIEN QUE COSAS TENGO QUE CERRAR. hacerlo como en el list de category, todo junto?
+	    } finally {
+	    	try {
+	    		if (rsSelectPresentations != null)
+	    			rsSelectPresentations.close();
+	    		if (rsTicketsSold != null)
+	    			rsTicketsSold.close();
+	    		
+	    		conn.setAutoCommit(true);
+	    		db.releaseConnection();
+	    	} catch (SQLException e) {
+	    		e.printStackTrace();
+	    	}
+	    }
+	}
+
 	public void update(Category updCat) {
 		PreparedStatement stmt = null;
 		Connection conn = null;	

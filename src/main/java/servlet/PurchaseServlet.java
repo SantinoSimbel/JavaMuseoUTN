@@ -9,10 +9,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
-import data.CategoryDAO;
-import entities.Category;
 import entities.Purchase;
+import entities.UserSessionDTO;
 import logic.CategoryLogic;
 import logic.PurchaseLogic;
 
@@ -36,21 +36,6 @@ public class PurchaseServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		
-		//agarramos el parametro operation de la url. ...operation="list"...
-		String operation = request.getParameter("operation");
-		
-		switch (operation) {
-		case "list":
-			//getAllCategories(request, response);
-			break;
-		case "new":
-			//showForm(request, response);
-			break;
-		case "edit":
-			//showForm(request, response);
-			break;
-		}
 	}
 
 	/**
@@ -63,8 +48,8 @@ public class PurchaseServlet extends HttpServlet {
 		String operation = request.getParameter("operation");
 		
 		switch (operation) {
-		case "add":
-			addPurchase(request, response);
+		case "buy":
+			purchasePresentation(request, response);
 			break;
 		case "update":
 			//updateCategory(request, response);
@@ -114,21 +99,28 @@ public class PurchaseServlet extends HttpServlet {
 	}
 
 	
-	public void addPurchase(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void purchasePresentation(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	   //valido que tenga la session iniciada
+		HttpSession session = request.getSession(false);
+
+	    UserSessionDTO userDTO = (UserSessionDTO) session.getAttribute("user");
+	    
+	    
 		Purchase newPur = new Purchase();
-		newPur.setUserId(Integer.parseInt(request.getParameter("userId")));
-		newPur.setPresentationId(Integer.parseInt(request.getParameter("presentationId")));
-		newPur.setQuantity(Integer.parseInt(request.getParameter("quantity")));
-		newPur.setTotalPrice(new BigDecimal(request.getParameter("totalPrice")));
+		
+		newPur.setUserId(userDTO.getId());
 		
 		PurchaseLogic logic = new PurchaseLogic();
 		
 		try {
+			newPur.setPresentationId(Integer.parseInt(request.getParameter("presentationId")));
+			newPur.setQuantity(Integer.parseInt(request.getParameter("quantity")));
+			
 			logic.addPurchase(newPur);
 			
-			response.sendRedirect("####");
+			 response.sendRedirect("PresentationServlet?operation=userList");
 		} catch (Exception e) {
-			
+			//falta completar bien aca
 			request.setAttribute("errorMessage", e.getMessage());
 			//request.setAttribute("oneCategory", newCat); 
 			//request.setAttribute("editing", false);
