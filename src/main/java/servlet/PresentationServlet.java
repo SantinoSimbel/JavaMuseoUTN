@@ -50,6 +50,7 @@ public class PresentationServlet extends HttpServlet {
 		switch (operation) {
 		case "userList":
 			getAllPresentation(request, response);
+			break;
 		case "list":
 			getAllPresentation(request, response);
 			break;
