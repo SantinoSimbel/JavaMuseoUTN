@@ -185,13 +185,13 @@ public class PurchaseDAO {
 
 	    try {
 	        conn = db.getConnection();
-	        //como vamos a hacer varias consultas juntas, desactivamos el autocomit para que solo se ejecutecuando hacemos el conn.commit()
+	        //como vamos a hacer varias consultas juntas, desactivamos el autocomit para que solo se ejecute cuando hacemos el conn.commit()
 	        conn.setAutoCommit(false);
 
 	        //declaro estas variables para usarlos en los calculos (luego las relleno)
 	        int capacity;
 	        BigDecimal price;
-
+	        
 	        // 1. busco la presentación y bloqueo su fila con el for update. hace esperar a otra transaccion que quiera hacer algo con esos datos hasta que la transaccion actual termine
 	        stmtSelectPresentations = conn.prepareStatement("SELECT capacity, price " +
 		            "FROM presentation " +
@@ -207,7 +207,7 @@ public class PurchaseDAO {
 	        } else {
 	            throw new Exception("La presentación no existe.");
 	        }
-	        
+
 	        // 2. Sumo todas las entradas compradas para esa presentación
 	        int ticketsSold = 0;
 
@@ -220,9 +220,7 @@ public class PurchaseDAO {
 	        
 	        if (rsTicketsSold != null && rsTicketsSold.next()) {
 	        	ticketsSold = rsTicketsSold.getInt("ticketsSold");
-	        } else {
-				// ? nada creo...
-			}
+	        } 
 
 	        // 3. Compruebo si alcanza el cupo
 	        int availableTickets = capacity - ticketsSold;
@@ -252,10 +250,12 @@ public class PurchaseDAO {
 	        conn.commit();
 
 	    } catch (Exception e) {
+	    	e.printStackTrace(); 
 	    	//el catch agarra cualquier exepcion y trata de hacer un rollback
 	        if (conn != null) {
 	            try {
 	                conn.rollback();
+
 	                //este rollback puede fallar por eso esta con un try-catch tambien
 	            } catch (SQLException rollbackError) {
 	                e.addSuppressed(rollbackError); //addSuppressed lo guarda como error secundario
@@ -266,13 +266,28 @@ public class PurchaseDAO {
 	     // REVISAR LO DEL FINALLY Y VER BIEN QUE COSAS TENGO QUE CERRAR. hacerlo como en el list de category, todo junto?
 	    } finally {
 	    	try {
-	    		if (rsSelectPresentations != null)
+	    		if(stmtSelectPresentations != null) {
+	    			stmtSelectPresentations.close();
+	    		}
+	    		if (rsSelectPresentations != null) {
 	    			rsSelectPresentations.close();
-	    		if (rsTicketsSold != null)
-	    			rsTicketsSold.close();
+	    		}
 	    		
+	    		if(stmtTicketsSold != null) {
+	    			stmtTicketsSold.close();
+	    		}
+	    		
+	    		if (rsTicketsSold != null) {
+	    			rsTicketsSold.close();
+	    		}
+	    		
+	    		if(stmtSavePurchase != null) {
+	    			stmtSavePurchase.close();
+	    		}
+
 	    		conn.setAutoCommit(true);
 	    		db.releaseConnection();
+	    		
 	    	} catch (SQLException e) {
 	    		e.printStackTrace();
 	    	}

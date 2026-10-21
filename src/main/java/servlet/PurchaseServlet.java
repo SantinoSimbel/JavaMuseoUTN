@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import data.PresentationDAO;
+import entities.Presentation;
 import entities.Purchase;
 import entities.UserSessionDTO;
 import logic.CategoryLogic;
@@ -60,43 +62,43 @@ public class PurchaseServlet extends HttpServlet {
 		}
 	}
 	
-	public void getAllCategories(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		CategoryDAO dao  = new CategoryDAO();
-		LinkedList<Category> categories = dao.list();
-		
-		// guardo en el request la lista de categorias que le voy a mandar al jsp. ("name", objeto)
-		request.setAttribute("allCategories", categories);
-		//le mando el request(con las allCategories) y la response al jsp para que que responda él.
-		request.getRequestDispatcher("/WEB-INF/category/list.jsp").forward(request,response);
-	}
-	
-	public void showForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		//showform prepara lo necesario para que el form.jsp pueda mostrarse o vacio o con la categoria a editar
-		Category cat;
-		boolean editing;
-		
-		String operation = request.getParameter("operation");
-		
-		if ("new".equals(operation)) {
-			cat = new Category();
-			editing =  false;
-		} else {
-			editing = true;
-			int id = Integer.parseInt(request.getParameter("id"));
-			
-			Category c = new Category();
-			c.setId(id);
-			
-			CategoryDAO dao  = new CategoryDAO();
-			cat = dao.search(c);
-		}
-		
-		request.setAttribute("oneCategory", cat);
-		request.setAttribute("editing", editing);
-		
-		request.getRequestDispatcher("/WEB-INF/category/form.jsp").forward(request,response);
-	}
+//	public void getAllCategories(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+//		
+//		CategoryDAO dao  = new CategoryDAO();
+//		LinkedList<Category> categories = dao.list();
+//		
+//		// guardo en el request la lista de categorias que le voy a mandar al jsp. ("name", objeto)
+//		request.setAttribute("allCategories", categories);
+//		//le mando el request(con las allCategories) y la response al jsp para que que responda él.
+//		request.getRequestDispatcher("/WEB-INF/category/list.jsp").forward(request,response);
+//	}
+//	
+//	public void showForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+//		//showform prepara lo necesario para que el form.jsp pueda mostrarse o vacio o con la categoria a editar
+//		Category cat;
+//		boolean editing;
+//		
+//		String operation = request.getParameter("operation");
+//		
+//		if ("new".equals(operation)) {
+//			cat = new Category();
+//			editing =  false;
+//		} else {
+//			editing = true;
+//			int id = Integer.parseInt(request.getParameter("id"));
+//			
+//			Category c = new Category();
+//			c.setId(id);
+//			
+//			CategoryDAO dao  = new CategoryDAO();
+//			cat = dao.search(c);
+//		}
+//		
+//		request.setAttribute("oneCategory", cat);
+//		request.setAttribute("editing", editing);
+//		
+//		request.getRequestDispatcher("/WEB-INF/category/form.jsp").forward(request,response);
+//	}
 
 	
 	public void purchasePresentation(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -118,45 +120,51 @@ public class PurchaseServlet extends HttpServlet {
 			
 			logic.addPurchase(newPur);
 			
-			 response.sendRedirect("PresentationServlet?operation=userList");
+			response.sendRedirect("PresentationServlet?operation=userList");
+			 
 		} catch (Exception e) {
-			//falta completar bien aca
+			PresentationDAO preDAO = new PresentationDAO();
+			Presentation pre = new Presentation();
+			pre.setId(newPur.getPresentationId());
+			pre = preDAO.search(pre);
+			
+			request.setAttribute("onePresentation", pre);
+			
 			request.setAttribute("errorMessage", e.getMessage());
-			//request.setAttribute("oneCategory", newCat); 
-			//request.setAttribute("editing", false);
-			request.getRequestDispatcher("####").forward(request,response);
+
+			request.getRequestDispatcher("/WEB-INF/presentation/detail.jsp").forward(request,response);
 		}
 	}
 	
-	public void updateCategory(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Category newCat = new Category();
-		newCat.setId(Integer.parseInt(request.getParameter("id")));
-		newCat.setName(request.getParameter("name"));
-		
-		CategoryLogic logic = new CategoryLogic();
-		
-		try {
-			logic.updateCategory(newCat);
-			
-			response.sendRedirect("CategoryServlet?operation=list");
-		} catch (Exception e) {
-			
-			request.setAttribute("errorMessage", e.getMessage());
-			request.setAttribute("oneCategory", newCat); 
-			request.setAttribute("editing", true);
-			request.getRequestDispatcher("/WEB-INF/category/form.jsp").forward(request,response);
-		}
-	}
-	
-	
-	public void deleteCategory(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Category delCat = new Category();
-		delCat.setId(Integer.parseInt(request.getParameter("id")));
-		
-		CategoryDAO dao  = new CategoryDAO();
-		dao.delete(delCat);
-		response.sendRedirect("CategoryServlet?operation=list");
-	}
+//	public void updateCategory(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+//		Category newCat = new Category();
+//		newCat.setId(Integer.parseInt(request.getParameter("id")));
+//		newCat.setName(request.getParameter("name"));
+//		
+//		CategoryLogic logic = new CategoryLogic();
+//		
+//		try {
+//			logic.updateCategory(newCat);
+//			
+//			response.sendRedirect("CategoryServlet?operation=list");
+//		} catch (Exception e) {
+//			
+//			request.setAttribute("errorMessage", e.getMessage());
+//			request.setAttribute("oneCategory", newCat); 
+//			request.setAttribute("editing", true);
+//			request.getRequestDispatcher("/WEB-INF/category/form.jsp").forward(request,response);
+//		}
+//	}
+//	
+//	
+//	public void deleteCategory(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+//		Category delCat = new Category();
+//		delCat.setId(Integer.parseInt(request.getParameter("id")));
+//		
+//		CategoryDAO dao  = new CategoryDAO();
+//		dao.delete(delCat);
+//		response.sendRedirect("CategoryServlet?operation=list");
+//	}
 
 }
 
