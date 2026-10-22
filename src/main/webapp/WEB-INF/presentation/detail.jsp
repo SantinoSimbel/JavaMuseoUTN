@@ -13,7 +13,7 @@
     <%@ include file="/WEB-INF/common/head.jsp" %>
     <% 
     	Presentation pre = (Presentation) request.getAttribute("onePresentation"); 
-    
+    	String errorMessage = (String) request.getAttribute("errorMessage");
     %>
 </head>
 
@@ -140,7 +140,13 @@
 			      	<!-- formulario -->
 			      	<form action="PurchaseServlet" method="POST"> 
 			        	<div class="modal-body">
-
+							<!-- Mensaje de error -->
+							<%if(errorMessage != null){%>
+								<div class="alert alert-danger" role="alert">
+			 						<%= errorMessage %>
+								</div>
+							<%}%>
+							
 			            	<input type="hidden" name="operation" value="buy">
 				            <input type="hidden" name="presentationId" value="<%= pre.getId() %>">
 				
@@ -203,6 +209,14 @@
 	    quantityInput.addEventListener("input", updateTotal);
 	    updateTotal();
 	</script>
+	
+	<!--Si hay error abro el modal y lo muestro -->
+	<% if (request.getAttribute("errorMessage") != null) { %>
+    <script>
+        const purchaseModal = new bootstrap.Modal(document.getElementById("purchaseModal"));
+        purchaseModal.show();
+    </script>
+	<%}%>
 </body>
 
 </html>
