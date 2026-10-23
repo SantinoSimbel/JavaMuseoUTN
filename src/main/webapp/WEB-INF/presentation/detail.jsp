@@ -1,3 +1,4 @@
+<%@page import="entities.Purchase"%>
 <%@page import="entities.Presentation"%>
 <%@page import="entities.Item"%>
 <%@page import="java.util.LinkedList"%>
@@ -14,6 +15,7 @@
     <% 
     	Presentation pre = (Presentation) request.getAttribute("onePresentation"); 
     	String errorMessage = (String) request.getAttribute("errorMessage");
+    	Purchase pur = (Purchase) request.getAttribute("onePurchase");
     %>
 </head>
 
@@ -151,10 +153,22 @@
 				            <input type="hidden" name="presentationId" value="<%= pre.getId() %>">
 				
 				            <p class="mb-2">Vas a comprar entradas para <b><%= pre.getTitle() %></b></p>
-				            <p class="text-muted small">Valor de entrada: <b>$<%= pre.getPrice() %></b></p>
-				
+				            <p class="text-muted small">Valor de entrada: <b>$<%= pre.getPrice().intValue() %></b></p>
+				            
+							<!-- Advertencia de las entradas que ya tiene -->
+							<%if(pur != null){%>
+								<div class="alert alert-warning" role="alert">
+			 						<p class = "mb-0">⚠️ Ya tenes <%= pur.getQuantity() %> entradas para esta presentacion.<br>
+			 							Tu total a pagar era de $<%= pur.getTotalPrice().intValue() %>
+			 						</p>
+								</div>
+							<%}%>
+							
 				            <div class="mb-3">
-				                <label class="form-label fw-bold">Cantidad de entradas:</label>
+				                <label class="form-label fw-bold">
+				                	<%= pur == null ? 
+				                	"Cantidad de entradas a comprar:" : "Cantidad de nuevas entradas a comprar:" %>
+				                </label>
 				                <input type="number"
 				                	   id="quantity" 
 				                       name="quantity" 
@@ -165,6 +179,10 @@
 				                       required>
 				                       
 				                <p class="mt-3">
+				                	<%if (pur != null){ %>
+				                	<b>Entradas totales:</b> <span id="totalTickets"><%= pur.getQuantity()+1 %></span>
+				                	<br>
+				                	<%} %>
 								    <b>Total a pagar:</b> $<span id="totalPrice"><%= pre.getPrice() %></span>
 								</p>
 				            </div>
@@ -183,27 +201,39 @@
 	</div>
     <%@ include file="/WEB-INF/common/scripts.jsp" %>
     
-    <!-- calculamos el total de la compra para mostarlo-->
+    <!-- calculamos el total de la compra y las entradas totales para mostarlo-->
 	<script>
+		//apuntamos a los elementos 
 	    const quantityInput = document.getElementById("quantity");
 	    const totalPrice = document.getElementById("totalPrice");
-	
+	    const totalTickets = document.getElementById("totalTickets");
+	    
+		//recuperamos los elementos de las clases java
 	    const price = Number("<%= pre.getPrice() %>");
+	    const previousQuantity = <%= pur != null ? pur.getQuantity() : 0 %>;
+	    const previousTotal = Number( "<%= pur != null && pur.getTotalPrice() != null
+	            ? pur.getTotalPrice()
+	            : java.math.BigDecimal.ZERO %>");
 	
 	    function updateTotal() {
 	        let quantity = Number(quantityInput.value);
 	
+	        //para no mostrar calculos extraños
 	        if (!Number.isFinite(quantity) || quantity < 1) {
 	            quantity = 1;
 	        }
 	
-	        totalPrice.textContent = (price * quantity).toLocaleString(
-	            "es-AR",
-	            {
-	                minimumFractionDigits: 2,
-	                maximumFractionDigits: 2
-	            }
-	        );
+	        // Entradas anteriores + entradas nuevas
+	        const finalQuantity = previousQuantity + quantity;
+	
+	        // Importe anterior + importe de las entradas nuevas
+	        const finalPrice = previousTotal + (price * quantity);
+	
+	        if (totalTickets) {
+	            totalTickets.textContent = finalQuantity;
+	        }
+	
+	        totalPrice.textContent = Math.round(finalPrice);totalPrice.textContent = Math.round(finalPrice);
 	    }
 	
 	    quantityInput.addEventListener("input", updateTotal);

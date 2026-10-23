@@ -10,13 +10,16 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
+import javax.servlet.http.HttpSession;
 
 import data.ItemDAO;
 import data.EventDAO;
 import data.PresentationDAO;
+import data.PurchaseDAO;
 import entities.Item;
 import entities.Presentation;
+import entities.Purchase;
+import entities.UserSessionDTO;
 import logic.EventLogic;
 import logic.PresentationLogic;
 
@@ -118,7 +121,29 @@ public class PresentationServlet extends HttpServlet {
 		pre.setId(Integer.parseInt(request.getParameter("id")));
 		pre = preDAO.search(pre);
 		
+		//para poder mostrar los datos de la compra en el modal:
+		HttpSession session = request.getSession(false);
+		UserSessionDTO userDTO = null;
+		
+		if (session != null) {
+		    userDTO = (UserSessionDTO) session.getAttribute("user");
+		}
+		
+		Purchase pur = null;
+		
+		if (userDTO != null) {
+			
+		PurchaseDAO purDAO = new PurchaseDAO();
+		pur = new Purchase();
+		
+		pur.setUserId(userDTO.getId());
+		pur.setPresentationId(pre.getId());
+		
+		pur = purDAO.searchByUserAndPresentation(pur);
+		}
+		
 		request.setAttribute("onePresentation", pre);
+		request.setAttribute("onePurchase", pur);
 		request.getRequestDispatcher("/WEB-INF/presentation/detail.jsp").forward(request,response);
 
 	}

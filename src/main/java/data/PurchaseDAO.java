@@ -5,12 +5,53 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import entities.Category;
 import entities.Purchase;
 
 public class PurchaseDAO {
 
 	private DbConnection db = new DbConnection();
 	
+	public Purchase searchByUserAndPresentation(Purchase p){
+		
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		Connection conn = null;
+		
+		try {
+			conn= db.getConnection();
+			Purchase pur = null;
+			stmt = conn.prepareStatement("select user_id, presentation_id, quantity, total_price from purchase where user_id = ? and presentation_id = ?");
+
+			stmt.setInt(1, p.getUserId());
+			stmt.setInt(2, p.getPresentationId());
+			
+			rs = stmt.executeQuery();
+			
+			if(rs!= null && rs.next()) {
+				pur = new Purchase();
+				pur.setUserId(rs.getInt("user_id"));
+				pur.setPresentationId(rs.getInt("presentation_id"));
+				pur.setQuantity(rs.getInt("quantity"));
+		        pur.setTotalPrice(rs.getBigDecimal("total_price"));
+			}
+			
+			return pur;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			try {
+				if(rs != null)rs.close();
+				if(stmt != null)stmt.close();
+				db.releaseConnection();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 	
 	public void addWithCapacityCheck(Purchase newPur) throws Exception {
 		//Primero lo hago con solo la logica de la primera compra

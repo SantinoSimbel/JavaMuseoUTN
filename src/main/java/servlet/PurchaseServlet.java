@@ -58,11 +58,9 @@ public class PurchaseServlet extends HttpServlet {
 
 	
 	public void purchasePresentation(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	   //valido que tenga la session iniciada
+		
 		HttpSession session = request.getSession(false);
-
-	    UserSessionDTO userDTO = (UserSessionDTO) session.getAttribute("user");
-	    
+	    UserSessionDTO userDTO = (UserSessionDTO) session.getAttribute("user");   
 	    
 		Purchase newPur = new Purchase();
 		
