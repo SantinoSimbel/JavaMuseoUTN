@@ -219,7 +219,7 @@
 	        let quantity = Number(quantityInput.value);
 	
 	        //para no mostrar calculos extraños
-	        if (!Number.isFinite(quantity) || quantity < 1) {
+	        if (!Number.isFinite(quantity) || quantity < 1 || !Number.isInteger(quantity)) {
 	            quantity = 1;
 	        }
 	
