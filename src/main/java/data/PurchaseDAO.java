@@ -5,169 +5,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.LinkedList;
-
-import entities.Category;
 import entities.Purchase;
 
 public class PurchaseDAO {
 
 	private DbConnection db = new DbConnection();
-
-	// es un metodo normal, tiene misma estructura que un
-	// public String mostrarDatos()
-	public LinkedList<Category> list() {
-		LinkedList<Category> categories = new LinkedList<>();
-		// definimos estos 2 aca para que pueda encontrlos el finally
-		Statement stmt = null;
-		ResultSet rs = null;
-		Connection conn = null;
-
-		// crear el statement (sentencia)
-		try {
-			conn = db.getConnection(); // nos conectamos
-			stmt = conn.createStatement();
-			// ejecutar la sentencia (y guardamos el resultado en resulset)
-			rs = stmt.executeQuery("select id, name from category");
-
-			// recorremos el resulset para mapearlo a objetos
-			while (rs != null && rs.next()) {
-				Category c = new Category();
-
-				c.setId(rs.getInt("id"));
-				c.setName(rs.getString("name"));
-
-				categories.add(c); // lo guardo en la linked list que cree al inicio del metodo
-			}
-			return categories;
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
-		} finally {
-			// finally siempre se ejecuta, tanto si va por try o por catch
-			// cerrar las conexiones para que no consuman recursos
-			try {
-				if (rs != null)
-					rs.close();
-				if (stmt != null)
-					stmt.close();
-				db.releaseConnection();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-
-		}
-
-	}
 	
-	public Category search(Category c) { //recibimos un Category que solo tenga el id
-		//definimos estos 2 aca para que pueda encontrlos el finally
-		PreparedStatement stmt = null;
-		ResultSet rs = null;
-		Connection conn = null;
-		
-		//crear el prepareStatement (la consulta)
-		try {
-			//lo definimos aca asi si nunca entra al try puedo devolverlo null (en caso de querer avisar que esta nulo, hacerlo en la interfaz grafica!)
-			conn= db.getConnection();
-			Category cat = null;
-			stmt = conn.prepareStatement("select id, name from category where id = ?");
-			//al primer signo de pregunta(1) le asigno el resultado de getId() (el id que ingreso el usuario)
-			stmt.setInt(1, c.getId());
-			
-			rs = stmt.executeQuery();
-			
-			if(rs!= null && rs.next()) {
-				cat = new Category();
-				cat.setId(rs.getInt("id"));
-				cat.setName(rs.getString("name"));
-			}
-			
-			return cat;
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
-		} finally {
-			try {
-				if(rs != null)rs.close();
-				if(stmt != null)stmt.close();
-				db.releaseConnection();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-	
-
-	public Category searchByName(Category c) { 
-		
-		PreparedStatement stmt = null;
-		ResultSet rs = null;
-		Connection conn = null;
-		
-		try {
-			conn= db.getConnection();
-			Category cat = null;
-			stmt = conn.prepareStatement("select id, name from category where LOWER(TRIM(name)) = LOWER(TRIM(?))");
-			stmt.setString(1, c.getName().trim().toLowerCase());
-			
-			rs = stmt.executeQuery();
-			
-			if(rs!= null && rs.next()) {
-				cat = new Category();
-				cat.setId(rs.getInt("id"));
-				cat.setName(rs.getString("name"));
-			}
-			
-			return cat;
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
-		} finally {
-			try {
-				if(rs != null)rs.close();
-				if(stmt != null)stmt.close();
-				db.releaseConnection();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	
-	
-	
-	public void add(Purchase newPur) {
-		PreparedStatement stmt = null;
-		Connection conn = null;
-		
-		try {
-			conn= db.getConnection();
-			stmt = conn.prepareStatement("insert into purchase(user_id, presentation_id, quantity, total_price) values(?,?,?,?)");
-			stmt.setInt(1, newPur.getUserId());
-			stmt.setInt(2, newPur.getPresentationId());
-			stmt.setInt(3, newPur.getQuantity());
-			stmt.setBigDecimal(4, newPur.getTotalPrice());
-
-			
-			stmt.executeUpdate();
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if(stmt != null)stmt.close();
-				db.releaseConnection();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			
-		}
-	}
 	
 	public void addWithCapacityCheck(Purchase newPur) throws Exception {
 		//Primero lo hago con solo la logica de la primera compra
@@ -179,6 +22,10 @@ public class PurchaseDAO {
 		
 		PreparedStatement stmtSavePurchase = null;
 		
+		PreparedStatement stmtCheckPreviousPurchase = null;
+		ResultSet rsCheckPreviousPurchase = null;
+		
+		PreparedStatement stmtUpdatePurchase = null;
 		
 	    Connection conn = null;
 	    
@@ -188,11 +35,10 @@ public class PurchaseDAO {
 	        //como vamos a hacer varias consultas juntas, desactivamos el autocomit para que solo se ejecute cuando hacemos el conn.commit()
 	        conn.setAutoCommit(false);
 
-	        //declaro estas variables para usarlos en los calculos (luego las relleno)
 	        int capacity;
 	        BigDecimal price;
 	        
-	        // 1. busco la presentación y bloqueo su fila con el for update. hace esperar a otra transaccion que quiera hacer algo con esos datos hasta que la transaccion actual termine
+	        // 1) busco la presentación y bloqueo su fila con el for update. hace esperar a otra transaccion que quiera hacer algo con esos datos hasta que la transaccion actual termine
 	        stmtSelectPresentations = conn.prepareStatement("SELECT capacity, price " +
 		            "FROM presentation " +
 		            "WHERE event_id = ? FOR UPDATE");
@@ -208,7 +54,7 @@ public class PurchaseDAO {
 	            throw new Exception("La presentación no existe.");
 	        }
 
-	        // 2. Sumo todas las entradas compradas para esa presentación
+	        // 2) busco todas las entradas compradas para esta presentación
 	        int ticketsSold = 0;
 
 	        stmtTicketsSold = conn.prepareStatement("SELECT COALESCE(SUM(quantity), 0) AS ticketsSold " +
@@ -221,32 +67,64 @@ public class PurchaseDAO {
 	        if (rsTicketsSold != null && rsTicketsSold.next()) {
 	        	ticketsSold = rsTicketsSold.getInt("ticketsSold");
 	        } 
-
-	        // 3. Compruebo si alcanza el cupo
+	        
+	        // 3) verifico si hay cupo para las nuevas entradas
 	        int availableTickets = capacity - ticketsSold;
 
 	        if (newPur.getQuantity() > availableTickets) {
 	            throw new Exception("No hay cupo suficiente. Solo quedan: " + availableTickets +" disponibles.");
 	        }
+	        
+	        // 4) reviso si tiene otra compra, si tiene hago el update y si no el insert. luego commit
+        	int oldTickets =0;
+        	
+	        stmtCheckPreviousPurchase = conn.prepareStatement("SELECT quantity as oldTickets FROM purchase where user_id = ? and presentation_id = ?");
+	        stmtCheckPreviousPurchase.setInt(1, newPur.getUserId());
+	        stmtCheckPreviousPurchase.setInt(2, newPur.getPresentationId());
+	        
+	        rsCheckPreviousPurchase = stmtCheckPreviousPurchase.executeQuery();
+	        
+	        if (rsCheckPreviousPurchase != null && rsCheckPreviousPurchase.next()) {
+	        	//calculo total price
+	        	oldTickets = rsCheckPreviousPurchase.getInt("oldTickets");
+	        	
+	        	int actualTickets = newPur.getQuantity()+ oldTickets;
+	        	newPur.setQuantity(actualTickets);
+	        	
+	        	BigDecimal totalPrice = price.multiply(BigDecimal.valueOf(actualTickets));
 
-	        // 4. Calculo el total usando el precio de la base de datos
-	        BigDecimal totalPrice = price.multiply(BigDecimal.valueOf(newPur.getQuantity()));
+		        newPur.setTotalPrice(totalPrice);
+	        	//actualizo la tabla
+		        
+		        stmtUpdatePurchase = conn.prepareStatement("update purchase set quantity = ?, total_price = ? where user_id = ? and presentation_id = ? ");
+		        stmtUpdatePurchase.setInt(1, newPur.getQuantity());
+		        stmtUpdatePurchase.setBigDecimal(2, newPur.getTotalPrice());
+		        stmtUpdatePurchase.setInt(3, newPur.getUserId());
+		        stmtUpdatePurchase.setInt(4, newPur.getPresentationId());
 
-	        newPur.setTotalPrice(totalPrice);
+		        stmtUpdatePurchase.executeUpdate();
 
-	        // 5. Inserto la compra
-	        stmtSavePurchase = conn.prepareStatement("INSERT INTO purchase " +
-	            "(user_id, presentation_id, quantity, total_price) " +
-	            "VALUES (?, ?, ?, ?)");
+	        } else {
+	            //calculo total price
+		        BigDecimal totalPrice = price.multiply(BigDecimal.valueOf(newPur.getQuantity()));
 
-	        stmtSavePurchase.setInt(1, newPur.getUserId());
-	        stmtSavePurchase.setInt(2, newPur.getPresentationId());
-	        stmtSavePurchase.setInt(3, newPur.getQuantity());
-	        stmtSavePurchase.setBigDecimal(4, newPur.getTotalPrice());
+		        newPur.setTotalPrice(totalPrice);
+		        
+		        // Inserto la compra
+		        stmtSavePurchase = conn.prepareStatement("INSERT INTO purchase " +
+		            "(user_id, presentation_id, quantity, total_price) " +
+		            "VALUES (?, ?, ?, ?)");
 
-	        stmtSavePurchase.executeUpdate();
+		        stmtSavePurchase.setInt(1, newPur.getUserId());
+		        stmtSavePurchase.setInt(2, newPur.getPresentationId());
+		        stmtSavePurchase.setInt(3, newPur.getQuantity());
+		        stmtSavePurchase.setBigDecimal(4, newPur.getTotalPrice());
 
-	        // 6. Confirmo la transacción
+		        stmtSavePurchase.executeUpdate();        	
+	        }
+
+
+	        // 5) Confirmo la transacción
 	        conn.commit();
 
 	    } catch (Exception e) {
@@ -255,7 +133,6 @@ public class PurchaseDAO {
 	        if (conn != null) {
 	            try {
 	                conn.rollback();
-
 	                //este rollback puede fallar por eso esta con un try-catch tambien
 	            } catch (SQLException rollbackError) {
 	                e.addSuppressed(rollbackError); //addSuppressed lo guarda como error secundario
@@ -263,7 +140,6 @@ public class PurchaseDAO {
 	        }
 
 	        throw e; //al mandarlo asi en vez de con e.printStackTrace() el error se propaga a las otras capas, por lo que puedo recuperarlo y mostrarlo.
-	     // REVISAR LO DEL FINALLY Y VER BIEN QUE COSAS TENGO QUE CERRAR. hacerlo como en el list de category, todo junto?
 	    } finally {
 	    	try {
 	    		if(stmtSelectPresentations != null) {
@@ -285,6 +161,18 @@ public class PurchaseDAO {
 	    			stmtSavePurchase.close();
 	    		}
 
+	    		if(stmtCheckPreviousPurchase != null) {
+	    			stmtCheckPreviousPurchase.close();
+	    		}
+	    		
+	    		if(rsCheckPreviousPurchase != null) {
+	    			rsCheckPreviousPurchase.close();
+	    		}
+	    		
+	    		if(stmtUpdatePurchase != null) {
+	    			stmtUpdatePurchase.close();
+	    		}
+	    			    			
 	    		conn.setAutoCommit(true);
 	    		db.releaseConnection();
 	    		
@@ -294,56 +182,6 @@ public class PurchaseDAO {
 	    }
 	}
 
-	public void update(Category updCat) {
-		PreparedStatement stmt = null;
-		Connection conn = null;	
-		
-		//crear el prepareStatement (la consulta)
-		try {
-			conn= db.getConnection();
-			stmt = conn.prepareStatement("update category set name = ? where id = ?");
-			stmt.setString(1, updCat.getName());
-			stmt.setInt(2, updCat.getId());
 
-			stmt.executeUpdate();
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			//cerrar las conexiones para que no consuman recursos
-			try {
-				if(stmt != null)stmt.close();
-				db.releaseConnection();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}	
-		}
-
-	} 
-	
-	public void delete(Category delCat) {
-		PreparedStatement stmt = null;
-		Connection conn = null;
-		
-		try {
-			conn= db.getConnection();
-			stmt = conn.prepareStatement("delete from category where id = ?");
-
-			stmt.setInt(1, delCat.getId());
-
-			stmt.executeUpdate();
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			//cerrar las conexiones para que no consuman recursos
-			try {
-				if(stmt != null)stmt.close();
-				db.releaseConnection();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}	
-		}
-	}
 }
 

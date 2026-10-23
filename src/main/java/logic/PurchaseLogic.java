@@ -12,18 +12,13 @@ public class PurchaseLogic {
 
 
 	public void addPurchase(Purchase newPur)throws Exception {
-		//validaciones
+		//validaciones (las otras se hacen en el dao)
 
 	    if (newPur.getQuantity() <= 0) {
-	        throw new Exception(
-	            "La cantidad de entradas debe ser mayor que cero."
-	        );
+	        throw new Exception("La cantidad de entradas debe ser mayor que cero.");
 	    }
 	    
 	    dao.addWithCapacityCheck(newPur);
-	    
-
-		//si es actualizar... logica luego de eso
 	}
 	
 
