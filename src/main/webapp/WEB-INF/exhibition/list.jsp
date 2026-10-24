@@ -90,7 +90,6 @@
                                     <li> <%= item.getName() %> </li>
                                 <% } %>
                             </ul>
-                            <b>Estado: </b> <%= ex.getStatus() %>
                             <br> <%= ex.getDescription() %>
                             <br> <b>Desde el día</b>
                             <%= ex.getStartDay().format( java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy") ) %>
