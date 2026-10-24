@@ -1,3 +1,4 @@
+<%@page import="entities.Purchase"%>
 <%@page import="entities.Presentation"%>
 <%@page import="entities.Item"%>
 <%@page import="java.util.LinkedList"%>
@@ -11,7 +12,11 @@
 <head>
     <title>One presentation</title>
     <%@ include file="/WEB-INF/common/head.jsp" %>
-    <% Presentation pre = (Presentation) request.getAttribute("onePresentation"); %>
+    <% 
+    	Presentation pre = (Presentation) request.getAttribute("onePresentation"); 
+    	String errorMessage = (String) request.getAttribute("errorMessage");
+    	Purchase pur = (Purchase) request.getAttribute("onePurchase");
+    %>
 </head>
 
 <body>
@@ -26,11 +31,6 @@
     		<h1><%= pre.getTitle() %></h1>
     		<div class="d-flex gap-2 ms-sm-auto">
         		<a href="PresentationServlet?operation=userList" class="btn btn-secondary text-nowrap text-center"> Regresar </a>
-        		<form action="PurchaseServlet" method="POST" class="m-0">
-		            <input type="hidden" name="operation" value="buy">
-	    	        <input type="hidden" name="id" value="<%= pre.getId() %>">
-        	    	<button class="btn btn-success text-nowrap">Comprar</button>
-        		</form>
     		</div>
 		</div>
 
@@ -115,12 +115,138 @@
 
             </div>
         <% } %>
-
-    
-
-
+        <!-- Boton compra -->
+		<div class="d-flex justify-content-center mt-4">
+		<% if (userDTO != null){ %>
+		    <button type="button" class="btn btn-success text-nowrap" data-bs-toggle="modal" data-bs-target="#purchaseModal">
+		        Comprar Entradas
+		    </button>
+		<%} else{ %>
+			<a  href="login.jsp" class="btn btn-primary text-nowrap">
+		        Iniciar sesion para comprar
+		    </a>
+		<%} %>
+		</div>
+		
+		<!-- Modal -->
+		<div class="modal fade" id="purchaseModal" tabindex="-1" aria-labelledby="purchaseModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered">
+		    	<div class="modal-content">
+		    	
+		      	<!-- header del modal -->
+		      		<div class="modal-header">
+		        		<h5 class="modal-title" id="purchaseModalLabel">Comprar Entradas</h5>
+		        		<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+		     		</div>
+		
+			      	<!-- formulario -->
+			      	<form action="PurchaseServlet" method="POST"> 
+			        	<div class="modal-body">
+							<!-- Mensaje de error -->
+							<%if(errorMessage != null){%>
+								<div class="alert alert-danger" role="alert">
+			 						<%= errorMessage %>
+								</div>
+							<%}%>
+							
+			            	<input type="hidden" name="operation" value="buy">
+				            <input type="hidden" name="presentationId" value="<%= pre.getId() %>">
+				
+				            <p class="mb-2">Vas a comprar entradas para <b><%= pre.getTitle() %></b></p>
+				            <p class="text-muted small">Valor de entrada: <b>$<%= pre.getPrice().intValue() %></b></p>
+				            
+							<!-- Advertencia de las entradas que ya tiene -->
+							<%if(pur != null){%>
+								<div class="alert alert-warning" role="alert">
+			 						<p class = "mb-0">⚠️ Ya tenes <%= pur.getQuantity() %> entradas para esta presentacion.<br>
+			 							Tu total a pagar era de $<%= pur.getTotalPrice().intValue() %>
+			 						</p>
+								</div>
+							<%}%>
+							
+				            <div class="mb-3">
+				                <label class="form-label fw-bold">
+				                	<%= pur == null ? 
+				                	"Cantidad de entradas a comprar:" : "Cantidad de nuevas entradas a comprar:" %>
+				                </label>
+				                <input type="number"
+				                	   id="quantity" 
+				                       name="quantity" 
+				                       class="form-control" 
+				                       value="1" 
+				                       min="1" 
+				                       max="<%= pre.getCapacity() %>" 
+				                       required>
+				                       
+				                <p class="mt-3">
+				                	<%if (pur != null){ %>
+				                	<b>Entradas totales:</b> <span id="totalTickets"><%= pur.getQuantity()+1 %></span>
+				                	<br>
+				                	<%} %>
+								    <b>Total a pagar:</b> $<span id="totalPrice"><%= pre.getPrice() %></span>
+								</p>
+				            </div>
+				        </div>
+						<!-- Footer modal -->
+				        <div class="modal-footer">
+				            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+				            <button type="submit" class="btn btn-success">Confirmar Compra</button>
+				        </div>
+			
+			      </form>
+		
+		    </div>
+		  </div>
+		</div>
+	</div>
     <%@ include file="/WEB-INF/common/scripts.jsp" %>
-
+    
+    <!-- calculamos el total de la compra y las entradas totales para mostarlo-->
+	<script>
+		//apuntamos a los elementos 
+	    const quantityInput = document.getElementById("quantity");
+	    const totalPrice = document.getElementById("totalPrice");
+	    const totalTickets = document.getElementById("totalTickets");
+	    
+		//recuperamos los elementos de las clases java
+	    const price = Number("<%= pre.getPrice() %>");
+	    const previousQuantity = <%= pur != null ? pur.getQuantity() : 0 %>;
+	    const previousTotal = Number( "<%= pur != null && pur.getTotalPrice() != null
+	            ? pur.getTotalPrice()
+	            : java.math.BigDecimal.ZERO %>");
+	
+	    function updateTotal() {
+	        let quantity = Number(quantityInput.value);
+	
+	        //para no mostrar calculos extraños
+	        if (!Number.isFinite(quantity) || quantity < 1 || !Number.isInteger(quantity)) {
+	            quantity = 1;
+	        }
+	
+	        // Entradas anteriores + entradas nuevas
+	        const finalQuantity = previousQuantity + quantity;
+	
+	        // Importe anterior + importe de las entradas nuevas
+	        const finalPrice = previousTotal + (price * quantity);
+	
+	        if (totalTickets) {
+	            totalTickets.textContent = finalQuantity;
+	        }
+	
+	        totalPrice.textContent = Math.round(finalPrice);totalPrice.textContent = Math.round(finalPrice);
+	    }
+	
+	    quantityInput.addEventListener("input", updateTotal);
+	    updateTotal();
+	</script>
+	
+	<!--Si hay error abro el modal y lo muestro -->
+	<% if (request.getAttribute("errorMessage") != null) { %>
+    <script>
+        const purchaseModal = new bootstrap.Modal(document.getElementById("purchaseModal"));
+        purchaseModal.show();
+    </script>
+	<%}%>
 </body>
 
 </html>

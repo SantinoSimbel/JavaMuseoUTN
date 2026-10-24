@@ -108,7 +108,7 @@
 
             </div>
         <% } %>
-    
+    </div>
 
 
     <%@ include file="/WEB-INF/common/scripts.jsp" %>

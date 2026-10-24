@@ -28,13 +28,21 @@ public class Presentation extends Event {
 	public void setPrice(BigDecimal price) {
 		this.price = price;
 	}
+	
 	@Override
 	public void updateStatus() {
-		if (day.isBefore(LocalDate.now())) {
-			this.setStatus("Terminado"); 
+		LocalDateTime now = LocalDateTime.now();
+		
+		LocalDateTime startDateTime = LocalDateTime.of(getDay(), getStartTime());
+		LocalDateTime endDateTime = LocalDateTime.of(getDay(), getEndTime());
+		
+		if (now.isBefore(startDateTime)) {
+			this.setStatus("Creado"); 
 		}
-		else if (day.isEqual(LocalDate.now())) {
+		else if (now.isBefore(endDateTime)) {
 			this.setStatus("Empezado"); 
+		} else {
+			this.setStatus("Terminado");
 		}
 	}
 	
