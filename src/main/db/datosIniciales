@@ -78,7 +78,7 @@ CREATE TABLE `event` (
 
 INSERT INTO `event` (`title`, `description`, `endTime`, `startTime`,`status`) VALUES
 ('¡Sal de ahí, Shenlong!','Una exhibición imperdible con las siete Esferas del Dragón junto al mítico Radar del Dragón de la Corporación Cápsula. Revive la leyenda y descubre los secretos detrás de los objetos más codiciados del universo de Akira Toriyama.','21:00:00','15:30:00','Empezado')
-,('¿Alguien quiere volver al futuro?','El gran doc. Emmet Brown ha prestado su gran maquina del tiempo para una exhibición inigualable.','19:30:00','15:15:00','Creado')
+,('Iconos del cine clasico','Una exhibición extraordinaria dedicada a objetos y vehículos emblemáticos de la pantalla grande. Admira de cerca la máquina del tiempo DeLorean DMC-12 del Dr. Emmett Brown junto a Wilson, la célebre pelota de voleibol de Náufrago, en una muestra imperdible para amantes del cine clásico.','19:30:00','15:15:00','Creado')
 ,('God of War: El legado de Esparta','Acompaña al mismísimo Kratos en una presentación exclusiva donde relatará la historia, la forja y la sed de venganza detrás de sus legendarias Espadas del Caos.','18:30:00','17:35:00','Creado')
 ,('El Juicio del Shinigami', 'Una función interactiva y debate con el público sobre los peligros del poder absoluto. Ven a conocer las reglas del cuaderno y participa en el veredicto final.', '22:00:00', '16:00:00', 'Creado')
 ,('Ecos de Hyrule: Tesoros de la Leyenda', 'Una gran exhibición histórica donde podrás contemplar de cerca la Ocarina del Tiempo y la mística Espada Maestra.', '20:30:00', '18:00:00', 'Creado')
@@ -98,7 +98,7 @@ CREATE TABLE `event_item` (
 		ON DELETE RESTRICT 
 		ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;    
-INSERT INTO `event_item` (`item_id`, `event_id`) VALUES ('1','1'),('3','3'),('5','2'),('7','1'), (9, 4), (10, 5), (11, 5), (12, 7), (13, 6), (14, 6);
+INSERT INTO `event_item` (`item_id`, `event_id`) VALUES ('1','1'),('3','3'),('5','2'),(8, 2),('7','1'), (9, 4), (10, 5), (11, 5), (12, 7), (13, 6), (14, 6);
 
 
 
