@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import data.PresentationDAO;
+import data.PurchaseDAO;
 import entities.Presentation;
 import entities.Purchase;
 import entities.UserSessionDTO;
@@ -79,13 +80,23 @@ public class PurchaseServlet extends HttpServlet {
 			response.sendRedirect("PresentationServlet?operation=userList");
 			 
 		} catch (Exception e) {
+			//buscamos los datos necesarios para que details se vuelva a rellenar bien
 			PresentationDAO preDAO = new PresentationDAO();
 			Presentation pre = new Presentation();
+			
 			pre.setId(newPur.getPresentationId());
 			pre = preDAO.search(pre);
 			
-			request.setAttribute("onePresentation", pre);
+			PurchaseDAO purDAO = new PurchaseDAO();
+			Purchase pur  = new Purchase();
 			
+			pur.setUserId(userDTO.getId());
+			pur.setPresentationId(pre.getId());
+			
+			pur = purDAO.searchByUserAndPresentation(pur);
+			
+			request.setAttribute("onePresentation", pre);
+			request.setAttribute("onePurchase", pur);
 			request.setAttribute("errorMessage", e.getMessage());
 
 			request.getRequestDispatcher("/WEB-INF/presentation/detail.jsp").forward(request,response);
