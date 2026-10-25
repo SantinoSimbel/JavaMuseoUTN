@@ -9,9 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import data.CategoryDAO;
 import data.UserDAO;
-import entities.Category;
 import entities.User;
 import entities.UserSessionDTO;
 import logic.UserLogic;
@@ -189,13 +187,24 @@ public class UserServlet extends HttpServlet {
 	    
 		delUser.setId(userDTO.getId());
 		
-		UserDAO dao  = new UserDAO();
-		dao.delete(delUser);
+		UserLogic logic = new UserLogic();
+		try {
+			logic.deleteUser(delUser);
+			
+			//cierro la session
+			request.getSession().invalidate();
+			
+			response.sendRedirect("index.jsp");
+		} catch (Exception e) {
+			
+			request.setAttribute("errorMessage", e.getMessage());
+			//mando el user con sus datos actuales para que el usuario no escriba todo de nuevo
+			UserDAO userDAO = new UserDAO();
+			request.setAttribute("oneUser", userDAO.search(delUser)); 
+			request.setAttribute("editing", true);
+			request.getRequestDispatcher("/WEB-INF/user/form.jsp").forward(request,response);
+		}
 		
-		//cierro la session
-		request.getSession().invalidate();
-		
-		response.sendRedirect("index.jsp");
 	}
 	
 	public void changeUserRole(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

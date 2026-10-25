@@ -1,14 +1,19 @@
 package logic;
 
+import java.util.LinkedList;
+
 import com.password4j.Password;
 
+import data.PurchaseDAO;
 import data.UserDAO;
+import entities.Purchase;
 import entities.User;
 import entities.UserSessionDTO;
 
 public class UserLogic {
 
 	private UserDAO dao = new UserDAO();
+	private PurchaseDAO purDao = new PurchaseDAO();
 	
 	public void registerUser(User newUser) throws Exception{
 		
@@ -56,6 +61,20 @@ public class UserLogic {
 		dao.update(newUser);
 	}
 	
+	public void deleteUser (User delUser) throws Exception{
+		//buscamos si tiene compras
+		LinkedList<Purchase> purchases = purDao.searchAllNotFinishedByUser(delUser);
+		
+		if (purchases == null) {
+		    throw new Exception("No se pudieron comprobar las compras del usuario.");
+		}
+		
+		if (!purchases.isEmpty()) {
+			throw new Exception("No se puede eliminar el usuario porque tiene compras de presentaciones que todavía no terminaron.");
+		}
+		dao.delete(delUser);
+	}
+	
 	public User loginUser(User loginUser) throws Exception{
 		
 		User dbUser = dao.searchByEmail(loginUser);
@@ -83,7 +102,7 @@ public class UserLogic {
 		}
 	}
 	
-	public boolean isUserDniTaken(User user){
+	private boolean isUserDniTaken(User user){
 		User userWithDni = dao.searchByDni(user);
 		
 		//si encontro el dni devuelve true
@@ -94,7 +113,7 @@ public class UserLogic {
 		}
 	}
 	
-	public boolean isUserEmailTaken(User user){
+	private boolean isUserEmailTaken(User user){
 		User userWithEmail = dao.searchByEmail(user);
 		
 		if (userWithEmail != null) {
@@ -104,7 +123,7 @@ public class UserLogic {
 		}
 	}
 	
-	public boolean isPasswordCorrect(User loginUser, User dbUser) {
+	private boolean isPasswordCorrect(User loginUser, User dbUser) {
 		if (Password.check(loginUser.getPassword(), dbUser.getPassword()).withBcrypt()) {
 			return true;
 		} else {
