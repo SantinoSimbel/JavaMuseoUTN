@@ -5,9 +5,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.LinkedList;
 
-import entities.Category;
 import entities.Purchase;
+import entities.User;
 
 public class PurchaseDAO {
 
@@ -46,6 +47,57 @@ public class PurchaseDAO {
 			try {
 				if(rs != null)rs.close();
 				if(stmt != null)stmt.close();
+				db.releaseConnection();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public LinkedList<Purchase> searchAllNotFinishedByUser(User u){
+		
+		LinkedList<Purchase> purchases = new LinkedList<>();
+		
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		Connection conn = null;
+		
+		try {
+			conn= db.getConnection();
+			stmt = conn.prepareStatement(
+					"SELECT p.user_id, p.presentation_id, p.quantity, p.total_price " +
+				    "FROM purchase p " +
+				    "INNER JOIN presentation pr ON p.presentation_id = pr.event_id " +
+				    "INNER JOIN event e ON pr.event_id = e.id " +
+				    "WHERE p.user_id = ? " +
+				    "AND TIMESTAMP(pr.day, e.endTime) > NOW()"
+				);
+
+			stmt.setInt(1, u.getId());
+			
+			rs = stmt.executeQuery();
+			
+			while(rs!= null && rs.next()) {
+				Purchase pur = new Purchase();
+				pur.setUserId(rs.getInt("user_id"));
+				pur.setPresentationId(rs.getInt("presentation_id"));
+				pur.setQuantity(rs.getInt("quantity"));
+		        pur.setTotalPrice(rs.getBigDecimal("total_price"));
+		        
+		        purchases.add(pur);
+			}
+			
+			return purchases;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			try {
+				if(rs != null)
+					rs.close();
+				if(stmt != null)
+					stmt.close();
 				db.releaseConnection();
 			} catch (SQLException e) {
 				e.printStackTrace();

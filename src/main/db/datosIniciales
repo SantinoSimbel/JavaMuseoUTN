@@ -139,7 +139,7 @@ CREATE TABLE `purchase` (
   `total_price` decimal(10,2) NOT NULL,
   PRIMARY KEY (`user_id`,`presentation_id`),
   CONSTRAINT `fk_purchase_presentation` FOREIGN KEY (`presentation_id`) REFERENCES `presentation` (`event_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
-  CONSTRAINT `fk_purchase_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+  CONSTRAINT `fk_purchase_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `purchase` (`user_id`, `presentation_id`, `quantity`, `total_price`) VALUES
