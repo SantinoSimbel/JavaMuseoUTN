@@ -5,13 +5,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.LinkedList;
 
 import entities.Event;
-import entities.Category;
 import entities.Item;
-import entities.Exhibition;
-import entities.Presentation;
+
 
 
 public class EventDAO {
@@ -314,7 +311,7 @@ public class EventDAO {
 			stmtItem.setInt(1, delEve.getId());
 			stmtItem.executeUpdate();
 			
-			stmt = conn.prepareStatement("delete from event where event_id = ?");
+			stmt = conn.prepareStatement("delete from event where id = ?");
 			stmt.setInt(1, delEve.getId());
 			stmt.executeUpdate();
 			
