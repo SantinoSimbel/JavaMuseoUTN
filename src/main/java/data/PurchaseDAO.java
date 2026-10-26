@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedList;
 
+import entities.Presentation;
 import entities.Purchase;
 import entities.User;
 
@@ -104,6 +105,47 @@ public class PurchaseDAO {
 			}
 		}
 	}
+	
+	public LinkedList<Purchase> searchByPresentation(Presentation pre){
+			
+			PreparedStatement stmt = null;
+			ResultSet rs = null;
+			Connection conn = null;
+			
+			try {
+				conn= db.getConnection();
+				LinkedList<Purchase> purchases = new LinkedList<>();
+				stmt = conn.prepareStatement("select user_id, presentation_id, quantity, total_price from purchase where presentation_id = ?");
+	
+				stmt.setInt(1, pre.getId());
+				
+				rs = stmt.executeQuery();
+				
+				while(rs!= null && rs.next()) {
+					Purchase pur = new Purchase();
+					pur.setUserId(rs.getInt("user_id"));
+					pur.setPresentationId(rs.getInt("presentation_id"));
+					pur.setQuantity(rs.getInt("quantity"));
+			        pur.setTotalPrice(rs.getBigDecimal("total_price"));
+			        
+			        purchases.add(pur);
+				}
+				
+				return purchases;
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+				return null;
+			} finally {
+				try {
+					if(rs != null)rs.close();
+					if(stmt != null)stmt.close();
+					db.releaseConnection();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	
 	public void addWithCapacityCheck(Purchase newPur) throws Exception {
 		//Primero lo hago con solo la logica de la primera compra
