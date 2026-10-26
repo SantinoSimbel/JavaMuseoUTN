@@ -301,12 +301,19 @@ public class PresentationServlet extends HttpServlet {
 		Presentation delPre = new Presentation();
 		delPre.setId(Integer.parseInt(request.getParameter("id")));
 		
-		EventDAO daoEv  = new EventDAO();
-		PresentationDAO daoPre = new PresentationDAO();
+		PresentationLogic logicPre = new PresentationLogic();
+		try {
+			logicPre.deletePresentation(delPre);
+			response.sendRedirect("PresentationServlet?operation=list");
+		} catch (Exception e) {
+			
+		    String operation = request.getParameter("operation");
+			LinkedList<Presentation> presentations = logicPre.getPresentations(request.getParameter("status"), operation);	
+			request.setAttribute("allPresentations", presentations);
+			request.setAttribute("errorMessage", e.getMessage());
+			request.getRequestDispatcher("/WEB-INF/presentation/list.jsp").forward(request,response);
+		}
 		
-		daoPre.delete(delPre);
-		daoEv.delete(delPre);
-		response.sendRedirect("PresentationServlet?operation=list");
 	}
 
 

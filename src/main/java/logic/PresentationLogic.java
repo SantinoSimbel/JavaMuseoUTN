@@ -2,6 +2,7 @@ package logic;
 
 import data.EventDAO;
 import data.PresentationDAO;
+import data.PurchaseDAO;
 import entities.Presentation;
 import java.time.*;
 import java.util.Comparator;
@@ -12,6 +13,7 @@ public class PresentationLogic {
 	
 	private PresentationDAO dao = new PresentationDAO();
 	private EventDAO daoEv = new EventDAO();
+	private PurchaseDAO purDao = new PurchaseDAO();
 	
 	
 	public LinkedList<Presentation> getPresentations(String status, String operation){
@@ -104,4 +106,15 @@ public class PresentationLogic {
         
         return 4; // Por si acaso hay un estado inválido
     }
+	
+	public void deletePresentation(Presentation delPre) throws Exception {
+		//si la presentacion tiene compras no borrar
+		
+		if (!purDao.searchByPresentation(delPre).isEmpty()){
+			throw new Exception("No puede borrarse la presentacion porque tiene compras asociadas.");
+		}
+		//si no tiene, borrar
+		dao.delete(delPre);
+		daoEv.delete(delPre);
+	}
 }

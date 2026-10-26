@@ -9,8 +9,11 @@
 <head>
     <title>List presentation</title>
     <%@ include file="/WEB-INF/common/head.jsp" %>
-    <%LinkedList<Presentation> presentationList = (LinkedList<Presentation>) request.getAttribute("allPresentations");
-    String currentStatus = request.getParameter("status");%>
+    <%	
+    	LinkedList<Presentation> presentationList = (LinkedList<Presentation>) request.getAttribute("allPresentations");
+    	String currentStatus = request.getParameter("status");
+    	String errorMessage = (String) request.getAttribute("errorMessage");
+    %>
 
 </head>
 <body>
@@ -43,7 +46,13 @@
     		</form>
 
 		</div>
-        
+        <!-- Mensajes de error -->
+		<%if(errorMessage != null){%>
+			<div class="alert alert-danger" role="alert">
+ 				<%= errorMessage %>
+			</div>
+		<%}%>
+		
         <p class="text-muted mb-2"> Presentaciones registradas: </p>
 
 		<%if(presentationList.isEmpty()){%>
