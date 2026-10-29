@@ -56,7 +56,8 @@
 					<%}%>
 					<div class= "mb-3">
 						<b><label class="form-label">Dni:</label></b>
-						<input type="text" name="dni" class="form-control" <%= editing ? "disabled" : "" %> required value="<%=dni%>">
+						<input type="text" name="dni" pattern="[0-9]{8}"
+							maxlength="8" minlength="8" class="form-control" <%= editing ? "disabled" : "" %> required value="<%=dni%>">
 						
 						<b><label class="form-label">Nombre:</label></b>
 						<input type="text" name="name" class="form-control" required value="<%=name%>">
@@ -65,7 +66,7 @@
 						<input type="text" name="surname" class="form-control" required value="<%=surname%>">
 						
 						<b><label class="form-label">Email:</label></b>
-						<input type="text" name="email" class="form-control" required value="<%=email%>">
+						<input type="email" name="email" class="form-control" required value="<%=email%>">
 						
 						<b><label class="form-label">Contraseña:</label></b>
 						<input type="password" name="password" class="form-control"
