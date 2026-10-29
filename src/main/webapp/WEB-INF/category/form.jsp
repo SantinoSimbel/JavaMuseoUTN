@@ -15,6 +15,8 @@
 	%>
 </head>
 <body>
+	<!-- Navbar -->
+	<%@ include file="/WEB-INF/common/navbar.jsp" %>
 	
 	<!-- Titulo y botones -->
 	<div class= "container mt-4">
