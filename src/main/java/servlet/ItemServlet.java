@@ -40,6 +40,9 @@ public class ItemServlet extends HttpServlet {
 		case "list":
 			getAllItem(request, response);
 			break;
+		case "userList":
+			getAllItem(request, response);
+			break;
 		case "new":
 			showForm(request, response);
 			break;
@@ -84,11 +87,18 @@ public class ItemServlet extends HttpServlet {
 	//GETALL
 	public void getAllItem(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
+		String operation = request.getParameter("operation");
+		
 		ItemDAO dao  = new ItemDAO();
 		LinkedList<Item> items = dao.list();
 		
 		request.setAttribute("allItems", items);
-		request.getRequestDispatcher("/WEB-INF/item/list.jsp").forward(request,response);
+		
+		String jsp = "userList".equals(operation)
+				? "/WEB-INF/item/userList.jsp"
+				: "/WEB-INF/item/list.jsp";
+		
+		request.getRequestDispatcher(jsp).forward(request,response);
 	}
 	
 	
