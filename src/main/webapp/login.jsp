@@ -41,7 +41,7 @@
 						<input type="hidden" name="operation" value= "login">
 							<div class= "mb-3">
 								<b><label class="form-label">Email:</label></b>
-								<input type="text" name="email" class="form-control" required value="<%=email%>" >
+								<input type="email" name="email" class="form-control" required value="<%=email%>" >
 								<b><label class="form-label">Contraseña:</label></b>
 								<input type="password" name="password" class="form-control" required value="<%=password%>">
 							</div>
