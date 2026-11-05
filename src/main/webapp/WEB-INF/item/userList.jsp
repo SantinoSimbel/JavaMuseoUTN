@@ -34,9 +34,8 @@
 		                   class="text-decoration-none text-white">
 		                   
 		                    <img src="<%= ite.getPicture() %>"
-		                         class="card-img"
-		                         alt="Imagen de <%= ite.getName() %>"
-		                         style="width: 100%; height: 220px; object-fit: contain;">
+		                         class="card-img item-card-img"
+		                         alt="Imagen de <%= ite.getName() %>">
 		                         
 		                     <div class="card-img-overlay d-flex flex-column  justify-content-end pb-1"
 		                     style="background: linear-gradient(to top, rgba(0,0,0,0.90),
