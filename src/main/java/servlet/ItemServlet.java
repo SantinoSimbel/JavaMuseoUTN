@@ -43,6 +43,9 @@ public class ItemServlet extends HttpServlet {
 		case "userList":
 			getAllItem(request, response);
 			break;
+		case "detail":
+			getOneItem(request, response);
+			break;
 		case "new":
 			showForm(request, response);
 			break;
@@ -101,7 +104,19 @@ public class ItemServlet extends HttpServlet {
 		request.getRequestDispatcher(jsp).forward(request,response);
 	}
 	
-	
+	public void getOneItem(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		ItemDAO dao  = new ItemDAO();
+		Item item = new Item();
+		
+		item.setId(Integer.parseInt(request.getParameter("id")));
+		
+		item = dao.search(item);
+		
+		request.setAttribute("oneItem", item);
+		
+		request.getRequestDispatcher("/WEB-INF/item/detail.jsp").forward(request,response);
+	}
 	
 	//SHOWFORM
 	public void showForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
