@@ -18,6 +18,9 @@ private ItemDAO itemDao = new ItemDAO();
 		dao.add(newCat);
 	}
 	
+	
+	
+	
 	public void updateCategory(Category newCat) throws Exception{
 		
 		if (isCategoryNameTaken(newCat)) {
@@ -26,6 +29,9 @@ private ItemDAO itemDao = new ItemDAO();
 		
 		dao.update(newCat);
 	}
+	
+	
+	
 	
 
 	public void deleteCategory(Category cat) throws Exception {
@@ -36,7 +42,11 @@ private ItemDAO itemDao = new ItemDAO();
 	}
 	
 	
-	public boolean isCategoryNameTaken(Category cat){
+	
+	
+	
+	
+	private boolean isCategoryNameTaken(Category cat){
 		Category catWithName = dao.searchByName(cat);
 		
 		//si encontro el dni devuelve true

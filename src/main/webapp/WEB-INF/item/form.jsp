@@ -51,8 +51,8 @@
 					<div class= "mb-3">
 						<b><label class="form-label">Nombre:</label></b>
 						<input type="text" name="name" class="form-control" required value="<%=name%>">
-						<b><label class="form-label">Descripción:</label></b>
-						<input type="text" name="description" class="form-control" required value="<%=description%>">
+						<b><label class="form-label" for="description">Descripción:</label></b>
+						<textarea name="description" id="description" class="form-control" rows="4" required style="resize: none;"><%=description%></textarea>
 						<b><label class="form-label">Link de imagen:</label></b>
 						<input type="text" name="picture" class="form-control" required value="<%=picture%>">
 						<b><label class="form-label">Seleccione la categoría:</label></b>

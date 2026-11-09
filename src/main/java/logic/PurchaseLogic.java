@@ -1,9 +1,8 @@
 package logic;
 
-import data.PresentationDAO;
+
 import data.PurchaseDAO;
 import data.UserDAO;
-import entities.Presentation;
 import entities.Purchase;
 import entities.User;
 
