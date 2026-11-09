@@ -16,7 +16,6 @@ import data.EventDAO;
 import data.ExhibitionDAO;
 import entities.Item;
 import entities.Exhibition;
-import logic.EventLogic;
 import logic.ExhibitionLogic;
 
 
@@ -192,12 +191,10 @@ public class ExhibitionServlet extends HttpServlet {
 		}
 		newEx.setItems(selectedItems);
 		
-		EventLogic logicEv = new EventLogic();
 		ExhibitionLogic logicEx = new ExhibitionLogic();
 		
 		try {
-			logicEv.registerEvent(newEx);	
-			logicEx.registerExhibition(newEx);
+			logicEx.addExhibition(newEx);
 			
 			response.sendRedirect("ExhibitionServlet?operation=list");
 		} catch (Exception e) {
@@ -247,11 +244,10 @@ public class ExhibitionServlet extends HttpServlet {
 		newEx.setItems(selectedItems);
 		
 
-		EventLogic logicEv = new EventLogic();
+
 		ExhibitionLogic logicEx = new ExhibitionLogic();
 		
 		try {
-			logicEv.updateEvent(newEx);	
 			logicEx.updateExhibition(newEx);
 			
 			response.sendRedirect("ExhibitionServlet?operation=list");

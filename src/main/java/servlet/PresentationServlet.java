@@ -13,14 +13,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import data.ItemDAO;
-import data.EventDAO;
 import data.PresentationDAO;
 import data.PurchaseDAO;
 import entities.Item;
 import entities.Presentation;
 import entities.Purchase;
 import entities.UserSessionDTO;
-import logic.EventLogic;
 import logic.PresentationLogic;
 
 
@@ -214,12 +212,11 @@ public class PresentationServlet extends HttpServlet {
 		newPre.setItems(selectedItems);
 		
 		
-		EventLogic logicEv = new EventLogic();
+
 		PresentationLogic logicPre = new PresentationLogic();
 		
 		try {
-			logicEv.registerEvent(newPre);	
-			logicPre.registerPresentation(newPre);
+			logicPre.addPresentation(newPre);
 			
 			response.sendRedirect("PresentationServlet?operation=list");
 		} catch (Exception e) {
@@ -270,11 +267,9 @@ public class PresentationServlet extends HttpServlet {
 		newPre.setItems(selectedItems);
 		
 		
-		EventLogic logicEv = new EventLogic();
 		PresentationLogic logicPre = new PresentationLogic();
 		
 		try {
-			logicEv.updateEvent(newPre);	
 			logicPre.updatePresentation(newPre);
 			
 			response.sendRedirect("PresentationServlet?operation=list");
