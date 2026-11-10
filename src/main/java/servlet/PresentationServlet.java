@@ -100,12 +100,12 @@ public class PresentationServlet extends HttpServlet {
 		
 		PresentationLogic logicPre = new PresentationLogic();
 	    String operation = request.getParameter("operation");
-		LinkedList<Presentation> presentations = logicPre.getPresentations(request.getParameter("status"), operation);
+		LinkedList<Presentation> presentations = logicPre.getPresentations(request.getParameter("status"));
 		
 		request.setAttribute("allPresentations", presentations);
-		String jsp = "userList".equals(operation)
-				? "/WEB-INF/presentation/userList.jsp"
-			    : "/WEB-INF/presentation/list.jsp";
+		String jsp = "list".equals(operation)
+				?  "/WEB-INF/presentation/list.jsp"
+			    :  "/WEB-INF/presentation/userList.jsp";
 		
 		request.getRequestDispatcher(jsp).forward(request,response);
 	}
@@ -113,11 +113,10 @@ public class PresentationServlet extends HttpServlet {
 	//GETONE
 	public void getOnePresentation(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		PresentationDAO preDAO = new PresentationDAO();
+		PresentationLogic preLog = new PresentationLogic();
 		
-		Presentation pre = new Presentation();
-		pre.setId(Integer.parseInt(request.getParameter("id")));
-		pre = preDAO.search(pre);
+		Presentation pre = preLog.getOne(Integer.parseInt(request.getParameter("id")));
+		
 		
 		//para poder mostrar los datos de la compra en el modal:
 		HttpSession session = request.getSession(false);
@@ -302,8 +301,7 @@ public class PresentationServlet extends HttpServlet {
 			response.sendRedirect("PresentationServlet?operation=list");
 		} catch (Exception e) {
 			
-		    String operation = request.getParameter("operation");
-			LinkedList<Presentation> presentations = logicPre.getPresentations(request.getParameter("status"), operation);	
+			LinkedList<Presentation> presentations = logicPre.getPresentations(request.getParameter("status"));	
 			request.setAttribute("allPresentations", presentations);
 			request.setAttribute("errorMessage", e.getMessage());
 			request.getRequestDispatcher("/WEB-INF/presentation/list.jsp").forward(request,response);

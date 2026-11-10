@@ -2,13 +2,24 @@ package entities;
 
 import java.math.BigDecimal;
 import java.time.*;
+import java.util.LinkedList;
 
 public class Presentation extends Event {
 	private LocalDate day;
 	private int capacity;
 	private BigDecimal  price;
+	private  LinkedList<Review> reviews;
 	
 	
+	public LinkedList<Review> getReviews() {
+		return reviews;
+	}
+	public void setReviews(LinkedList<Review> reviews) {
+		this.reviews = reviews;
+	}
+	public void addReviews(Review rev) {
+		this.reviews.add(rev);
+	}
 	public LocalDate getDay() {
 		return day;
 	}

@@ -1,8 +1,7 @@
 package servlet;
 
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.LinkedList;
+
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,7 +15,6 @@ import data.PurchaseDAO;
 import entities.Presentation;
 import entities.Purchase;
 import entities.UserSessionDTO;
-import logic.CategoryLogic;
 import logic.PurchaseLogic;
 
 /**

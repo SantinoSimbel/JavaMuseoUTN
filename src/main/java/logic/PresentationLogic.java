@@ -2,6 +2,7 @@ package logic;
 
 import data.PresentationDAO;
 import data.PurchaseDAO;
+import data.ReviewDAO;
 import entities.Presentation;
 import java.time.*;
 import java.util.Comparator;
@@ -12,10 +13,11 @@ public class PresentationLogic extends EventLogic {
 	
 	private PresentationDAO dao = new PresentationDAO();
 	private PurchaseDAO purDao = new PurchaseDAO();
+	private ReviewDAO revDao = new ReviewDAO();
 	
 	
 	//get presentations
-	public LinkedList<Presentation> getPresentations(String status, String operation){
+	public LinkedList<Presentation> getPresentations(String status){
 		LinkedList<Presentation> presentations = dao.list();
 		for (Presentation pre : presentations) {
 			pre.updateStatus();
@@ -25,17 +27,10 @@ public class PresentationLogic extends EventLogic {
 
 		
 		if (status == null || status.isEmpty()) {
+			presentations.sort(Comparator.<Presentation>comparingInt(p -> getPriority(p)).thenComparing(Presentation::getDay));
 			
-			if ("userList".equals(operation)) {
-				for (Presentation ex  : presentations) {
-					if (!ex.getStatus().equals("Terminado")) {
-						filtered.add(ex);
-					} 	
-				}				
-			}
-			else { filtered = presentations; }
+			return presentations;
 			
-			filtered.sort(Comparator.<Presentation>comparingInt(p -> getPriority(p)).thenComparing(Presentation::getDay));
 		} else {
 			for (Presentation ex  : presentations) {
 				if (ex.getStatus().equals(status)) {
@@ -49,6 +44,23 @@ public class PresentationLogic extends EventLogic {
 	}
 	
 
+	
+	
+	
+	//get one
+	public Presentation getOne(int id) {
+		
+		Presentation pre = new Presentation();
+		pre.setId(id);
+		pre = dao.search(pre);
+		
+		if(pre.getStatus().equals("Terminado")) {
+			pre.setReviews(revDao.searchByPresentation(pre));
+		}
+		
+		return pre;
+	} 
+	
 	
 	
 	
