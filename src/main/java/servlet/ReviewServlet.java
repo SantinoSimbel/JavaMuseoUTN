@@ -1,7 +1,6 @@
 package servlet;
 
 import java.io.IOException;
-import java.util.LinkedList;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,6 +12,7 @@ import javax.servlet.http.HttpSession;
 import data.ReviewDAO;
 import entities.Review;
 import entities.UserSessionDTO;
+
 
 /**
  * Servlet implementation class ReviewServlet
@@ -83,13 +83,12 @@ public class ReviewServlet extends HttpServlet {
 		
 		
 		Review newRev = new Review();
-		newRev.setUserId(userDTO.getId());
 		newRev.setPunctuation(Double.parseDouble(request.getParameter("punctuation")));
 		newRev.setContent(request.getParameter("content"));
 		
 		
 		ReviewDAO dao  = new ReviewDAO();
-		dao.add(newRev, idPre);
+		dao.add(newRev, idPre, userDTO.getId());
 		response.sendRedirect("PresentationServlet?operation=detail&id=" + idPre);
 		
 	}
@@ -108,22 +107,17 @@ public class ReviewServlet extends HttpServlet {
 		int idPre = Integer.parseInt(request.getParameter("presentationId"));
 		
 		Review updRev = new Review();
-		updRev.setUserId(userDTO.getId());
 		updRev.setPunctuation(Double.parseDouble(request.getParameter("punctuation")));
 		updRev.setContent(request.getParameter("content"));
 		
 		
 		ReviewDAO dao  = new ReviewDAO();
-		dao.update(updRev, idPre);
+		dao.update(updRev, idPre, userDTO.getId());
 		
 		
 		
 		response.sendRedirect("PresentationServlet?operation=detail&id=" + idPre);
 	}
-	
-	
-	
-	
 	
 	
 	

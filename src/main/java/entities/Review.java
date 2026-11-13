@@ -1,17 +1,17 @@
 package entities;
 
 public class Review {
-	private int userId;
+	private User user;
 	private String content;
 	private double punctuation;
 	
 	
 	
-	public int getUserId() {
-		return userId;
+	public User getUser() {
+		return user;
 	}
-	public void setUserId(int userId) {
-		this.userId = userId;
+	public void setUser(User user) {
+		this.user = user;
 	}
 	public String getContent() {
 		return content;

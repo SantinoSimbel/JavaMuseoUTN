@@ -144,9 +144,9 @@
 			<% 
 				// Verificamos si el usuario actual ya dejó una reseña
 				Review userReview = null;
-				if (userDTO != null && !pre.getReviews().isEmpty()) {
+				if (userDTO != null && pre.getReviews() != null) {
 					for (Review r : pre.getReviews()) {
-						if (r.getUserId() == userDTO.getId()) {
+						if (r.getUser().getId() == userDTO.getId()) {
 							userReview = r;
 							break;
 						}
@@ -245,7 +245,7 @@
 									<!-- Cabecera de la tarjeta: Usuario y Estrellas -->
 									<div class="d-flex justify-content-between align-items-center mb-2">
 										<span class="fw-bold text-secondary">
-											<i class="bi bi-person-circle"></i> Usuario ID: <%= rev.getUserId() %>
+											<i class="bi bi-person-circle"></i> <%= rev.getUser().getFullName() %>
 										</span>
 									</div>
 
