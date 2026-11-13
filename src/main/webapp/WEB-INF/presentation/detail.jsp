@@ -1,3 +1,4 @@
+<%@page import="entities.Review"%>
 <%@page import="entities.Purchase"%>
 <%@page import="entities.Presentation"%>
 <%@page import="entities.Item"%>
@@ -117,16 +118,175 @@
         <% } %>
         <!-- Boton compra -->
 		<div class="d-flex justify-content-center mt-4">
-		<% if (userDTO != null){ %>
-		    <button type="button" class="btn btn-success text-nowrap" data-bs-toggle="modal" data-bs-target="#purchaseModal">
-		        Comprar Entradas
-		    </button>
-		<%} else{ %>
-			<a  href="login.jsp" class="btn btn-primary text-nowrap">
-		        Iniciar sesion para comprar
-		    </a>
+		<% if(!pre.getStatus().equals("Terminado")){ %>
+			<% if (userDTO != null){ %>
+		    	<button type="button" class="btn btn-success text-nowrap" data-bs-toggle="modal" data-bs-target="#purchaseModal">
+		        	Comprar Entradas
+		    	</button>
+			<%} else { %>
+				<a  href="login.jsp" class="btn btn-primary text-nowrap">
+			        Iniciar sesion para comprar
+			    </a>
+			<%} %>
 		<%} %>
 		</div>
+		
+		
+		
+		
+		
+		
+		<!-- Reseñas  -->
+		<% if (pre.getStatus().equals("Terminado")){ %>
+		<div class="mt-5">
+			<h3 class="mb-4 text-center">Reseñas de la presentación</h3>
+
+			<% 
+				// Verificamos si el usuario actual ya dejó una reseña
+				Review userReview = null;
+				if (userDTO != null && !pre.getReviews().isEmpty()) {
+					for (Review r : pre.getReviews()) {
+						if (r.getUserId() == userDTO.getId()) {
+							userReview = r;
+							break;
+						}
+					}
+				}
+			%>
+
+			<!-- Formulario para Agregar o Editar Reseña -->
+			<% if (userDTO != null) { %>
+				<div class="card shadow-sm mb-4 bg-light">
+					<div class="card-body">
+						<h5 class="card-title mb-3">
+							<%= userReview != null ? "Edita tu reseña" : "Dinos qué te ha parecido la experiencia" %>
+						</h5>
+						
+						<!-- Formulario principal con los inputs -->
+						<form action="ReviewServlet" method="POST" id="reviewForm">
+							<input type="hidden" name="operation" value="<%= userReview != null ? "update" : "add" %>">
+							<input type="hidden" name="presentationId" value="<%= pre.getId() %>">
+							
+							<div class="mb-3">
+    							<label class="form-label">Puntuación:</label>
+    
+    							<input type="hidden" name="punctuation" id="punctuationInput" value="<%= userReview != null ? userReview.getPunctuation() : "5.0" %>" required>
+
+							    <div class="d-flex align-items-center gap-3 flex-wrap">
+        							<!-- Estrellas visuales -->
+        							<div id="starContainer" class="fs-3 text-warning" style="cursor: pointer;">
+            							<i class="bi bi-star-fill star" data-value="1"></i>
+            							<i class="bi bi-star-fill star" data-value="2"></i>
+            							<i class="bi bi-star-fill star" data-value="3"></i>
+            							<i class="bi bi-star-fill star" data-value="4"></i>
+            							<i class="bi bi-star-fill star" data-value="5"></i>
+        							</div>
+
+							        <!-- Botones + / - -->
+        							<div class="btn-group" role="group">
+            							<button type="button" class="btn btn-outline-secondary btn-sm" id="btnMinus"><i class="bi bi-dash"></i></button>
+            								<span class="px-3 py-1 border bg-white d-flex align-items-center fw-bold" id="scoreText">
+                								<%= userReview != null ? userReview.getPunctuation() : "5.0" %>★
+								            </span>
+            							<button type="button" class="btn btn-outline-secondary btn-sm" id="btnPlus"><i class="bi bi-plus"></i></button>
+        							</div>
+    							</div>
+							</div>
+
+							<!-- Llamada al archivo externo de JS -->
+							<script src="js/star-rating.js"></script>
+
+							<div class="mb-3">
+								<label for="content" class="form-label">Comentario:</label>
+								<textarea name="content" id="content" class="form-control" rows="2" required style="resize: none;"><%= userReview != null && userReview.getContent() != null ? userReview.getContent() : "" %></textarea>
+							</div>
+						</form>
+
+						<!-- Contenedor Flex para colocar los botones lado a lado de forma prolija -->
+						<div class="d-flex gap-2">
+							<!-- Botón que activa el formulario principal de actualizar/crear mediante el id="reviewForm" -->
+							<button type="submit" form="reviewForm" class="btn btn-success">
+								<%= userReview != null ? "Actualizar Reseña" : "Subir Reseña" %>
+							</button>
+							
+							<!-- Formulario independiente para eliminar (queda al lado) -->
+							<% if (userReview != null) { %>
+								<form action="ReviewServlet" method="POST" class="m-0" onsubmit="return confirm('¿Estás seguro de eliminar tu reseña?');">
+									<input type="hidden" name="operation" value="delete">
+									<input type="hidden" name="presentationId" value="<%= pre.getId() %>">
+									<button type="submit" class="btn btn-danger">
+										Eliminar Reseña
+									</button>
+								</form>
+							<% } %>
+						</div>
+
+					</div>
+				</div>
+			<% } else { %>
+				<div class="alert alert-info text-center">
+					<a href="login.jsp">Inicia sesión</a> para dejar tu reseña en esta presentación.
+				</div>
+			<% } %>
+
+			<!-- Mensaje si no hay reseñas -->
+			<% if (pre.getReviews() == null || pre.getReviews().isEmpty()){ %>
+				<div class="text-center text-muted mb-4">
+					<p>¡Sé el primero en comentar!</p>
+				</div>
+			<% } else { %>
+				<!-- Listado de Reseñas en Tarjetas (Estilo Grid similar a userList) -->
+				<div class="row g-4">
+					<% for (Review rev : pre.getReviews()) { %>
+						<div class="col-12 col-md-6 col-lg-4 d-flex align-items-stretch">
+							<div class="card w-100 shadow-sm d-flex flex-column justify-content-between">
+								<div class="card-body">
+									
+									<!-- Cabecera de la tarjeta: Usuario y Estrellas -->
+									<div class="d-flex justify-content-between align-items-center mb-2">
+										<span class="fw-bold text-secondary">
+											<i class="bi bi-person-circle"></i> Usuario ID: <%= rev.getUserId() %>
+										</span>
+									</div>
+
+									<!-- Renderizado Dinámico de Estrellas con decimales -->
+									<div class="mb-3 text-warning fs-5">
+										<% double punt = rev.getPunctuation();
+											for (int i = 1; i <= 5; i++) {
+												if (punt >= i) { %>
+													<i class="bi bi-star-fill"></i>
+										<%      } else if (punt >= i - 0.5) { %>
+													<i class="bi bi-star-half"></i>
+										<%      } else { %>
+													<i class="bi bi-star text-muted"></i>
+										<%      } 
+											} %>
+										<span class="ms-1 fs-6 text-dark fw-bold">(<%= punt %>)</span>
+									</div>
+
+									<!-- Contenido del comentario -->
+									<p class="card-text text-muted"><%= rev.getContent() %></p>
+								</div>
+							</div>
+						</div>
+					<% } %>
+				</div>
+			<% } %>
+		</div>
+		<% } %>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		<!-- Modal -->
 		<div class="modal fade" id="purchaseModal" tabindex="-1" aria-labelledby="purchaseModalLabel" aria-hidden="true">
