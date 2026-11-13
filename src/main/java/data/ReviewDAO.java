@@ -70,8 +70,8 @@ public class ReviewDAO {
 	
 	
 
-	//getOne(int idPre, int idUsr) -----------------------------------------------------------------------------------------------------
-	public Review getOne(int idPre, int idUsr){
+	//search(int idPre, int idUsr) -----------------------------------------------------------------------------------------------------
+	public Review search(int idPre, int idUsr){
 			
 			PreparedStatement stmt = null;
 			ResultSet rs = null;
@@ -79,13 +79,14 @@ public class ReviewDAO {
 			
 			try {
 				conn= db.getConnection();
-				Review rev = new Review();
+				Review rev = null;
 				stmt = conn.prepareStatement("select r.user_id, r.content, r.punctuation, u.name, u.surname "
 												+ "from review r "
 												+ "inner join user u on u.id = r.user_id "
 												+ "where presentation_id = ? and user_id = ?");
 	
 				stmt.setInt(1, idPre);
+				stmt.setInt(2, idUsr);
 				
 				rs = stmt.executeQuery();
 				
@@ -95,6 +96,7 @@ public class ReviewDAO {
 					usr.setName(rs.getString("name"));
 					usr.setSurname(rs.getString("surname"));
 					
+					rev = new Review();
 					rev.setUser(usr);
 					rev.setContent(rs.getString("content"));
 					rev.setPunctuation(rs.getDouble("punctuation"));

@@ -17,6 +17,7 @@
     	Presentation pre = (Presentation) request.getAttribute("onePresentation"); 
     	String errorMessage = (String) request.getAttribute("errorMessage");
     	Purchase pur = (Purchase) request.getAttribute("onePurchase");
+    	Review rev = (Review) request.getAttribute("oneReview");
     %>
 </head>
 
@@ -139,38 +140,25 @@
 		<!-- Reseñas  -->
 		<% if (pre.getStatus().equals("Terminado")){ %>
 		<div class="mt-5">
-			<h3 class="mb-4 text-center">Reseñas de la presentación</h3>
 
-			<% 
-				// Verificamos si el usuario actual ya dejó una reseña
-				Review userReview = null;
-				if (userDTO != null && pre.getReviews() != null) {
-					for (Review r : pre.getReviews()) {
-						if (r.getUser().getId() == userDTO.getId()) {
-							userReview = r;
-							break;
-						}
-					}
-				}
-			%>
 
 			<!-- Formulario para Agregar o Editar Reseña -->
-			<% if (userDTO != null) { %>
+			<% if (userDTO != null && pur != null) { %>
 				<div class="card shadow-sm mb-4 bg-light">
 					<div class="card-body">
 						<h5 class="card-title mb-3">
-							<%= userReview != null ? "Edita tu reseña" : "Dinos qué te ha parecido la experiencia" %>
+							<%= rev != null ? "Edita tu reseña" : "Dinos qué te ha parecido la experiencia" %>
 						</h5>
 						
 						<!-- Formulario principal con los inputs -->
 						<form action="ReviewServlet" method="POST" id="reviewForm">
-							<input type="hidden" name="operation" value="<%= userReview != null ? "update" : "add" %>">
+							<input type="hidden" name="operation" value="<%= rev != null ? "update" : "add" %>">
 							<input type="hidden" name="presentationId" value="<%= pre.getId() %>">
 							
 							<div class="mb-3">
     							<label class="form-label">Puntuación:</label>
     
-    							<input type="hidden" name="punctuation" id="punctuationInput" value="<%= userReview != null ? userReview.getPunctuation() : "5.0" %>" required>
+    							<input type="hidden" name="punctuation" id="punctuationInput" value="<%= rev != null ? rev.getPunctuation() : "5.0" %>" required>
 
 							    <div class="d-flex align-items-center gap-3 flex-wrap">
         							<!-- Estrellas visuales -->
@@ -186,7 +174,7 @@
         							<div class="btn-group" role="group">
             							<button type="button" class="btn btn-outline-secondary btn-sm" id="btnMinus"><i class="bi bi-dash"></i></button>
             								<span class="px-3 py-1 border bg-white d-flex align-items-center fw-bold" id="scoreText">
-                								<%= userReview != null ? userReview.getPunctuation() : "5.0" %>★
+                								<%= rev != null ? rev.getPunctuation() : "5.0" %>★
 								            </span>
             							<button type="button" class="btn btn-outline-secondary btn-sm" id="btnPlus"><i class="bi bi-plus"></i></button>
         							</div>
@@ -198,7 +186,7 @@
 
 							<div class="mb-3">
 								<label for="content" class="form-label">Comentario:</label>
-								<textarea name="content" id="content" class="form-control" rows="2" required style="resize: none;"><%= userReview != null && userReview.getContent() != null ? userReview.getContent() : "" %></textarea>
+								<textarea name="content" id="content" class="form-control" rows="2" required style="resize: none;"><%= rev != null && rev.getContent() != null ? rev.getContent() : "" %></textarea>
 							</div>
 						</form>
 
@@ -206,11 +194,11 @@
 						<div class="d-flex gap-2">
 							<!-- Botón que activa el formulario principal de actualizar/crear mediante el id="reviewForm" -->
 							<button type="submit" form="reviewForm" class="btn btn-success">
-								<%= userReview != null ? "Actualizar Reseña" : "Subir Reseña" %>
+								<%= rev != null ? "Actualizar Reseña" : "Subir Reseña" %>
 							</button>
 							
 							<!-- Formulario independiente para eliminar (queda al lado) -->
-							<% if (userReview != null) { %>
+							<% if (rev != null) { %>
 								<form action="ReviewServlet" method="POST" class="m-0" onsubmit="return confirm('¿Estás seguro de eliminar tu reseña?');">
 									<input type="hidden" name="operation" value="delete">
 									<input type="hidden" name="presentationId" value="<%= pre.getId() %>">
@@ -223,7 +211,7 @@
 
 					</div>
 				</div>
-			<% } else { %>
+			<% } else if (userDTO == null){ %>
 				<div class="alert alert-info text-center">
 					<a href="login.jsp">Inicia sesión</a> para dejar tu reseña en esta presentación.
 				</div>
@@ -237,7 +225,7 @@
 			<% } else { %>
 				<!-- Listado de Reseñas en Tarjetas (Estilo Grid similar a userList) -->
 				<div class="row g-4">
-					<% for (Review rev : pre.getReviews()) { %>
+					<% for (Review r : pre.getReviews()) { %>
 						<div class="col-12 col-md-6 col-lg-4 d-flex align-items-stretch">
 							<div class="card w-100 shadow-sm d-flex flex-column justify-content-between">
 								<div class="card-body">
@@ -245,13 +233,13 @@
 									<!-- Cabecera de la tarjeta: Usuario y Estrellas -->
 									<div class="d-flex justify-content-between align-items-center mb-2">
 										<span class="fw-bold text-secondary">
-											<i class="bi bi-person-circle"></i> <%= rev.getUser().getFullName() %>
+											<i class="bi bi-person-circle"></i> <%= r.getUser().getFullName() %>
 										</span>
 									</div>
 
 									<!-- Renderizado Dinámico de Estrellas con decimales -->
 									<div class="mb-3 text-warning fs-5">
-										<% double punt = rev.getPunctuation();
+										<% double punt = r.getPunctuation();
 											for (int i = 1; i <= 5; i++) {
 												if (punt >= i) { %>
 													<i class="bi bi-star-fill"></i>
@@ -265,7 +253,7 @@
 									</div>
 
 									<!-- Contenido del comentario -->
-									<p class="card-text text-muted"><%= rev.getContent() %></p>
+									<p class="card-text text-muted"><%= r.getContent() %></p>
 								</div>
 							</div>
 						</div>

@@ -15,9 +15,11 @@ import javax.servlet.http.HttpSession;
 import data.ItemDAO;
 import data.PresentationDAO;
 import data.PurchaseDAO;
+import data.ReviewDAO;
 import entities.Item;
 import entities.Presentation;
 import entities.Purchase;
+import entities.Review;
 import entities.UserSessionDTO;
 import logic.PresentationLogic;
 
@@ -110,6 +112,11 @@ public class PresentationServlet extends HttpServlet {
 		request.getRequestDispatcher(jsp).forward(request,response);
 	}
 	
+	
+	
+	
+	
+	
 	//GETONE
 	public void getOnePresentation(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
@@ -127,20 +134,26 @@ public class PresentationServlet extends HttpServlet {
 		}
 		
 		Purchase pur = null;
+		Review rev = null;
 		
 		if (userDTO != null) {
 			
-		PurchaseDAO purDAO = new PurchaseDAO();
-		pur = new Purchase();
-		
-		pur.setUserId(userDTO.getId());
-		pur.setPresentationId(pre.getId());
-		
-		pur = purDAO.searchByUserAndPresentation(pur);
+			PurchaseDAO purDAO = new PurchaseDAO();
+			pur = new Purchase();
+			pur.setUserId(userDTO.getId());
+			pur.setPresentationId(pre.getId());
+			pur = purDAO.searchByUserAndPresentation(pur);
+			
+			
+			ReviewDAO revDAO = new ReviewDAO();
+			rev = new Review();
+			rev = revDAO.search(pre.getId(), userDTO.getId());
 		}
+		
 		
 		request.setAttribute("onePresentation", pre);
 		request.setAttribute("onePurchase", pur);
+		request.setAttribute("oneReview", rev);
 		request.getRequestDispatcher("/WEB-INF/presentation/detail.jsp").forward(request,response);
 
 	}
