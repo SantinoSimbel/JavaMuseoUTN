@@ -175,7 +175,8 @@ CREATE TABLE `review` (
   CONSTRAINT `fk_review_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-
+INSERT INTO `review` (`user_id`, `presentation_id`, `content`, `punctuation`) VALUES
+('2','6','¡Muy lindo todo!, super interctivo y se aprende demasiado.','4.5');
 
 
 DROP USER IF EXISTS 'java'@'%';
