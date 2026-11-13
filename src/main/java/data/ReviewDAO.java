@@ -36,7 +36,7 @@ public class ReviewDAO {
 				while(rs!= null && rs.next()) {
 					Review rev = new Review();
 					rev.setUserId(rs.getInt("user_id"));
-					rev.setContent("content");
+					rev.setContent(rs.getString("content"));
 					rev.setPunctuation(rs.getDouble("punctuation"));
 			        
 					reviews.add(rev);
@@ -113,7 +113,7 @@ public class ReviewDAO {
 
 		try {
 			conn= db.getConnection();
-			stmt = conn.prepareStatement("update item set content = ?, punctuation = ? where user_id = ? and presentation_id = ?");
+			stmt = conn.prepareStatement("update review set content = ?, punctuation = ? where user_id = ? and presentation_id = ?");
 			stmt.setString(1, updRev.getContent());
 			stmt.setDouble(2, updRev.getPunctuation());
 			stmt.setInt(3, updRev.getUserId());
@@ -148,7 +148,7 @@ public class ReviewDAO {
 			
 			try {
 				conn= db.getConnection();
-				stmt = conn.prepareStatement("delete from item where user_id = ? and presentation_id = ?");
+				stmt = conn.prepareStatement("delete from review where user_id = ? and presentation_id = ?");
 
 				stmt.setInt(1, userId);
 				stmt.setInt(2, preId);

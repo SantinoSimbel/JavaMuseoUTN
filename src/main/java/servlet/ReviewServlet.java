@@ -90,7 +90,7 @@ public class ReviewServlet extends HttpServlet {
 		
 		ReviewDAO dao  = new ReviewDAO();
 		dao.add(newRev, idPre);
-		request.getRequestDispatcher("/WEB-INF/presentation/detail.jsp").forward(request,response);
+		response.sendRedirect("PresentationServlet?operation=detail&id=" + idPre);
 		
 	}
 	
@@ -115,7 +115,10 @@ public class ReviewServlet extends HttpServlet {
 		
 		ReviewDAO dao  = new ReviewDAO();
 		dao.update(updRev, idPre);
-		request.getRequestDispatcher("/WEB-INF/presentation/detail.jsp").forward(request,response);
+		
+		
+		
+		response.sendRedirect("PresentationServlet?operation=detail&id=" + idPre);
 	}
 	
 	
@@ -134,7 +137,7 @@ public class ReviewServlet extends HttpServlet {
 		
 		ReviewDAO dao  = new ReviewDAO();
 		dao.delete(userDTO.getId(), idPre);
-		request.getRequestDispatcher("/WEB-INF/presentation/detail.jsp").forward(request,response);
+		response.sendRedirect("PresentationServlet?operation=detail&id=" + idPre);
 	}
 
 

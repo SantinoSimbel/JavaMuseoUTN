@@ -18,7 +18,7 @@ import entities.UserSessionDTO;
 /**
  * Servlet Filter implementation class AuthFilter
  */
-@WebFilter(urlPatterns = {"/UserServlet", "/PurchaseServlet"})
+@WebFilter(urlPatterns = {"/UserServlet", "/PurchaseServlet", "/ReviewServlet"})
 public class AuthFilter extends HttpFilter implements Filter {
     public AuthFilter() {
         super();
