@@ -72,6 +72,63 @@ public class ItemDAO {
 
 	}
 	
+	public LinkedList<Item> listByCategory(Category c) {
+		LinkedList<Item> items = new LinkedList<>();
+
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		Connection conn = null;
+		
+		try {
+			conn = db.getConnection(); 
+	        stmt = conn.prepareStatement(
+	                "SELECT i.id, i.name, i.description, i.picture, " +
+	                "i.category_id, c.name AS category_name " +
+	                "FROM item i " +
+	                "INNER JOIN category c ON i.category_id = c.id " +
+	                "WHERE i.category_id = ?");	
+	        
+			stmt.setInt(1, c.getId());
+			
+			rs = stmt.executeQuery();
+			
+
+			while (rs != null && rs.next()) {
+				Item ite = new Item();
+
+				ite.setId(rs.getInt("id"));
+				ite.setName(rs.getString("name"));
+				ite.setDescription(rs.getString("description"));
+				ite.setPicture(rs.getString("picture"));
+				
+	            Category cat = new Category();
+	            cat.setId(rs.getInt("category_id"));
+	            cat.setName(rs.getString("category_name"));
+
+	            ite.setCategory(cat);
+
+				items.add(ite); 
+			}
+			return items;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			// cerrar las conexiones para que no consuman recursos
+			try {
+				if (rs != null)
+					rs.close();
+				if (stmt != null)
+					stmt.close();
+				db.releaseConnection();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+
+		}
+
+	}
 	
 	
 	

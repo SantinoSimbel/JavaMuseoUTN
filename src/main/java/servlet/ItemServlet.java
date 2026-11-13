@@ -91,11 +91,29 @@ public class ItemServlet extends HttpServlet {
 	public void getAllItem(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		String operation = request.getParameter("operation");
+		String categoryId = request.getParameter("categoryId");
 		
 		ItemDAO dao  = new ItemDAO();
-		LinkedList<Item> items = dao.list();
+		CategoryDAO catDao = new CategoryDAO();
 		
-		request.setAttribute("allItems", items);
+		//filtro del userList
+		if (categoryId == null || categoryId.isEmpty()) {
+			LinkedList<Item> items = dao.list();
+			request.setAttribute("allItems", items);
+			
+		} else {
+			Category c = new Category();
+			c.setId(Integer.parseInt(categoryId));
+			
+			LinkedList<Item> items = dao.listByCategory(c);
+			request.setAttribute("allItems", items);
+		}
+		
+		LinkedList<Category> allCategories = catDao.list();
+		request.setAttribute("allCategories", allCategories);
+		
+		//para que 
+		request.setAttribute("selectedCategory", categoryId);
 		
 		String jsp = "userList".equals(operation)
 				? "/WEB-INF/item/userList.jsp"
