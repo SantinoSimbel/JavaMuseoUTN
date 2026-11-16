@@ -40,6 +40,12 @@ public class ItemServlet extends HttpServlet {
 		case "list":
 			getAllItem(request, response);
 			break;
+		case "userList":
+			getAllItem(request, response);
+			break;
+		case "detail":
+			getOneItem(request, response);
+			break;
 		case "new":
 			showForm(request, response);
 			break;
@@ -84,14 +90,57 @@ public class ItemServlet extends HttpServlet {
 	//GETALL
 	public void getAllItem(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		ItemDAO dao  = new ItemDAO();
-		LinkedList<Item> items = dao.list();
+		String operation = request.getParameter("operation");
+		String categoryId = request.getParameter("categoryId");
 		
-		request.setAttribute("allItems", items);
-		request.getRequestDispatcher("/WEB-INF/item/list.jsp").forward(request,response);
+		ItemDAO dao  = new ItemDAO();
+		CategoryDAO catDao = new CategoryDAO();
+		
+		//filtro del userList
+		if (categoryId == null || categoryId.isEmpty()) {
+			LinkedList<Item> items = dao.list();
+			request.setAttribute("allItems", items);
+			
+		} else {
+			Category c = new Category();
+			c.setId(Integer.parseInt(categoryId));
+			
+			LinkedList<Item> items = dao.listByCategory(c);
+			request.setAttribute("allItems", items);
+		}
+		
+		LinkedList<Category> allCategories = catDao.list();
+		request.setAttribute("allCategories", allCategories);
+		
+		//para que 
+		request.setAttribute("selectedCategory", categoryId);
+		
+		String jsp = "userList".equals(operation)
+				? "/WEB-INF/item/userList.jsp"
+				: "/WEB-INF/item/list.jsp";
+		
+		request.getRequestDispatcher(jsp).forward(request,response);
 	}
 	
-	
+	public void getOneItem(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		//estos parametros son para saber a que link volver al apretar el boton de volver
+		String from =request.getParameter("from");
+		String eventId =request.getParameter("eventId");
+		
+		ItemDAO dao  = new ItemDAO();
+		Item item = new Item();
+		
+		item.setId(Integer.parseInt(request.getParameter("id")));
+		
+		item = dao.search(item);
+		
+		request.setAttribute("oneItem", item);
+		
+		request.setAttribute("from", from);
+		request.setAttribute("eventId", eventId);
+		
+		request.getRequestDispatcher("/WEB-INF/item/detail.jsp").forward(request,response);
+	}
 	
 	//SHOWFORM
 	public void showForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

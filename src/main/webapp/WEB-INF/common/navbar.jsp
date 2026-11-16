@@ -15,7 +15,7 @@
 		<div class="collapse navbar-collapse" id="navbarNav">
 			<!--Centro-->
 			<ul class="navbar-nav position-absolute start-50 translate-middle-x navbar-links fs-5 gap-xl-5 ">
-				<li class="nav-item"><a class="nav-link text-nowrap" href="#"><i class="bi bi-bank"></i> Museo virtual</a>
+				<li class="nav-item"><a class="nav-link text-nowrap" href="ItemServlet?operation=userList"><i class="bi bi-bank"></i> Museo virtual</a>
 				</li>
 				<li class="nav-item"><a class="nav-link text-nowrap" href="ExhibitionServlet?operation=userList"><i class="bi bi-easel"></i> Exhibiciones</a>
 				</li>

@@ -62,6 +62,13 @@ public class AdminFilter extends HttpFilter implements Filter {
             }
         }
         
+        if (req.getRequestURI().endsWith("/ItemServlet")) {
+            if ("userList".equals(operation) || "detail".equals(operation)) {
+                chain.doFilter(request, response);
+                return;
+            }
+        }
+        
         HttpSession session = req.getSession(false);
 
         UserSessionDTO userDTO = null;
