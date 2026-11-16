@@ -15,9 +15,11 @@ import javax.servlet.http.HttpSession;
 import data.ItemDAO;
 import data.PresentationDAO;
 import data.PurchaseDAO;
+import data.ReviewDAO;
 import entities.Item;
 import entities.Presentation;
 import entities.Purchase;
+import entities.Review;
 import entities.UserSessionDTO;
 import logic.PresentationLogic;
 
@@ -100,24 +102,28 @@ public class PresentationServlet extends HttpServlet {
 		
 		PresentationLogic logicPre = new PresentationLogic();
 	    String operation = request.getParameter("operation");
-		LinkedList<Presentation> presentations = logicPre.getPresentations(request.getParameter("status"), operation);
+		LinkedList<Presentation> presentations = logicPre.getPresentations(request.getParameter("status"));
 		
 		request.setAttribute("allPresentations", presentations);
-		String jsp = "userList".equals(operation)
-				? "/WEB-INF/presentation/userList.jsp"
-			    : "/WEB-INF/presentation/list.jsp";
+		String jsp = "list".equals(operation)
+				?  "/WEB-INF/presentation/list.jsp"
+			    :  "/WEB-INF/presentation/userList.jsp";
 		
 		request.getRequestDispatcher(jsp).forward(request,response);
 	}
 	
+	
+	
+	
+	
+	
 	//GETONE
 	public void getOnePresentation(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		PresentationDAO preDAO = new PresentationDAO();
+		PresentationLogic preLog = new PresentationLogic();
 		
-		Presentation pre = new Presentation();
-		pre.setId(Integer.parseInt(request.getParameter("id")));
-		pre = preDAO.search(pre);
+		Presentation pre = preLog.getOne(Integer.parseInt(request.getParameter("id")));
+		
 		
 		//para poder mostrar los datos de la compra en el modal:
 		HttpSession session = request.getSession(false);
@@ -128,20 +134,26 @@ public class PresentationServlet extends HttpServlet {
 		}
 		
 		Purchase pur = null;
+		Review rev = null;
 		
 		if (userDTO != null) {
 			
-		PurchaseDAO purDAO = new PurchaseDAO();
-		pur = new Purchase();
-		
-		pur.setUserId(userDTO.getId());
-		pur.setPresentationId(pre.getId());
-		
-		pur = purDAO.searchByUserAndPresentation(pur);
+			PurchaseDAO purDAO = new PurchaseDAO();
+			pur = new Purchase();
+			pur.setUserId(userDTO.getId());
+			pur.setPresentationId(pre.getId());
+			pur = purDAO.searchByUserAndPresentation(pur);
+			
+			
+			ReviewDAO revDAO = new ReviewDAO();
+			rev = new Review();
+			rev = revDAO.search(pre.getId(), userDTO.getId());
 		}
+		
 		
 		request.setAttribute("onePresentation", pre);
 		request.setAttribute("onePurchase", pur);
+		request.setAttribute("oneReview", rev);
 		request.getRequestDispatcher("/WEB-INF/presentation/detail.jsp").forward(request,response);
 
 	}
@@ -302,8 +314,7 @@ public class PresentationServlet extends HttpServlet {
 			response.sendRedirect("PresentationServlet?operation=list");
 		} catch (Exception e) {
 			
-		    String operation = request.getParameter("operation");
-			LinkedList<Presentation> presentations = logicPre.getPresentations(request.getParameter("status"), operation);	
+			LinkedList<Presentation> presentations = logicPre.getPresentations(request.getParameter("status"));	
 			request.setAttribute("allPresentations", presentations);
 			request.setAttribute("errorMessage", e.getMessage());
 			request.getRequestDispatcher("/WEB-INF/presentation/list.jsp").forward(request,response);

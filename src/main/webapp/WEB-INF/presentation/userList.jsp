@@ -67,6 +67,8 @@
                                     <span class="badge text-bg-success text-nowrap"> No empezada </span>
                                 <% } else if (pre.getStatus().equals("Empezado")) { %>
                                     <span class="badge text-bg-warning text-nowrap"> Empezada </span>
+                                <% } else { %>
+                                	<span class="badge text-bg-secondary"> Terminada </span>
                                 <% } %>
                             </div>
 
