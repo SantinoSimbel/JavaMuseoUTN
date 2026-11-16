@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
     const starContainer = document.getElementById("starContainer");
-    if (!starContainer) return; // Si no está el componente, no hace nada
+    if (!starContainer) return;
 
     const stars = starContainer.querySelectorAll(".star");
     const punctuationInput = document.getElementById("punctuationInput");
@@ -8,10 +8,13 @@ document.addEventListener("DOMContentLoaded", function() {
     const btnPlus = document.getElementById("btnPlus");
     const btnMinus = document.getElementById("btnMinus");
     
-    let currentValue = parseFloat(punctuationInput.value) || 5.0;
+    // Si el valor guardado es 0, parseFloat("0") da 0 (falsy), así que validamos contra NaN
+    let parsedVal = parseFloat(punctuationInput.value);
+    let currentValue = isNaN(parsedVal) ? 5.0 : parsedVal;
 
     function updateDisplay(val) {
-        currentValue = Math.max(1.0, Math.min(5.0, val));
+        // 1. Bajamos el límite mínimo de 1.0 a 0.0
+        currentValue = Math.max(0.0, Math.min(5.0, val));
         punctuationInput.value = currentValue;
         scoreText.textContent = currentValue.toFixed(1) + "★";
 
@@ -35,7 +38,11 @@ document.addEventListener("DOMContentLoaded", function() {
             const isLeftHalf = clickX < (rect.width / 2);
             
             let rating = index + (isLeftHalf ? 0.5 : 1.0);
-            if (rating < 1.0) rating = 1.0;
+            
+            if (rating === currentValue) {
+                rating = 0.0;
+            }
+            
             updateDisplay(rating);
         });
     });

@@ -186,7 +186,7 @@
 
 							<div class="mb-3">
 								<label for="content" class="form-label">Comentario:</label>
-								<textarea name="content" id="content" class="form-control" rows="2" required style="resize: none;"><%= rev != null && rev.getContent() != null ? rev.getContent() : "" %></textarea>
+								<textarea name="content" id="content" class="form-control" rows="2" style="resize: none;"><%= rev != null && rev.getContent() != null ? rev.getContent() : "" %></textarea>
 							</div>
 						</form>
 
@@ -219,9 +219,15 @@
 
 			<!-- Mensaje si no hay reseñas -->
 			<% if (pre.getReviews() == null || pre.getReviews().isEmpty()){ %>
-				<div class="text-center text-muted mb-4">
-					<p>¡Sé el primero en comentar!</p>
-				</div>
+				<% if (pur == null){ %>
+					<div class="text-center text-muted mb-4">
+						<p>Todavía no hay reseñas disponibles</p>
+					</div>
+				<% } else { %>
+					<div class="text-center text-muted mb-4">
+						<p>¿Que tal te ha parecido la experiencia? ¡Sé el primero en comentar!</p>
+					</div>
+				<% }  %>
 			<% } else { %>
 				<!-- Listado de Reseñas en Tarjetas (Estilo Grid similar a userList) -->
 				<div class="row g-4">
