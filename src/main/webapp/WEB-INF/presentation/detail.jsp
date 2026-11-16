@@ -135,12 +135,7 @@
 			<%} %>
 		<%} %>
 		</div>
-		
-		
-		
-		
-		
-		
+			
 		<!-- Reseñas  -->
 		<% if (pre.getStatus().equals("Terminado")){ %>
 		<div class="mt-5">
@@ -273,19 +268,6 @@
 		</div>
 		<% } %>
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 		<!-- Modal -->
 		<div class="modal fade" id="purchaseModal" tabindex="-1" aria-labelledby="purchaseModalLabel" aria-hidden="true">
 			<div class="modal-dialog modal-dialog-centered">
@@ -300,6 +282,15 @@
 			      	<!-- formulario -->
 			      	<form action="PurchaseServlet" method="POST"> 
 			        	<div class="modal-body">
+			        		<!-- div invisible que prepara los datos para los calculos del js -->
+			        		<div id="purchaseData"
+							     data-price="<%= pre.getPrice() %>"
+							     data-previous-quantity="<%= pur != null ? pur.getQuantity() : 0 %>"
+							     data-previous-total="<%= pur != null && pur.getTotalPrice() != null
+							         ? pur.getTotalPrice()
+							         : java.math.BigDecimal.ZERO %>">
+			        		
+			        		</div>
 							<!-- Mensaje de error -->
 							<%if(errorMessage != null){%>
 								<div class="alert alert-danger" role="alert">
@@ -360,43 +351,7 @@
     <%@ include file="/WEB-INF/common/scripts.jsp" %>
     
     <!-- calculamos el total de la compra y las entradas totales para mostarlo-->
-	<script>
-		//apuntamos a los elementos 
-	    const quantityInput = document.getElementById("quantity");
-	    const totalPrice = document.getElementById("totalPrice");
-	    const totalTickets = document.getElementById("totalTickets");
-	    
-		//recuperamos los elementos de las clases java
-	    const price = Number("<%= pre.getPrice() %>");
-	    const previousQuantity = <%= pur != null ? pur.getQuantity() : 0 %>;
-	    const previousTotal = Number( "<%= pur != null && pur.getTotalPrice() != null
-	            ? pur.getTotalPrice()
-	            : java.math.BigDecimal.ZERO %>");
-	
-	    function updateTotal() {
-	        let quantity = Number(quantityInput.value);
-	
-	        //para no mostrar calculos extraños
-	        if (!Number.isFinite(quantity) || quantity < 1 || !Number.isInteger(quantity)) {
-	            quantity = 1;
-	        }
-	
-	        // Entradas anteriores + entradas nuevas
-	        const finalQuantity = previousQuantity + quantity;
-	
-	        // Importe anterior + importe de las entradas nuevas
-	        const finalPrice = previousTotal + (price * quantity);
-	
-	        if (totalTickets) {
-	            totalTickets.textContent = finalQuantity;
-	        }
-	
-	        totalPrice.textContent = Math.round(finalPrice);totalPrice.textContent = Math.round(finalPrice);
-	    }
-	
-	    quantityInput.addEventListener("input", updateTotal);
-	    updateTotal();
-	</script>
+    <script src="js/calculate-total.js"></script>
 	
 	<!--Si hay error abro el modal y lo muestro -->
 	<% if (request.getAttribute("errorMessage") != null) { %>
