@@ -37,15 +37,16 @@
 
         		<input type="hidden" name="operation" value="list">
        			<label for="status" class="form-label mb-0 text-nowrap"> Filtrar por estado: </label>
-        		<select name="status" id="status" class="form-select">
-    				<option value="" <%= (currentStatus == null || currentStatus.isEmpty()) ? "selected" : "" %>>Todos</option>
-    				<option value="Creado" <%= "Creado".equals(currentStatus) ? "selected" : "" %>>Creado</option>
-    				<option value="Empezado" <%= "Empezado".equals(currentStatus) ? "selected" : "" %>>Empezado</option>
-    				<option value="Terminado" <%= "Terminado".equals(currentStatus) ? "selected" : "" %>>Terminado</option>
-				</select>
-
-        		<button type="submit" class="btn btn-primary"> Filtrar </button>
-
+       			<div class="d-flex align-items-center gap-2 w-100">
+	        		<select name="status" id="status" class="form-select">
+	    				<option value="" <%= (currentStatus == null || currentStatus.isEmpty()) ? "selected" : "" %>>Todos</option>
+	    				<option value="Creado" <%= "Creado".equals(currentStatus) ? "selected" : "" %>>Creado</option>
+	    				<option value="Empezado" <%= "Empezado".equals(currentStatus) ? "selected" : "" %>>Empezado</option>
+	    				<option value="Terminado" <%= "Terminado".equals(currentStatus) ? "selected" : "" %>>Terminado</option>
+					</select>
+	
+	        		<button type="submit" class="btn btn-primary"> Filtrar </button>
+				</div>
     		</form>
 
 		</div>
