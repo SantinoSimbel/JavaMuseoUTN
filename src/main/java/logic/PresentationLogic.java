@@ -1,6 +1,5 @@
 package logic;
 
-import data.EventDAO;
 import data.PresentationDAO;
 import data.PurchaseDAO;
 import entities.Presentation;
@@ -8,14 +7,14 @@ import java.time.*;
 import java.util.Comparator;
 import java.util.LinkedList;
 
-public class PresentationLogic {
+public class PresentationLogic extends EventLogic {
 
 	
 	private PresentationDAO dao = new PresentationDAO();
-	private EventDAO daoEv = new EventDAO();
 	private PurchaseDAO purDao = new PurchaseDAO();
 	
 	
+	//get presentations
 	public LinkedList<Presentation> getPresentations(String status, String operation){
 		LinkedList<Presentation> presentations = dao.list();
 		for (Presentation pre : presentations) {
@@ -27,7 +26,7 @@ public class PresentationLogic {
 		
 		if (status == null || status.isEmpty()) {
 			
-			if (operation.equals("userList")) {
+			if ("userList".equals(operation)) {
 				for (Presentation ex  : presentations) {
 					if (!ex.getStatus().equals("Terminado")) {
 						filtered.add(ex);
@@ -36,7 +35,7 @@ public class PresentationLogic {
 			}
 			else { filtered = presentations; }
 			
-			filtered.sort(Comparator.<Presentation>comparingInt(p -> obtenerPrioridad(p)).thenComparing(Presentation::getDay));
+			filtered.sort(Comparator.<Presentation>comparingInt(p -> getPriority(p)).thenComparing(Presentation::getDay));
 		} else {
 			for (Presentation ex  : presentations) {
 				if (ex.getStatus().equals(status)) {
@@ -51,7 +50,11 @@ public class PresentationLogic {
 	
 
 	
-	public void registerPresentation(Presentation newPresentation) throws Exception{
+	
+	
+	
+	//add presentation
+	public void addPresentation(Presentation newPresentation) throws Exception{
 		
 		//validaciones
 		if (newPresentation.getDay().isBefore(LocalDate.now()) || newPresentation.getDay().equals(LocalDate.now())){
@@ -64,13 +67,18 @@ public class PresentationLogic {
 			throw new Exception("El precio no puede ser menor o igual a 0.");
 		}
 		
+		super.validationEvent(newPresentation);
 		daoEv.add(newPresentation);
 		dao.add(newPresentation);
 	}
 	
+	
+	
+	
+	
+	//update presentation
 	public void updatePresentation(Presentation newPresentation) throws Exception{
 
-		Presentation oldPresentation = dao.search(newPresentation);
 		
 		//validaciones
 		if (newPresentation.getDay().isBefore(LocalDate.now()) || newPresentation.getDay().equals(LocalDate.now())){
@@ -83,30 +91,16 @@ public class PresentationLogic {
 			throw new Exception("El precio no puede ser menor o igual a 0.");
 		}
 		
+		super.validationEvent(newPresentation);
 		daoEv.update(newPresentation);		
 		dao.update(newPresentation);
 	}
 	
 	
-	public int obtenerPrioridad(Presentation e) {
-        
-		
-		// Grupo 1: Creado"
-        if ("Creado".equals(e.getStatus())) {
-            return 1; 
-        }
-        // Grupo 2: Terminadas
-        else if ("Terminado".equals(e.getStatus())) {
-            return 2;
-        }
-        // Grupo 3: Empezadas
-        else if ("Empezado".equals(e.getStatus())) {
-            return 3;
-        }
-        
-        return 4; // Por si acaso hay un estado inválido
-    }
 	
+	
+	
+	//delete presentations
 	public void deletePresentation(Presentation delPre) throws Exception {
 		//si la presentacion tiene compras no borrar
 		
@@ -117,4 +111,8 @@ public class PresentationLogic {
 		dao.delete(delPre);
 		daoEv.delete(delPre);
 	}
+	
+	
+
+	
 }
