@@ -123,6 +123,9 @@ public class ItemServlet extends HttpServlet {
 	}
 	
 	public void getOneItem(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		//estos parametros son para saber a que link volver al apretar el boton de volver
+		String from =request.getParameter("from");
+		String eventId =request.getParameter("eventId");
 		
 		ItemDAO dao  = new ItemDAO();
 		Item item = new Item();
@@ -132,6 +135,9 @@ public class ItemServlet extends HttpServlet {
 		item = dao.search(item);
 		
 		request.setAttribute("oneItem", item);
+		
+		request.setAttribute("from", from);
+		request.setAttribute("eventId", eventId);
 		
 		request.getRequestDispatcher("/WEB-INF/item/detail.jsp").forward(request,response);
 	}

@@ -8,7 +8,8 @@
 	<%@ include file="/WEB-INF/common/head.jsp" %>
 	<%
 		Item item = (Item) request.getAttribute("oneItem");
-		//LinkedList<Item> itemsList = (LinkedList<Item>) request.getAttribute("allItems");
+		String from = (String) request.getAttribute("from");
+		String eventId = (String) request.getAttribute("eventId");
 	%>
 </head>
 <body>
@@ -18,8 +19,18 @@
     <div class="container mt-4 mb-3">
     	<div class="mx-auto" style="max-width: 850px;">
     		<!-- Boton -->
+    		<%
+    			//Para que el boton vuelva a la pagina de donde vino
+    			String backUrl = "ItemServlet?operation=userList";
+    		
+    			if ("presentation".equals(from) && eventId != null){
+    				backUrl = "PresentationServlet?operation=detail&id=" + eventId;
+    			} else if("exhibition".equals(from) && eventId != null) {
+    				backUrl = "ExhibitionServlet?operation=detail&id=" + eventId;
+    			}
+    		%>
     		<div class="d-flex justify-content-end mb-3">
-    			<a href="ItemServlet?operation=userList" class = "btn btn-secondary">
+    			<a href="<%=backUrl%>" class = "btn btn-secondary">
 					Regresar
 				</a>
     		</div>

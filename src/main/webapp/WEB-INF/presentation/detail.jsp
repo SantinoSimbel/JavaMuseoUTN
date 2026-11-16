@@ -75,21 +75,25 @@
                         <% boolean isFirst = true;
                         for (Item item : items) { %>
                             <div class="carousel-item <%= isFirst ? "active" : "" %>">
-                                <div class="row align-items-center">
-                                    <!-- Columna de la Imagen -->
-                                    <div class="col-12 col-sm-4 text-center mb-3 mb-sm-0">
-                                        <img src="<%= item.getPicture() %>" class="img-fluid rounded border" alt="<%= item.getName() %>" style="max-height: 150px; object-fit: cover;">
-                                    </div>
-                                    <!-- Columna de Datos -->
-                                    <div class="col-12 col-sm-8 text-start">
-                                        <h5 class="fw-bold mb-1"><%= item.getName() %></h5>
-                                        <p class="text-muted small mb-2"><%= item.getDescription() %></p>
-                                        <% if (item.getCategory() != null) { %>
-                                            <span class="badge bg-secondary"><%= item.getCategory().getName() %></span>
-                                        <% } %>
-                                    </div>
-                                </div>
+	                            <a href="ItemServlet?operation=detail&id=<%= item.getId() %>&from=presentation&eventId=<%= pre.getId() %>"
+	                            	class="text-decoration-none text-dark">
+	                                <div class="row align-items-center">
+	                                    <!-- Columna de la Imagen -->
+	                                    <div class="col-12 col-sm-4 text-center mb-3 mb-sm-0">
+	                                        <img src="<%= item.getPicture() %>" class="img-fluid rounded border" alt="<%= item.getName() %>" style="max-height: 150px; object-fit: cover;">
+	                                    </div>
+	                                    <!-- Columna de Datos -->
+	                                    <div class="col-12 col-sm-8 text-start">
+	                                        <h5 class="fw-bold mb-1"><%= item.getName() %></h5>
+	                                        <p class="text-muted small mb-2"><%= item.getDescription() %></p>
+	                                        <% if (item.getCategory() != null) { %>
+	                                            <span class="badge bg-secondary"><%= item.getCategory().getName() %></span>
+	                                        <% } %>
+	                                    </div>
+	                                </div>
+	                        	</a>
                             </div>
+                           
                         <% isFirst = false; } %>
                     </div>
                 </div>
