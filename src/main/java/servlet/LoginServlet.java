@@ -68,7 +68,7 @@ public class LoginServlet extends HttpServlet {
 			
 			//guardamos el usuario en la session y permanece ahi
 			request.getSession().setAttribute("user",userDTO);
-			response.sendRedirect("index.jsp");
+			response.sendRedirect(request.getContextPath() + "/");
 			
 		} catch (Exception e) {
 			request.setAttribute("errorMessage", e.getMessage());
@@ -82,7 +82,7 @@ public class LoginServlet extends HttpServlet {
 	public void logout(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		request.getSession().invalidate();
-		response.sendRedirect("index.jsp");
+		response.sendRedirect(request.getContextPath() + "/");
 		
 	}
 }

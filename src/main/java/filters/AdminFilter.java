@@ -80,7 +80,7 @@ public class AdminFilter extends HttpFilter implements Filter {
         if (userDTO != null && "admin".equals(userDTO.getRole())) {
             chain.doFilter(request, response);
         } else {
-            resp.sendRedirect("index.jsp");
+        	resp.sendRedirect(req.getContextPath() + "/");
         }
 
 	}

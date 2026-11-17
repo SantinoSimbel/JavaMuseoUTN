@@ -18,7 +18,7 @@ import logic.HomeLogic;
 /**
  * Servlet implementation class ExhibitionServlet
  */
-@WebServlet("/HomeServlet")
+@WebServlet("")
 public class HomeServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -35,11 +35,9 @@ public class HomeServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		String operation = request.getParameter("operation");
 		
-		if (operation.equals("homeList")) {
 		    getEventsAndItems(request, response);
-		}
+		
 	}
 
 		
@@ -54,7 +52,7 @@ public class HomeServlet extends HttpServlet {
 		request.setAttribute("somePresentations", logHome.getPresentations());
 		request.setAttribute("someItems", logHome.getItems());
 
-	    request.getRequestDispatcher("/WEB-INF/home.jsp").forward(request,response);
+	    request.getRequestDispatcher("/WEB-INF/index.jsp").forward(request,response);
 	}
 	
 	

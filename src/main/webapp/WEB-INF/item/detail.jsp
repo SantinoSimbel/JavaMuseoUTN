@@ -21,9 +21,11 @@
     		<!-- Boton -->
     		<%
     			//Para que el boton vuelva a la pagina de donde vino
-    			String backUrl = "ItemServlet?operation=userList";
+    			String backUrl = request.getContextPath() + "/";
     		
-    			if ("presentation".equals(from) && eventId != null){
+    			if ("userList".equals(from)){
+    				backUrl = "ItemServlet?operation=userList";
+    			} else if ("presentation".equals(from) && eventId != null){
     				backUrl = "PresentationServlet?operation=detail&id=" + eventId;
     			} else if("exhibition".equals(from) && eventId != null) {
     				backUrl = "ExhibitionServlet?operation=detail&id=" + eventId;
