@@ -9,98 +9,6 @@
     <title>Museum home</title>
     <%@ include file="/WEB-INF/common/head.jsp" %>
 
-    <style>
-        /* Carrusel horizontal compartido por las tres secciones */
-        .carousel-track {
-            display: flex;
-            flex-direction: row;
-            gap: 1rem;
-            padding: 1rem 0;
-            overflow-x: auto;
-            scroll-behavior: smooth;
-            scroll-snap-type: x mandatory;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-        }
-
-        .carousel-track::-webkit-scrollbar {
-            display: none;
-        }
-
-        /* Una tarjeta en móviles */
-        .carousel-track > .carousel-card {
-            flex: 0 0 100%;
-            min-width: 0;
-            scroll-snap-align: start;
-        }
-
-        /* Dos tarjetas en tablets */
-        @media (min-width: 768px) {
-            .carousel-track > .carousel-card {
-                flex: 0 0 calc((100% - 1rem) / 2);
-            }
-        }
-
-        /* Tres tarjetas en escritorio */
-        @media (min-width: 992px) {
-            .carousel-track > .carousel-card {
-                flex: 0 0 calc((100% - 2rem) / 3);
-            }
-        }
-
-        .carousel-card .card {
-            width: 100%;
-            min-width: 0;
-        }
-
-        /* Flechas ubicadas respecto del contenedor de SU carrusel */
-        .carousel-arrow {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 5;
-            width: 40px;
-            height: 40px;
-            padding: 0;
-            background-color: white;
-            border: 1px solid #dee2e6;
-            border-radius: 50%;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .carousel-arrow-left {
-            left: 0;
-        }
-
-        .carousel-arrow-right {
-            right: 0;
-        }
-        
-        .title-slot {
-    		min-height: 4.5rem;
-		}
-    </style>
-
-    <script>
-        function moveCarousel(carouselId, direction) {
-            const carousel = document.getElementById(carouselId);
-            if (!carousel) return;
-
-            const firstCard = carousel.querySelector('.carousel-card');
-            if (!firstCard) return;
-
-            const cardWidth = firstCard.getBoundingClientRect().width;
-            const gap = parseFloat(getComputedStyle(carousel).columnGap) || 0;
-
-            carousel.scrollBy({
-                left: direction * (cardWidth + gap),
-                behavior: 'smooth'
-            });
-        }
-    </script>
 
     <%
         LinkedList<Exhibition> exhibitionList =
@@ -361,5 +269,6 @@
 
     <!-- Scripts de Bootstrap -->
     <%@ include file="/WEB-INF/common/scripts.jsp" %>
+    <script src="${pageContext.request.contextPath}/js/carousel.js"></script>
 </body>
 </html>
