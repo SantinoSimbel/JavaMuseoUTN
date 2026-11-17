@@ -33,8 +33,9 @@ public abstract class EventLogic {
 	
 	
 	
-	protected int getPriority(Event e) {
+	protected int getPriority(Event e, String operation) {
         
+		
 		
 		// Grupo 1: Creado"
         if ("Creado".equals(e.getStatus())) {
@@ -42,11 +43,17 @@ public abstract class EventLogic {
         }
         // Grupo 2: Terminadas
         else if ("Terminado".equals(e.getStatus())) {
-            return 2;
+            if ("homeList".equals(operation)){
+            	return 3;
+            }
+        	return 2;
         }
         // Grupo 3: Empezadas
         else if ("Empezado".equals(e.getStatus())) {
-            return 3;
+        	if ("homeList".equals(operation)){
+            	return 2;
+            }
+        	return 3;
         }
         
         return 4; // Por si acaso hay un estado inválido

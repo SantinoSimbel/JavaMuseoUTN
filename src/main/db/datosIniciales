@@ -67,7 +67,11 @@ CREATE TABLE `user` (
 INSERT INTO `user` (`dni`, `name`, `surname`, `email`,`password`,`role` ) VALUES
 ('11111111','Admin','Nistrador','admin@gmail.com','$2b$10$PMKRvFgk.AH4/AphjK7NeOh8MuMJOKqg/aishVXD4iQCJ4mjgp/cO','admin'),
 ('22222222','Uzu','Hario','user@gmail.com','$2b$10$rE1OlLxGwjXRPyG.CLbr8.sXIJKfPmqnk2pVg0ZYTUBcXkQFz6zP6','user'),
-('33333333','Juan','Cito','juan@gmail.com','$2b$10$b3UZms0rsA7eU062mvlp.OiqSIgqZ43rt2Kou7DUeYtUCIxBvShoG','user');
+('33333333','Juan','Cito','juan@gmail.com','$2b$10$b3UZms0rsA7eU062mvlp.OiqSIgqZ43rt2Kou7DUeYtUCIxBvShoG','user'),
+('44444444','Homero','Simpson','simpson@gmail.com','$2b$10$ckMQzZgsVAxGiOy/yuhQUebsFrjpBSq5ho/x.FrNUTgrXhwndB/HK','user'),
+('55555555','Han','Solo','solo@gmail.com','$2b$10$TYF9O4HsVv9Fd7WVcillP.UH88B6zS7RtgZBeFBxPCSJ8C4jeeZ4q','user'),
+('66666666','Juan','Salvo','eternauta@gmail.com','$2b$10$z5AOx1ghXUgaEot.CVvJ1ObbqPOZeUjXj7qohREAyn/n/m8SbUVAW','user');
+
 
 
 
@@ -160,7 +164,9 @@ CREATE TABLE `purchase` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `purchase` (`user_id`, `presentation_id`, `quantity`, `total_price`) VALUES
-('2','3','2','10000') ,('2','7','1','7000'),('3','3','3','15000'),('2','6','4','9000');
+('2','3','2','10000') ,('2','7','1','7000'),('3','3','3','15000')
+,('2','6','3','9000'),('4','6','1','3000'),('5','6','2','6000'),('6','6','3','9000')
+,('3','4','1','10000'),('5','4','2','20000'),('4','4','1','10000');
 
 
 
@@ -176,7 +182,13 @@ CREATE TABLE `review` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `review` (`user_id`, `presentation_id`, `content`, `punctuation`) VALUES
-('2','6','¡Muy lindo todo!, super interctivo y se aprende demasiado.','4.5');
+('2','6','¡Muy lindo todo!, super interctivo y se aprende demasiado.','4.5'),
+('4','6','','3'),
+('6','6','Super entretenido e interactivo, mi hija disfruto esta hermosa muestra.','5'),
+('5','6','Me pareció aburridisima. Mucha charla para mi gusto.','0.5');
+
+
+
 
 
 DROP USER IF EXISTS 'java'@'%';

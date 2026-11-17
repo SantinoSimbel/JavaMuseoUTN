@@ -37,7 +37,7 @@ public class ExhibitionLogic extends EventLogic{
 			}
 			else { filtered = exhibitions; }
 			
-			filtered.sort(Comparator.<Exhibition>comparingInt(e -> getPriority(e)).thenComparing(Exhibition::getStartDay));
+			filtered.sort(Comparator.<Exhibition>comparingInt(e -> getPriority(e, operation)).thenComparing(Exhibition::getStartDay));
 		} else {
 			for (Exhibition ex  : exhibitions) {
 				if (ex.getStatus().equals(status)) {

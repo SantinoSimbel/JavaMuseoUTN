@@ -17,7 +17,7 @@ public class PresentationLogic extends EventLogic {
 	
 	
 	//get presentations
-	public LinkedList<Presentation> getPresentations(String status){
+	public LinkedList<Presentation> getPresentations(String status, String operation){
 		LinkedList<Presentation> presentations = dao.list();
 		for (Presentation pre : presentations) {
 			pre.updateStatus();
@@ -27,7 +27,7 @@ public class PresentationLogic extends EventLogic {
 
 		
 		if (status == null || status.isEmpty()) {
-			presentations.sort(Comparator.<Presentation>comparingInt(p -> getPriority(p)).thenComparing(Presentation::getDay));
+			presentations.sort(Comparator.<Presentation>comparingInt(p -> getPriority(p, operation)).thenComparing(Presentation::getDay));
 			
 			return presentations;
 			

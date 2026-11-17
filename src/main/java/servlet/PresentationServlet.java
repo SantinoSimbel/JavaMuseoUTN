@@ -102,7 +102,7 @@ public class PresentationServlet extends HttpServlet {
 		
 		PresentationLogic logicPre = new PresentationLogic();
 	    String operation = request.getParameter("operation");
-		LinkedList<Presentation> presentations = logicPre.getPresentations(request.getParameter("status"));
+		LinkedList<Presentation> presentations = logicPre.getPresentations(request.getParameter("status"), null);
 		
 		request.setAttribute("allPresentations", presentations);
 		String jsp = "list".equals(operation)
@@ -314,7 +314,7 @@ public class PresentationServlet extends HttpServlet {
 			response.sendRedirect("PresentationServlet?operation=list");
 		} catch (Exception e) {
 			
-			LinkedList<Presentation> presentations = logicPre.getPresentations(request.getParameter("status"));	
+			LinkedList<Presentation> presentations = logicPre.getPresentations(request.getParameter("status"), null);	
 			request.setAttribute("allPresentations", presentations);
 			request.setAttribute("errorMessage", e.getMessage());
 			request.getRequestDispatcher("/WEB-INF/presentation/list.jsp").forward(request,response);
