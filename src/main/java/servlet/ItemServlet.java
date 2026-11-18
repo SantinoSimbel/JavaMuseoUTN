@@ -181,15 +181,19 @@ public class ItemServlet extends HttpServlet {
 		newIte.setName(request.getParameter("name"));
 		newIte.setDescription(request.getParameter("description"));
 		
+		Category cat = new Category();
+	    cat.setId(Integer.parseInt(request.getParameter("category_id")));
+	    
+	    newIte.setCategory(cat);
 		
 		try {
-			Category cat = new Category();
-		    cat.setId(Integer.parseInt(request.getParameter("category_id")));
-		    
-		    newIte.setCategory(cat);
-		    
 			//guardamos la imagen fisicamente y en la DB el path a ella
 			String imagePath = saveImage(request);
+			
+			if (imagePath == null) {
+			    throw new ServletException("Debe seleccionar una imagen.");
+			}
+			
 			newIte.setPicture(imagePath);
 			
 			ItemDAO dao  = new ItemDAO();
@@ -213,21 +217,61 @@ public class ItemServlet extends HttpServlet {
 	//UPDATE
 	public void updateItem(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Item newIte = new Item();
-		newIte.setId(Integer.parseInt(request.getParameter("id")));
+		
+		Integer itemId = (Integer.parseInt(request.getParameter("id"))); 
+		
+		newIte.setId(itemId);
 		newIte.setName(request.getParameter("name"));
 		newIte.setDescription(request.getParameter("description"));
-		newIte.setPicture(request.getParameter("picture"));
-		
 		
 		Category cat = new Category();
 		cat.setId(Integer.parseInt(request.getParameter("category_id")));
 	    newIte.setCategory(cat);
-		
 	    
-		ItemDAO dao  = new ItemDAO();
-		dao.update(newIte);
-		response.sendRedirect("ItemServlet?operation=list");
+	    try {
+	    	ItemDAO dao  = new ItemDAO();
+	    	//busco el item actual para conservar su imagen anterior en caso de que no se haya cambiado
+	    	Item currentItem = new Item();
+	    	currentItem.setId(itemId);
+	    	currentItem = dao.search(currentItem);
+	    	
+	    	//recupero el path de la imagen anterior
+	    	String oldImagePath = currentItem.getPicture();
+	    	
+			newIte.setPicture(oldImagePath);
+	    	
+	    	//Intento guardar nueva imagen (devuelve null si no hay una selecionada)
+	    	
+	    	String imagePath = saveImage(request);
+	    	
+	    	if (imagePath != null) {
+				//nueva imagen, entonces guardo
+	    		newIte.setPicture(imagePath);
+			}
+	    
+			dao.update(newIte);
+			
+			//si habia nueva imagen => elimino fisicamente la vieja
+			
+	    	if (imagePath != null) {
+				//nueva imagen, entonces guardo
+	    		deleteImage(oldImagePath);
+			}
+			
+			response.sendRedirect("ItemServlet?operation=list");
+			
+		} catch (Exception e) {
+			
+			CategoryDAO categoryDAO = new CategoryDAO();
+		    request.setAttribute("allCategories", categoryDAO.list());
+		    
+			request.setAttribute("errorMessage", e.getMessage());
+			request.setAttribute("oneItem", newIte);
+	        request.setAttribute("editing", true);
+			request.getRequestDispatcher("/WEB-INF/item/form.jsp").forward(request, response);
+		}
 	}
+		    
 	
 	//DELETE
 	public void deleteItem(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -235,10 +279,28 @@ public class ItemServlet extends HttpServlet {
 		delIte.setId(Integer.parseInt(request.getParameter("id")));
 		
 		ItemDAO dao  = new ItemDAO();
-		dao.delete(delIte);
-		response.sendRedirect("ItemServlet?operation=list");
+		
+		try {
+			//busco item actual para tener el path de la img
+			Item currentItem = dao.search(delIte);
+			
+			dao.delete(delIte);
+			
+			deleteImage(currentItem.getPicture());
+			
+			response.sendRedirect("ItemServlet?operation=list");
+		} catch (Exception e) {
+			
+			request.setAttribute("errorMessage", e.getMessage());
+			
+			//reutilizamos el getAllItem que ya prepara toda la lista
+			getAllItem(request, response);
+			
+		}
+
 	}
 
+	
 	private String saveImage(HttpServletRequest request) throws ServletException, IOException {
 		
 		//recupero del formulario la imagen. se usa gertPart por que es un archivo
@@ -272,7 +334,7 @@ public class ItemServlet extends HttpServlet {
 		
 		// creamos la carpeta donde se guardan las imagenes
 		String uploadPath = getServletContext().getRealPath("/uploads/items");
-		System.out.println("CARPETA DE IMÁGENES: " + uploadPath);
+
 		// uploadDir representa la ruta donde vamos a guardar los archivos, todavia no crea la carpeta
 		File uploadDir = new File(uploadPath);
 		
@@ -292,6 +354,32 @@ public class ItemServlet extends HttpServlet {
 		
 		return "uploads/items/" + fileName;
 	}
+	
+	
+	private void deleteImage(String imagePath) {
 
+		//si no hay imagePath termina metodo aca para no intentar borrar algo inexistente
+	    if (imagePath == null || imagePath.isEmpty()) {
+	        return;
+	    }
+	    
+		//obtengo la ruta fisica de la carpeta donde  estan guardadas las img
+		String uploadPath = getServletContext().getRealPath("/uploads/items");
+		
+		//si no localizamos la carpeta, no podemos buscar ni eliminar la imagen, asi que volvemos
+		if (uploadPath == null) {
+			return;
+		}
+		
+		//representacion de la carpeta donde estan las img
+		File uploadDir = new File(uploadPath);
+		// uploadDir tiene la direccion a la carpeta correcta, y luego agarro solo el nombre de imagePath que llego como parametro. Para evitar que se borren cosas de otra carpeta. Entonces construyo nueva direccion con la carpeta correcta y el nombre de la img que quiero borrar.
+		File imageFile = new File(uploadDir,new File(imagePath).getName());
+		
+		if (imageFile.exists()) {
+			imageFile.delete();
+		}
+		
+	}	
 
 }

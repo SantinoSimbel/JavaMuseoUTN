@@ -63,7 +63,7 @@
 						<b><label class="form-label" for="description">Descripción:</label></b>
 						<textarea name="description" id="description" class="form-control" rows="4" required style="resize: none;"><%=description%></textarea>
 						<b><label class="form-label">Seleccione una imagen:</label></b>
-						<input type="file" name="picture" class="form-control" accept="image/*">
+						<input type="file" name="picture" class="form-control" accept="image/*" <%= editing ? "" : "required" %>>
 						<% if (editing && picture != null && !picture.isEmpty()) { %>
 						    <div class="mt-2">
 						        <p class= "mb-1"><b>Imagen actual:</b></p>
