@@ -62,8 +62,19 @@
 						<input type="text" name="name" class="form-control" required value="<%=name%>">
 						<b><label class="form-label" for="description">Descripción:</label></b>
 						<textarea name="description" id="description" class="form-control" rows="4" required style="resize: none;"><%=description%></textarea>
+						
 						<b><label class="form-label">Seleccione una imagen:</label></b>
-						<input type="file" name="picture" class="form-control" accept="image/*" <%= editing ? "" : "required" %>>
+						<!-- Input visually-hidden para poder mejorar la clase de bootstrap  -->
+						<input type="file"  name="picture" id="pictureInput" class="form-control visually-hidden"
+						 accept="image/*"<%= editing ? "" : "required" %>
+						 onchange="document.getElementById('fileName').textContent = this.files[0] ? this.files[0].name : 'Ningún archivo seleccionado';">
+						<label for="pictureInput" class="btn btn-outline-secondary w-100 text-start">
+							📁 Seleccionar archivo...
+						</label>
+						<div id="fileName" class="form-text text-truncate mt-1">
+							Ningún archivo seleccionado
+						</div>
+						
 						<% if (editing && picture != null && !picture.isEmpty()) { %>
 						    <div class="mt-2">
 						        <p class= "mb-1"><b>Imagen actual:</b></p>
