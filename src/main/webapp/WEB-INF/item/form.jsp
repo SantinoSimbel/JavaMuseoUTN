@@ -17,6 +17,8 @@
 		String description = item.getDescription() == null ? "" : item.getDescription();
 		String picture = item.getPicture() == null ? "" : item.getPicture();
 	 	LinkedList<Category> categories = (LinkedList<Category>) request.getAttribute("allCategories");
+	 	
+	 	String errorMessage = (String) request.getAttribute("errorMessage");
 	%>
 </head>
 <body>
@@ -40,6 +42,13 @@
 			"Modifique los campos que quiera editar:" : "Complete los campos:" %>
 		</p>
 		
+		<!-- Mensajes de error -->
+		<%if(errorMessage != null){%>
+			<div class="alert alert-danger" role="alert">
+ 				<%= errorMessage %>
+			</div>
+		<%}%>
+		
 		<!-- Formularios -->
 		<div class = "card shadow-sm">	
 			<div class = "card-body">
@@ -57,7 +66,7 @@
 						<input type="file" name="picture" class="form-control" accept="image/*">
 						<% if (editing && picture != null && !picture.isEmpty()) { %>
 						    <div class="mt-2">
-						        <p>Imagen actual:</p>
+						        <p class= "mb-1"><b>Imagen actual:</b></p>
 						        <img src="<%=request.getContextPath() + "/" + picture%>"
 						             alt="Imagen actual"
 						             style="max-width: 200px; max-height: 150px; object-fit: contain;">

@@ -181,19 +181,31 @@ public class ItemServlet extends HttpServlet {
 		newIte.setName(request.getParameter("name"));
 		newIte.setDescription(request.getParameter("description"));
 		
-		//guardamos la imagen fisicamente y en la DB el path a ella
-		String imagePath = saveImage(request);
-		newIte.setPicture(imagePath);
 		
-		Category cat = new Category();
-	    cat.setId(Integer.parseInt(request.getParameter("category_id")));
-	    
-	    newIte.setCategory(cat);
+		try {
+			Category cat = new Category();
+		    cat.setId(Integer.parseInt(request.getParameter("category_id")));
+		    
+		    newIte.setCategory(cat);
+		    
+			//guardamos la imagen fisicamente y en la DB el path a ella
+			String imagePath = saveImage(request);
+			newIte.setPicture(imagePath);
+			
+			ItemDAO dao  = new ItemDAO();
+			dao.add(newIte);
+			response.sendRedirect("ItemServlet?operation=list");
+			
+		} catch (Exception e) {
+			CategoryDAO categoryDAO = new CategoryDAO();
+		    request.setAttribute("allCategories", categoryDAO.list());
+		    
+			request.setAttribute("errorMessage", e.getMessage());
+			request.setAttribute("oneItem", newIte);
+	        request.setAttribute("editing", false);
+			request.getRequestDispatcher("/WEB-INF/item/form.jsp").forward(request, response);
+		}
 		
-		
-		ItemDAO dao  = new ItemDAO();
-		dao.add(newIte);
-		response.sendRedirect("ItemServlet?operation=list");
 		
 	}
 	
