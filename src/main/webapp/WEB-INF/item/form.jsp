@@ -43,7 +43,7 @@
 		<!-- Formularios -->
 		<div class = "card shadow-sm">	
 			<div class = "card-body">
-				<form action="ItemServlet" method="POST">
+				<form action="ItemServlet" method="POST" enctype="multipart/form-data">
 					<input type= "hidden" name="operation" value = "<%=editing ? "update" : "add"%>">
 					<%if(editing){ %>
 						<input type="hidden" name="id" value="<%=item.getId()%>">
@@ -53,8 +53,16 @@
 						<input type="text" name="name" class="form-control" required value="<%=name%>">
 						<b><label class="form-label" for="description">Descripción:</label></b>
 						<textarea name="description" id="description" class="form-control" rows="4" required style="resize: none;"><%=description%></textarea>
-						<b><label class="form-label">Link de imagen:</label></b>
-						<input type="text" name="picture" class="form-control" required value="<%=picture%>">
+						<b><label class="form-label">Seleccione una imagen:</label></b>
+						<input type="file" name="picture" class="form-control" accept="image/*">
+						<% if (editing && picture != null && !picture.isEmpty()) { %>
+						    <div class="mt-2">
+						        <p>Imagen actual:</p>
+						        <img src="<%=request.getContextPath() + "/" + picture%>"
+						             alt="Imagen actual"
+						             style="max-width: 200px; max-height: 150px; object-fit: contain;">
+						    </div>
+						<% } %>
 						<b><label class="form-label">Seleccione la categoría:</label></b>
 						<select name="category_id" class="form-select" required>
 							<% for (Category category : categories) { %>
