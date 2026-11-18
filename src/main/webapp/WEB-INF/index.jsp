@@ -25,17 +25,28 @@
 
     <div class="container mt-4">
         <!-- Título -->
-        <h1>¡Bienvenido!</h1>
-        <br>
-        <p style="text-align: justify;">
-            Bienvenido al Museo UTN (Unidad de Teletransportación Neo-dimensional) 
-            <br> Gracias a nuestros últimos avances en tecnología de viajes interdimensionales, en la U.T.N. logramos contactar a los dueños originales de los artículos más icónicos de múltiples universos y convencerlos de prestarlos temporalmente para su exhibición pública.
-            Recorré nuestra colección completa de manera online en el museo virtual, enterate de las próximas exhibiciones o comprá tus entradas para asistir a nuestras presentaciones. También te invitamos a visitarnos en nuestra sede presencial, donde podrás ver cada objeto cara a cara.
-        </p>
+        <div class="mx-auto px-4 px-md-5" style="max-width: 1100px;">
+            <div class="px-1">
+                <h1>¡Bienvenido!</h1>
+                <p class="mt-3" style="text-align: justify;">
+                    Bienvenido al Museo UTN (Unidad de Teletransportación Neo-dimensional) 
+         		   <br> Gracias a nuestros últimos avances en tecnología de viajes interdimensionales, en la U.T.N. logramos contactar a los dueños originales de los artículos más icónicos de múltiples universos y convencerlos de prestarlos temporalmente para su exhibición pública.
+            		Recorré nuestra colección completa de manera online en el museo virtual, enterate de las próximas exhibiciones o comprá tus entradas para asistir a nuestras presentaciones. También te invitamos a visitarnos en nuestra sede presencial, donde podrás ver cada objeto cara a cara.
+                </p>
+            </div>
+        </div>
 
         <!-- ==================== ITEMS ==================== -->
         <% if (itemList != null && !itemList.isEmpty()) { %>
-            <h3 class="mt-4 mb-3 text-center">Algunos de nuestros artículos</h3>
+           <div class="mx-auto px-4 px-md-5 mt-4 mb-2" style="max-width: 1100px;">
+    			<div class="px-1 d-flex justify-content-between align-items-center flex-wrap gap-2">
+        			<h3 class="mb-0">Algunos de nuestros artículos</h3>
+        			<a href="${pageContext.request.contextPath}/ItemServlet?operation=userList" 
+        				class="btn btn-outline-secondary btn-sm rounded-pill px-3 btn-see-all">
+            			Ver todos <i class="bi bi-arrow-right ms-1"></i>
+        			</a>
+    			</div>
+			</div> 
 
             <div class="position-relative px-4 px-md-5 mx-auto" style="max-width: 1100px;">
                 <div class="overflow-hidden position-relative px-1">
@@ -101,7 +112,15 @@
         
         <!-- ==================== PRESENTACIONES ==================== -->
         <% if (presentationList != null && !presentationList.isEmpty()) { %>
-            <h3 class="mt-4 mb-3 text-center">Algunas de nuestras presentaciones</h3>
+           <div class="mx-auto px-4 px-md-5 mt-4 mb-2" style="max-width: 1100px;">
+    			<div class="px-1 d-flex justify-content-between align-presentations-center flex-wrap gap-2">
+        			<h3 class="mb-0">Algunas de nuestras presentaciones</h3>
+        			<a href="${pageContext.request.contextPath}/PresentationServlet?operation=userList" 
+        				class="btn btn-outline-secondary btn-sm rounded-pill px-3 btn-see-all">
+            			Ver todos <i class="bi bi-arrow-right ms-1"></i>
+        			</a>
+    			</div>
+			</div> 
 
             <div class="position-relative px-4 px-md-5 mx-auto" style="max-width: 1100px;">
                 <div class="overflow-hidden position-relative px-1">
@@ -190,7 +209,15 @@
 
         <!-- ==================== EXHIBICIONES ==================== -->
         <% if (exhibitionList != null && !exhibitionList.isEmpty()) { %>
-            <h3 class="mt-4 mb-3 text-center">Algunas de nuestras exhibiciones</h3>
+           <div class="mx-auto px-4 px-md-5 mt-4 mb-2" style="max-width: 1100px;">
+    			<div class="px-1 d-flex justify-content-between align-exhibitions-center flex-wrap gap-2">
+        			<h3 class="mb-0">Algunas de nuestras exhibiciones</h3>
+        			<a href="${pageContext.request.contextPath}/ExhibitionServlet?operation=userList" 
+        				class="btn btn-outline-secondary btn-sm rounded-pill px-3 btn-see-all">
+            			Ver todos <i class="bi bi-arrow-right ms-1"></i>
+        			</a>
+    			</div>
+			</div> 
 
             <div class="position-relative px-4 px-md-5 mx-auto" style="max-width: 1100px;">
                 <div class="overflow-hidden position-relative px-1">

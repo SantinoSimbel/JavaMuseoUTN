@@ -139,3 +139,15 @@
 .title-slot {
     min-height: 4.5rem;
 }
+
+
+
+/* Botón "Ver todos/todas" de los encabezados del home */
+.btn-see-all i {
+    display: inline-block;
+    transition: transform 0.2s ease;
+}
+
+.btn-see-all:hover i {
+    transform: translateX(3px);
+}
