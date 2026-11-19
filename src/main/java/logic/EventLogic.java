@@ -43,14 +43,14 @@ public abstract class EventLogic {
         }
         // Grupo 2: Terminadas
         else if ("Terminado".equals(e.getStatus())) {
-            if ("homeList".equals(operation)){
+            if ("homeList".equals(operation) || "userList".equals(operation)){
             	return 3;
             }
         	return 2;
         }
         // Grupo 3: Empezadas
         else if ("Empezado".equals(e.getStatus())) {
-        	if ("homeList".equals(operation)){
+        	if ("homeList".equals(operation) || "userList".equals(operation)){
             	return 2;
             }
         	return 3;

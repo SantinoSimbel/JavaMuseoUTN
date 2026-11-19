@@ -29,7 +29,7 @@ public class PresentationLogic extends EventLogic {
 		if (status == null || status.isEmpty()) {
 			presentations.sort(Comparator.<Presentation>comparingInt(p -> getPriority(p, operation)).thenComparing(Presentation::getDay));
 			
-			return presentations;
+			filtered = presentations;
 			
 		} else {
 			for (Presentation ex  : presentations) {
