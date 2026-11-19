@@ -148,10 +148,12 @@
 			
 		<!-- Reseñas  -->
 		<% if (pre.getStatus().equals("Terminado")){ %>
-			<!-- Cartel de no poder sacar entradas -->
-			<div class="alert alert-secondary text-center mt-4">
-				No se puede sacar entradas para esta presentacion por que ha terminado.
-			</div>
+			<%if(userDTO!=null){ %>
+				<!-- Cartel de no poder sacar entradas -->
+				<div class="alert alert-secondary text-center mt-4">
+					No se puede sacar entradas para esta presentacion por que ha terminado.
+				</div>
+			<%} %>
 			
 			<div class="mt-4">
 				<!-- Formulario para Agregar o Editar Reseña -->
