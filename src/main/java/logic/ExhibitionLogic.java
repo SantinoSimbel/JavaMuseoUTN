@@ -28,16 +28,9 @@ public class ExhibitionLogic extends EventLogic{
 		
 		if (status == null || status.isEmpty()) {
 			
-			if ("userList".equals(operation)) {
-				for (Exhibition ex  : exhibitions) {
-					if (!ex.getStatus().equals("Terminado")) {
-						filtered.add(ex);
-					} 	
-				}				
-			}
-			else { filtered = exhibitions; }
+			exhibitions.sort(Comparator.<Exhibition>comparingInt(e -> getPriority(e, operation)).thenComparing(Exhibition::getStartDay));
 			
-			filtered.sort(Comparator.<Exhibition>comparingInt(e -> getPriority(e)).thenComparing(Exhibition::getStartDay));
+			filtered = exhibitions; 
 		} else {
 			for (Exhibition ex  : exhibitions) {
 				if (ex.getStatus().equals(status)) {
