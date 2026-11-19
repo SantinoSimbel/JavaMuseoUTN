@@ -52,7 +52,7 @@ public class HomeServlet extends HttpServlet {
 		request.setAttribute("somePresentations", logHome.getPresentations());
 		request.setAttribute("someItems", logHome.getItems());
 
-	    request.getRequestDispatcher("/WEB-INF/index.jsp").forward(request,response);
+	    request.getRequestDispatcher("/WEB-INF/home/index.jsp").forward(request,response);
 	}
 	
 	

@@ -25,7 +25,7 @@
 
 		<div class="d-flex justify-content-between align-items-center gap-2 mb-2">
     		<h1>Exhibiciones</h1>
-    		<a href="adminHome.jsp" class="btn btn-secondary text-nowrap"> Regresar al menu </a>
+    		<a href="AdminHomeServlet" class="btn btn-secondary text-nowrap"> Regresar al menu </a>
 		</div>
         
         
