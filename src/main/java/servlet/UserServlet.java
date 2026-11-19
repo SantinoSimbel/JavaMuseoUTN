@@ -132,7 +132,7 @@ public class UserServlet extends HttpServlet {
 			
 			//guardamos el usuario en la session y permanece ahi
 			request.getSession().setAttribute("user",userDTO);
-			response.sendRedirect("index.jsp");
+			response.sendRedirect(request.getContextPath() + "/");
 		} catch (Exception e) {
 			
 			request.setAttribute("errorMessage", e.getMessage());
@@ -194,7 +194,7 @@ public class UserServlet extends HttpServlet {
 			//cierro la session
 			request.getSession().invalidate();
 			
-			response.sendRedirect("index.jsp");
+			response.sendRedirect(request.getContextPath() + "/");
 		} catch (Exception e) {
 			
 			request.setAttribute("errorMessage", e.getMessage());

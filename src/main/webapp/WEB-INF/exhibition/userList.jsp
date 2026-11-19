@@ -33,6 +33,7 @@
 	                    <option value="" <%= (currentStatus == null || currentStatus.isEmpty()) ? "selected" : "" %>>Todas</option>
 	                    <option value="Creado" <%= "Creado".equals(currentStatus) ? "selected" : "" %>>No empezadas</option>
 	                    <option value="Empezado" <%= "Empezado".equals(currentStatus) ? "selected" : "" %>>Empezadas</option>
+	                    <option value="Terminado" <%= "Terminado".equals(currentStatus) ? "selected" : "" %>>Terminadas</option>
 	                </select>
 	                <button type="submit" class="btn btn-primary">
 	                    Filtrar
@@ -67,6 +68,8 @@
                                     <span class="badge text-bg-success text-nowrap"> No empezada </span>
                                 <% } else if (ex.getStatus().equals("Empezado")) { %>
                                     <span class="badge text-bg-warning text-nowrap"> Empezada </span>
+                                <% } else if (ex.getStatus().equals("Terminado")) { %>
+                                    <span class="badge text-bg-secondary"> Terminada </span>
                                 <% } %>
                             </div>
 

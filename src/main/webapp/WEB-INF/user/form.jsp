@@ -29,7 +29,7 @@
 				<%=editing ? "Mi cuenta" : "Crear cuenta" %>
 			</h1>
 		
-			<a href= <%=editing ? "index.jsp" : "login.jsp" %> 
+			<a href="${pageContext.request.contextPath}/<%= editing ? "" : "login.jsp" %>"
 			   class = "btn btn-secondary">
 				Volver
 			</a>

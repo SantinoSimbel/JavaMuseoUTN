@@ -7,7 +7,7 @@
 	<div class="container">
 	
 		<!--Izquierda-->
-		<a class="navbar-brand fs-3 fw-semibold" href="index.jsp">Museo UTN</a>
+		<a class="navbar-brand fs-3 fw-semibold" href="${pageContext.request.contextPath}/">Museo UTN</a>
 		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
 			<span class="navbar-toggler-icon"></span>
 		</button>

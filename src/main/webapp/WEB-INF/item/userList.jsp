@@ -77,7 +77,7 @@
 		    <% for (Item ite : itemsList) { %>
 		        <div class="col-6 col-md-4 col-lg-3">
 		            <div class="card h-100 shadow-sm">
-		                <a href="ItemServlet?operation=detail&id=<%=ite.getId()%>"
+		                <a href="ItemServlet?operation=detail&id=<%=ite.getId()%>&from=userList"
 		                   class="text-decoration-none text-white">
 		                   
 		                    <img src="<%= ite.getPicture() %>"
