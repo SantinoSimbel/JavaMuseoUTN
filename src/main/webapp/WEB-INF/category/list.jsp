@@ -25,7 +25,7 @@
 
 			<h1>Categorias</h1>
 
-			<a href="adminHome.jsp"
+			<a href="AdminHomeServlet"
 			   class = "btn btn-secondary">
 			Regresar al menu
 			</a>

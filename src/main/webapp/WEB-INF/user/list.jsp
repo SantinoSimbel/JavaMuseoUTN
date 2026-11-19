@@ -23,7 +23,7 @@
 
 			<h1>Usuarios</h1>
 
-			<a href="adminHome.jsp"
+			<a href="AdminHomeServlet"
 			   class = "btn btn-secondary">
 			Regresar al menu
 			</a>

@@ -23,7 +23,7 @@
 
 			<h1>Articulos</h1>
 
-			<a href="adminHome.jsp"
+			<a href="AdminHomeServlet"
 			   class = "btn btn-secondary">
 			Regresar al menu
 			</a>
