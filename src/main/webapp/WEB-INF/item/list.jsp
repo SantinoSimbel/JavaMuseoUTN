@@ -8,6 +8,8 @@
 	<%@ include file="/WEB-INF/common/head.jsp" %>
 	<%
 		LinkedList<Item> itemsList = (LinkedList<Item>) request.getAttribute("allItems");
+	
+		String errorMessage = (String) request.getAttribute("errorMessage");
 	%>
 </head>
 
@@ -31,6 +33,13 @@
 		   class="btn btn-success mb-3">
 			Nuevo Articulo 
 		</a>
+		
+		<!-- Mensajes de error -->
+		<%if(errorMessage != null){%>
+			<div class="alert alert-danger" role="alert">
+ 				<%= errorMessage %>
+			</div>
+		<%}%>
 				
 		<p class="text-muted mb-2">Seleccione un articulo para editarlo:</p>
 		

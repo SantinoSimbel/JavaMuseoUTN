@@ -17,6 +17,8 @@
 		String description = item.getDescription() == null ? "" : item.getDescription();
 		String picture = item.getPicture() == null ? "" : item.getPicture();
 	 	LinkedList<Category> categories = (LinkedList<Category>) request.getAttribute("allCategories");
+	 	
+	 	String errorMessage = (String) request.getAttribute("errorMessage");
 	%>
 </head>
 <body>
@@ -40,10 +42,17 @@
 			"Modifique los campos que quiera editar:" : "Complete los campos:" %>
 		</p>
 		
+		<!-- Mensajes de error -->
+		<%if(errorMessage != null){%>
+			<div class="alert alert-danger" role="alert">
+ 				<%= errorMessage %>
+			</div>
+		<%}%>
+		
 		<!-- Formularios -->
 		<div class = "card shadow-sm">	
 			<div class = "card-body">
-				<form action="ItemServlet" method="POST">
+				<form action="ItemServlet" method="POST" enctype="multipart/form-data">
 					<input type= "hidden" name="operation" value = "<%=editing ? "update" : "add"%>">
 					<%if(editing){ %>
 						<input type="hidden" name="id" value="<%=item.getId()%>">
@@ -53,8 +62,27 @@
 						<input type="text" name="name" class="form-control" required value="<%=name%>">
 						<b><label class="form-label" for="description">Descripción:</label></b>
 						<textarea name="description" id="description" class="form-control" rows="4" required style="resize: none;"><%=description%></textarea>
-						<b><label class="form-label">Link de imagen:</label></b>
-						<input type="text" name="picture" class="form-control" required value="<%=picture%>">
+						
+						<b><label class="form-label">Seleccione una imagen:</label></b>
+						<!-- Input visually-hidden para poder mejorar la clase de bootstrap  -->
+						<input type="file"  name="picture" id="pictureInput" class="form-control visually-hidden"
+						 accept="image/*"<%= editing ? "" : "required" %>
+						 onchange="document.getElementById('fileName').textContent = this.files[0] ? this.files[0].name : 'Ningún archivo seleccionado';">
+						<label for="pictureInput" class="btn btn-outline-secondary w-100 text-start">
+							📁 Seleccionar archivo...
+						</label>
+						<div id="fileName" class="form-text text-truncate mt-1">
+							Ningún archivo seleccionado
+						</div>
+						
+						<% if (editing && picture != null && !picture.isEmpty()) { %>
+						    <div class="mt-2">
+						        <p class= "mb-1"><b>Imagen actual:</b></p>
+						        <img src="<%=request.getContextPath() + "/" + picture%>"
+						             alt="Imagen actual"
+						             style="max-width: 200px; max-height: 150px; object-fit: contain;">
+						    </div>
+						<% } %>
 						<b><label class="form-label">Seleccione la categoría:</label></b>
 						<select name="category_id" class="form-select" required>
 							<% for (Category category : categories) { %>
