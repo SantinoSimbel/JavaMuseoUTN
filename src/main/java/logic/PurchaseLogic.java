@@ -1,8 +1,10 @@
 package logic;
 
 
+import data.PresentationDAO;
 import data.PurchaseDAO;
 import data.UserDAO;
+import entities.Presentation;
 import entities.Purchase;
 import entities.User;
 
@@ -10,6 +12,7 @@ public class PurchaseLogic {
 	
 	private PurchaseDAO purDao = new PurchaseDAO();
 	private UserDAO userDao = new UserDAO();
+	private PresentationDAO preDao = new PresentationDAO();
 	
 
 
@@ -27,6 +30,16 @@ public class PurchaseLogic {
 	    if ("admin".equals(user.getRole())) {
 	        throw new Exception("Una cuenta de administrador no puede comprar entradas.");
 	    }
+	    
+	    Presentation pre = new Presentation();
+	    pre.setId(newPur.getPresentationId());
+	    preDao.search(pre);
+	    
+	    if ("Termindo".equals(pre.getStatus())) {
+	        throw new Exception("No pueden comprarse entradas para una presentacion terminada.");
+			
+		}
+	    
 	    purDao.addWithCapacityCheck(newPur);
 	}
 	
