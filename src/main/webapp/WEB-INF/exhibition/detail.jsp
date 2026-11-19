@@ -41,13 +41,20 @@
                         <%= ex.getDescription() %>
                         <br>
                         <% if (ex.getStatus().equals("Creado")) { %>
+                            <i class="bi bi-hourglass-split"></i>
                             <b>Estado: </b> Aún no ha comenzado.
                         <% } else if (ex.getStatus().equals("Empezado")) { %>
+                            <i class="bi bi-play-circle-fill text-success"></i>
                             <b>Estado: </b> Se encuentra en curso.
-                        <% } %>
+                        <% } else if (ex.getStatus().equals("Terminado")) { %>
+                        	<i class="bi bi-check-circle-fill"></i>
+                            <b>Estado: </b> Ha concluido.
+                        <% }  %>
                         <br>
+                        <i class="bi bi-calendar-event"></i> 
                         <b>Desde el día</b> <%= ex.getStartDay().format( java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy") ) %> <b>hasta el </b> <%= ex.getEndDay().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy") ) %>
                         <br>
+                        <i class="bi bi-clock"></i>
                         <b>Desde las </b><%= ex.getStartTime() %> <b> hasta </b><%= ex.getEndTime() %>
                     </div>
                 </div>

@@ -48,14 +48,22 @@
                         <%= pre.getDescription() %>
                         <br>
                         <% if (pre.getStatus().equals("Creado")) { %>
+                            <i class="bi bi-hourglass-split"></i>
                             <b>Estado: </b> Aún no ha comenzado.
                         <% } else if (pre.getStatus().equals("Empezado")) { %>
+                            <i class="bi bi-play-circle-fill text-success"></i>
                             <b>Estado: </b> Se encuentra en curso.
-                        <% } %>
+                        <% } else if (pre.getStatus().equals("Terminado")) { %>
+                        	<i class="bi bi-check-circle-fill"></i>
+                            <b>Estado: </b> Ha concluido.
+                        <% }  %>
                         <br>
+                        <i class="bi bi-calendar-event"></i>
                         <b>El día </b><%= pre.getDay().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")) %> <br>
+                        <i class="bi bi-clock"></i>                        
                         <b>Desde las </b><%= pre.getStartTime() %> <b> hasta las </b><%= pre.getEndTime() %>
                         <br>
+                        <i class="bi bi-cash-stack"></i> 
                         <b>Precio: </b> $<%= pre.getPrice().intValue() %>
                     </div>
                 </div>
