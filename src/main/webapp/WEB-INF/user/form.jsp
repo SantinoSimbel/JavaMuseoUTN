@@ -34,102 +34,115 @@
 				Volver
 			</a>
 		</div>
+		<% if (editing){ %>
 		
-		<p class="text-muted mb-2"><%=editing ? 
-			"Modifique los datos que quiera editar:" : "Complete sus datos:" %>
-		</p>
-		
-		<!-- Mensajes de error -->
-		<%if(errorMessage != null){%>
-			<div class="alert alert-danger" role="alert">
- 				<%= errorMessage %>
-			</div>
-		<%}%>
-		
-		<!-- Formularios -->
-		<div class = "card shadow-sm">	
-			<div class = "card-body">
-				<form action="UserServlet" method="POST">
-					<input type= "hidden" name="operation" value = "<%=editing ? "update" : "add"%>">
+		<!-- Pestañas -->
+        <ul class="nav nav-tabs mb-3">
+            <li class="nav-item">
+                <button class="nav-link active"
+                        data-bs-toggle="tab"
+                        data-bs-target="#datos"
+                        type="button">
+                    Mis datos
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link"
+                        data-bs-toggle="tab"
+                        data-bs-target="#compras"
+                        type="button">
+                    Mis compras
+                </button>
+            </li>
+        </ul>
+        
+		<!-- Contenido de las pestañas -->
+		 <div class="tab-content">
+		 
+		 	<!-- Pestaña Mis datos -->
+		 	<div class="tab-pane fade show active" id="datos">
+		 		<p class="text-muted mb-2">
+                    Modifique los datos que quiera editar:
+                </p>
+                
+				<!-- Mensajes de error -->
+				<%if(errorMessage != null){%>
+					<div class="alert alert-danger" role="alert">
+		 				<%= errorMessage %>
+					</div>
+				<%}%>     
+				<!-- Formularios -->           
+                <%@ include file="formFields.jspf" %>
+                
+		        <!-- Otras acciones -->
+				<div class= "row mb-4">
 					<%if(editing){ %>
-						<input type="hidden" name="dni" value="<%=user.getDni()%>">
+						<!-- Cerrar session -->
+						<div class= "col-12 col-md-6 mt-4">	
+							<div class="card border-dark h-100 ">
+							    <div class="card-body d-flex flex-column justify-content-between">
+							        <h5 class="card-title text-dark">Cerrar sesión</h5>
+						
+							        <p class="card-text">
+							            Cierra tu sesión temporalmente.
+							        </p>
+							
+							        <form action="LoginServlet" method="POST"
+							              onsubmit="return confirm('¿Está seguro de que desea cerrar sesión?');">
+							              
+							            <input type="hidden" name="operation" value="logout">
+							
+							            <button type="submit" class="btn btn-outline-dark">
+							                Cerrar mi sesión
+							            </button>
+							        </form>
+							    </div>
+							</div>
+						</div>
+						<!-- Eliminar cuenta -->
+						<div class= "col-12 col-md-6 mt-4">
+							<div class="card border-danger h-100 ">
+							    <div class="card-body d-flex flex-column justify-content-between">
+							        <h5 class="card-title text-danger">Eliminar cuenta</h5>
+						
+							        <p class="card-text">
+							            Esta acción eliminará tu cuenta y no podrás recuperar tus datos.
+							        </p>
+							
+							        <form action="UserServlet" method="POST"
+							              onsubmit="return confirm('¿Está seguro de que desea eliminar su cuenta?');">
+							              
+							            <input type="hidden" name="operation" value="delete">
+							
+							            <button type="submit" class="btn btn-outline-danger">
+							                Eliminar mi cuenta
+							            </button>
+							        </form>
+							    </div>
+							</div>
+						</div>
 					<%}%>
-					<div class= "mb-3">
-						<b><label class="form-label">Dni:</label></b>
-						<input type="text" name="dni" pattern="[0-9]{8}"
-							maxlength="8" minlength="8" class="form-control" <%= editing ? "disabled" : "" %> required value="<%=dni%>">
-						
-						<b><label class="form-label">Nombre:</label></b>
-						<input type="text" name="name" class="form-control" required value="<%=name%>">
-						
-						<b><label class="form-label">Apellido:</label></b>
-						<input type="text" name="surname" class="form-control" required value="<%=surname%>">
-						
-						<b><label class="form-label">Email:</label></b>
-						<input type="email" name="email" class="form-control" required value="<%=email%>">
-						
-						<b><label class="form-label">Contraseña:</label></b>
-						<input type="password" name="password" class="form-control"
-							placeholder="<%= editing ? "••••••" : "" %>" <%= editing ? "" : "required" %>>
-						
-					</div>
-					<div class="text-center">
-					<button type="submit" class="btn btn-success">
-						<%= editing ? "Guardar datos" : "Registrarse" %>
-					</button>
-					</div>
-				</form>	
-			</div>
-		</div>
-		<!-- Otras acciones -->
-		<div class= "row mb-4">
-			<%if(editing){ %>
-				<!-- Cerrar session -->
-				<div class= "col-12 col-md-6 mt-4">	
-					<div class="card border-dark h-100 ">
-					    <div class="card-body d-flex flex-column justify-content-between">
-					        <h5 class="card-title text-dark">Cerrar sesión</h5>
-				
-					        <p class="card-text">
-					            Cierra tu sesión temporalmente.
-					        </p>
-					
-					        <form action="LoginServlet" method="POST"
-					              onsubmit="return confirm('¿Está seguro de que desea cerrar sesión?');">
-					              
-					            <input type="hidden" name="operation" value="logout">
-					
-					            <button type="submit" class="btn btn-outline-dark">
-					                Cerrar mi sesión
-					            </button>
-					        </form>
-					    </div>
-					</div>
 				</div>
-				<!-- Eliminar cuenta -->
-				<div class= "col-12 col-md-6 mt-4">
-					<div class="card border-danger h-100 ">
-					    <div class="card-body d-flex flex-column justify-content-between">
-					        <h5 class="card-title text-danger">Eliminar cuenta</h5>
-				
-					        <p class="card-text">
-					            Esta acción eliminará tu cuenta y no podrás recuperar tus datos.
-					        </p>
-					
-					        <form action="UserServlet" method="POST"
-					              onsubmit="return confirm('¿Está seguro de que desea eliminar su cuenta?');">
-					              
-					            <input type="hidden" name="operation" value="delete">
-					
-					            <button type="submit" class="btn btn-outline-danger">
-					                Eliminar mi cuenta
-					            </button>
-					        </form>
-					    </div>
-					</div>
-				</div>
-			<%}%>
-		</div>
+		 	</div>  <!-- Cierre de Mis datos -->
+		 	
+            <!-- Pestaña Mis compras -->
+            <div class="tab-pane fade" id="compras">
+                <h4 class="mb-3">Mis compras</h4>
+            </div>
+		 </div> <!-- Cierre de tab-content --> 
+		 
+		<%} else {%>
+			<!-- Si no es editing: -->
+			<p class="text-muted mb-2">Complete sus datos:</p>
+	
+	        <% if (errorMessage != null) { %>
+	            <div class="alert alert-danger" role="alert">
+	                <%= errorMessage %>
+	            </div>
+	        <% } %>
+	        
+	        <%@ include file="formFields.jspf" %>
+    <% } %>
 	</div>
 	
 <!--Script para que funcione el js de bootstrap-->	
