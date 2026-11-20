@@ -17,6 +17,7 @@ import data.CategoryDAO;
 import data.ItemDAO;
 import entities.Category;
 import entities.Item;
+import logic.ItemLogic;	
 
 /**
  * Servlet implementation class ItemServlet
@@ -284,7 +285,9 @@ public class ItemServlet extends HttpServlet {
 			//busco item actual para tener el path de la img
 			Item currentItem = dao.search(delIte);
 			
-			dao.delete(delIte);
+			ItemLogic logic = new ItemLogic();
+			
+			logic.deleteItem(delIte);
 			
 			deleteImage(currentItem.getPicture());
 			
@@ -299,6 +302,8 @@ public class ItemServlet extends HttpServlet {
 		}
 
 	}
+	
+	
 
 	
 	private String saveImage(HttpServletRequest request) throws ServletException, IOException {

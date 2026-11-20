@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+
 import entities.Event;
 import entities.Item;
 
@@ -14,6 +15,36 @@ import entities.Item;
 public class EventDAO {
 	private DbConnection db = new DbConnection();
 
+	
+	//existsByItem(Item ite) -----------------------------------------------------------------------------------------
+	public boolean existsByItem(Item ite) {
+	    PreparedStatement stmt = null;
+	    ResultSet rs = null;
+	    Connection conn = null;
+
+	    try {
+	        conn = db.getConnection();
+	        stmt = conn.prepareStatement("select 1 from event_item where item_id = ? limit 1");
+	        stmt.setInt(1, ite.getId());
+	        rs = stmt.executeQuery();
+
+	        return rs.next(); // devuelve true si encontró al menos una fila
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        return true; // ante un error, por dudas, bloqueamos el borrado
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (stmt != null) stmt.close();
+	            db.releaseConnection();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+	}
+	
+	
+	
 	
 	//add(Event newIte) -----------------------------------------------------------------------------------------
 	public void add(Event newEve) {

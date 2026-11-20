@@ -110,12 +110,6 @@ public class PresentationDAO {
 	
 	
 	
-	
-	
-	
-	
-	
-	
 	//search(Presentation p) -----------------------------------------------------------------------------------------
 	public Presentation search(Presentation p) {
 
