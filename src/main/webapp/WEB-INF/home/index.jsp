@@ -11,12 +11,9 @@
 
 
     <%
-        LinkedList<Exhibition> exhibitionList =
-            (LinkedList<Exhibition>) request.getAttribute("someExhibitions");
-        LinkedList<Item> itemList =
-            (LinkedList<Item>) request.getAttribute("someItems");
-        LinkedList<Presentation> presentationList =
-            (LinkedList<Presentation>) request.getAttribute("somePresentations");
+        LinkedList<Exhibition> exhibitionList = (LinkedList<Exhibition>) request.getAttribute("someExhibitions");
+        LinkedList<Item> itemList = (LinkedList<Item>) request.getAttribute("someItems");
+        LinkedList<Presentation> presentationList = (LinkedList<Presentation>) request.getAttribute("somePresentations");
     %>
 </head>
 <body>
@@ -25,13 +22,21 @@
 
     <div class="container mt-4">
         <!-- Título -->
-        <div class="mx-auto px-4 px-md-5" style="max-width: 1100px;">
+        <div class="mx-auto px-3 px-md-5" style="max-width: 1100px;">
             <div class="px-1">
-                <h1>¡Bienvenido!</h1>
-                <p class="mt-3" style="text-align: justify;">
-                    Bienvenido al Museo UTN (Unidad de Teletransportación Neo-dimensional) 
-         		   <br> Gracias a nuestros últimos avances en tecnología de viajes interdimensionales, en la U.T.N. logramos contactar a los dueños originales de los artículos más icónicos de múltiples universos y convencerlos de prestarlos temporalmente para su exhibición pública.
-            		Recorré nuestra colección completa de manera online en el museo virtual, enterate de las próximas exhibiciones o comprá tus entradas para asistir a nuestras presentaciones. También te invitamos a visitarnos en nuestra sede presencial, donde podrás ver cada objeto cara a cara.
+                <h1 class="fs-2 fs-md-1 mb-2">¡Bienvenido!</h1>
+
+                <p class="mt-2 mb-2 text-start lh-base" style="font-size: 0.95rem;">
+                    Bienvenido al <strong>Museo UTN</strong> (Unidad de Teletransportación Neo-dimensional).
+                    Gracias a nuestros últimos avances en tecnología de viajes interdimensionales, en la U.T.N.
+                    logramos contactar a los dueños originales de los artículos más icónicos de múltiples universos
+                    y convencerlos de prestarlos temporalmente para su exhibición pública.
+                </p>
+
+                <p class="mb-0 text-start lh-base" style="font-size: 0.95rem;">
+                    Recorré nuestra colección completa de manera online en el museo virtual, enterate de las
+                    próximas exhibiciones o comprá tus entradas para asistir a nuestras presentaciones. También te
+                    invitamos a visitarnos en nuestra sede presencial, donde podrás ver cada objeto cara a cara.
                 </p>
             </div>
         </div>
@@ -117,7 +122,7 @@
         			<h3 class="mb-0">Algunas de nuestras presentaciones</h3>
         			<a href="${pageContext.request.contextPath}/PresentationServlet?operation=userList" 
         				class="btn btn-outline-secondary btn-sm rounded-pill px-3 btn-see-all">
-            			Ver todos <i class="bi bi-arrow-right ms-1"></i>
+            			Ver todas <i class="bi bi-arrow-right ms-1"></i>
         			</a>
     			</div>
 			</div> 
@@ -214,7 +219,7 @@
         			<h3 class="mb-0">Algunas de nuestras exhibiciones</h3>
         			<a href="${pageContext.request.contextPath}/ExhibitionServlet?operation=userList" 
         				class="btn btn-outline-secondary btn-sm rounded-pill px-3 btn-see-all">
-            			Ver todos <i class="bi bi-arrow-right ms-1"></i>
+            			Ver todas <i class="bi bi-arrow-right ms-1"></i>
         			</a>
     			</div>
 			</div> 
