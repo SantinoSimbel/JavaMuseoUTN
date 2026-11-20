@@ -163,7 +163,16 @@ public class PurchaseDAO {
 			        + "FROM purchase pu "
 			        + "INNER JOIN presentation pr ON pu.presentation_id = pr.event_id "
 			        + "INNER JOIN event e ON pr.event_id = e.id "
-			        + "WHERE pu.user_id = ?");
+			        + "WHERE pu.user_id = ? "
+			        + "ORDER BY "
+			        + "CASE e.status "
+			        + "  WHEN 'Empezado' THEN 1 "
+			        + "  WHEN 'Creado' THEN 2 "
+			        + "  WHEN 'Terminado' THEN 3 "
+			        + "  ELSE 4 "
+			        + "END ASC, "
+			        + "pr.day ASC, "
+			        + "e.startTime ASC");
 
 			stmt.setInt(1, user.getId());
 			
