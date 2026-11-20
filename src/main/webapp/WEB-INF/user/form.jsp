@@ -45,7 +45,7 @@
 		<!-- Pestañas -->
         <ul class="nav nav-tabs mb-3">
             <li class="nav-item">
-                <button class="nav-link active"
+                <button class="nav-link active text-dark"
                         data-bs-toggle="tab"
                         data-bs-target="#datos"
                         type="button">
@@ -53,7 +53,7 @@
                 </button>
             </li>
             <li class="nav-item">
-                <button class="nav-link"
+                <button class="nav-link text-dark"
                         data-bs-toggle="tab"
                         data-bs-target="#compras"
                         type="button">
