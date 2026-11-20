@@ -116,7 +116,7 @@ public class PresentationLogic extends EventLogic {
 	public void deletePresentation(Presentation delPre) throws Exception {
 		//si la presentacion tiene compras no borrar
 		
-		if (!purDao.searchByPresentation(delPre).isEmpty()){
+		if (!purDao.searchAllByPresentation(delPre).isEmpty()){
 			throw new Exception("No puede borrarse la presentacion porque tiene compras asociadas.");
 		}
 		//si no tiene, borrar

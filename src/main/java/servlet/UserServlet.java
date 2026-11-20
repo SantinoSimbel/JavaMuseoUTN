@@ -9,7 +9,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import data.PurchaseDAO;
 import data.UserDAO;
+import entities.Purchase;
+import entities.PurchasePresentationDTO;
 import entities.User;
 import entities.UserSessionDTO;
 import logic.UserLogic;
@@ -105,6 +108,11 @@ public class UserServlet extends HttpServlet {
 			
 			UserDAO dao = new UserDAO();
 			user = dao.search(u);
+			
+			PurchaseDAO purDao = new PurchaseDAO();
+			LinkedList<PurchasePresentationDTO> purchasesWithPre  = purDao.searchAllByUser(user);
+			
+			request.setAttribute("allPurchasesWithPre", purchasesWithPre);
 		}
 		
 		request.setAttribute("oneUser", user);
