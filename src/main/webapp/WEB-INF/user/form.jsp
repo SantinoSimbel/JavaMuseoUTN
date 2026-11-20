@@ -133,7 +133,9 @@
 		 	
             <!-- Pestaña Mis compras -->
             <div class="tab-pane fade" id="compras">
-            
+            	<p class="text-muted mb-2">
+                    Seleccione una compra para ir a su presentacion:
+                </p>
             	<% if(purchasesWithPre.isEmpty()){ %>
             		<div class="alert alert-danger" role="alert">
                 		El usuario todavia no ha hecho ninguna compra.
@@ -147,50 +149,53 @@
 		                    <div class="card w-100 shadow-sm">
 		                        <!-- Contenido de la tarjeta -->
 		                        <div class="card-body d-flex flex-column">
-		                            <div class="d-flex justify-content-between align-items-start gap-2 mb-3">
-		                                <h5 class="card-title mb-0">
-		                                    <%= purPreDTO.getPresentation().getTitle() %>
-		                                </h5>
-		                                <!-- Estado -->
-		                                <% if (purPreDTO.getPresentation().getStatus().equals("Creado")) { %>
-		                                    <span class="badge text-bg-success text-nowrap"> No empezada </span>
-		                                <% } else if (purPreDTO.getPresentation().getStatus().equals("Empezado")) { %>
-		                                    <span class="badge text-bg-warning text-nowrap"> Empezada </span>
-		                                <% } else { %>
-		                                	<span class="badge text-bg-secondary"> Terminada </span>
-		                                <% } %>
-		                            </div>
-		
-		                            <!-- Distribución interna vertical para diseño cuadrado -->
-		                            <div class="mb-3">
-		                                <%= purPreDTO.getPresentation().getDescription() %><br><br>
-		                                <div class="">
-		                                    <i class="bi bi-calendar-event"></i> 
-		                            		<b>El día </b><%= purPreDTO.getPresentation().getDay().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")) %> <br>
-		                                </div>
-		                                <div class="mt-1">
-		                                    <i class="bi bi-clock"></i> 
-		                                    <b>Horario:</b> <%= purPreDTO.getPresentation().getStartTime() %> a <%= purPreDTO.getPresentation().getEndTime() %> hs
-		                                </div>
-			                            <div class="mt-1">
-		                                    <i class="bi bi-cash-stack"></i> 
-		                                    <b>Precio unitario: </b> $<%= purPreDTO.getPresentation().getPrice().intValue() %>
-		                                </div>
-		                            </div>
-		                                
-		                                <!-- Empiezan los cambios -->
-		                                
-										<!-- Datos compra -->
-										<div class="mt-auto pt-3 border-top fs-5">
-											<div class="mt-1">
-										    	<i class="bi bi-ticket-perforated"></i>
-										        <b>Cantidad de entradas:</b> <%= purPreDTO.getPurchase().getQuantity() %>
-										    </div>	  
-										    <div class="mt-1">
-											    <i class="bi bi-receipt"></i>
-											    <b>Total a pagar:</b> $<%= purPreDTO.getPurchase().getTotalPrice().intValue() %>
-										    </div>
-										</div>
+			                        <a href="PresentationServlet?operation=detail&id=<%=purPreDTO.getPresentation().getId()%>"
+			                        	class="text-decoration-none text-reset d-flex flex-column flex-grow-1">
+			                            <div class="d-flex justify-content-between align-items-start gap-2 mb-3">
+			                                <h5 class="card-title mb-0">
+			                                    <%= purPreDTO.getPresentation().getTitle() %>
+			                                </h5>
+			                                <!-- Estado -->
+			                                <% if (purPreDTO.getPresentation().getStatus().equals("Creado")) { %>
+			                                    <span class="badge text-bg-success text-nowrap"> No empezada </span>
+			                                <% } else if (purPreDTO.getPresentation().getStatus().equals("Empezado")) { %>
+			                                    <span class="badge text-bg-warning text-nowrap"> Empezada </span>
+			                                <% } else { %>
+			                                	<span class="badge text-bg-secondary"> Terminada </span>
+			                                <% } %>
+			                            </div>
+			
+			                            <!-- Distribución interna vertical para diseño cuadrado -->
+			                            <div class="mb-3">
+			                                <%= purPreDTO.getPresentation().getDescription() %><br><br>
+			                                <div class="">
+			                                    <i class="bi bi-calendar-event"></i> 
+			                            		<b>El día </b><%= purPreDTO.getPresentation().getDay().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")) %> <br>
+			                                </div>
+			                                <div class="mt-1">
+			                                    <i class="bi bi-clock"></i> 
+			                                    <b>Horario:</b> <%= purPreDTO.getPresentation().getStartTime() %> a <%= purPreDTO.getPresentation().getEndTime() %> hs
+			                                </div>
+				                            <div class="mt-1">
+			                                    <i class="bi bi-cash-stack"></i> 
+			                                    <b>Precio unitario: </b> $<%= purPreDTO.getPresentation().getPrice().intValue() %>
+			                                </div>
+			                            </div>
+			                                
+			                                <!-- Empiezan los cambios -->
+			                                
+											<!-- Datos compra -->
+											<div class="mt-auto pt-3 border-top fs-5">
+												<div class="mt-1">
+											    	<i class="bi bi-ticket-perforated"></i>
+											        <b>Cantidad de entradas:</b> <%= purPreDTO.getPurchase().getQuantity() %>
+											    </div>	  
+											    <div class="mt-1">
+												    <i class="bi bi-receipt"></i>
+												    <b>Total a pagar:</b> $<%= purPreDTO.getPurchase().getTotalPrice().intValue() %>
+											    </div>
+											</div>
+										</a>
 		                            </div>
 		                        </div>
 		                    </div>
