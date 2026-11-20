@@ -9,6 +9,7 @@ import java.util.LinkedList;
 
 import entities.Presentation;
 import entities.Purchase;
+import entities.PurchasePresentationDTO;
 import entities.User;
 
 public class PurchaseDAO {
@@ -106,7 +107,7 @@ public class PurchaseDAO {
 		}
 	}
 	
-	public LinkedList<Purchase> searchByPresentation(Presentation pre){
+	public LinkedList<Purchase> searchAllByPresentation(Presentation pre){
 			
 			PreparedStatement stmt = null;
 			ResultSet rs = null;
@@ -146,6 +147,77 @@ public class PurchaseDAO {
 				}
 			}
 		}
+	
+	public LinkedList<PurchasePresentationDTO> searchAllByUser(User user){
+		
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		Connection conn = null;
+		
+		try {
+			conn= db.getConnection();
+			LinkedList<PurchasePresentationDTO> purchasesWithPre = new LinkedList<>();
+			stmt = conn.prepareStatement("SELECT pu.user_id, pu.presentation_id, pu.quantity, pu.total_price, "
+			        + "e.title, e.description, e.startTime, e.endTime, e.status, "
+			        + "pr.day, pr.capacity, pr.price "
+			        + "FROM purchase pu "
+			        + "INNER JOIN presentation pr ON pu.presentation_id = pr.event_id "
+			        + "INNER JOIN event e ON pr.event_id = e.id "
+			        + "WHERE pu.user_id = ? "
+			        + "ORDER BY "
+			        + "CASE e.status "
+			        + "  WHEN 'Empezado' THEN 1 "
+			        + "  WHEN 'Creado' THEN 2 "
+			        + "  WHEN 'Terminado' THEN 3 "
+			        + "  ELSE 4 "
+			        + "END ASC, "
+			        + "pr.day ASC, "
+			        + "e.startTime ASC");
+
+			stmt.setInt(1, user.getId());
+			
+			rs = stmt.executeQuery();
+			
+			while(rs!= null && rs.next()) {
+				Purchase pur = new Purchase();
+				pur.setUserId(rs.getInt("user_id"));
+				pur.setPresentationId(rs.getInt("presentation_id"));
+				pur.setQuantity(rs.getInt("quantity"));
+		        pur.setTotalPrice(rs.getBigDecimal("total_price"));
+		        
+		        Presentation pre = new Presentation();
+	            pre.setId(rs.getInt("presentation_id"));
+	            pre.setTitle(rs.getString("title"));
+	            pre.setDescription(rs.getString("description"));
+	            pre.setStartTime(rs.getTime("startTime").toLocalTime());
+	            pre.setEndTime(rs.getTime("endTime").toLocalTime());
+	            pre.setStatus(rs.getString("status"));
+	            pre.setDay(rs.getDate("day").toLocalDate());
+	            pre.setCapacity(rs.getInt("capacity"));
+	            pre.setPrice(rs.getBigDecimal("price"));
+		        
+	            PurchasePresentationDTO purPreDTO = new PurchasePresentationDTO();
+	            purPreDTO.setPurchase(pur);
+	            purPreDTO.setPresentation(pre);
+	            
+		        purchasesWithPre.add(purPreDTO);
+			}
+			
+			return purchasesWithPre;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			try {
+				if(rs != null)rs.close();
+				if(stmt != null)stmt.close();
+				db.releaseConnection();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 	
 	public void addWithCapacityCheck(Purchase newPur) throws Exception {
 		//Primero lo hago con solo la logica de la primera compra

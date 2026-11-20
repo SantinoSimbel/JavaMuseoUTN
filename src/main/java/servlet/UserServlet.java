@@ -9,7 +9,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import data.PurchaseDAO;
 import data.UserDAO;
+import entities.Purchase;
+import entities.PurchasePresentationDTO;
 import entities.User;
 import entities.UserSessionDTO;
 import logic.UserLogic;
@@ -105,6 +108,11 @@ public class UserServlet extends HttpServlet {
 			
 			UserDAO dao = new UserDAO();
 			user = dao.search(u);
+			
+			PurchaseDAO purDao = new PurchaseDAO();
+			LinkedList<PurchasePresentationDTO> purchasesWithPre  = purDao.searchAllByUser(user);
+			
+			request.setAttribute("allPurchasesWithPre", purchasesWithPre);
 		}
 		
 		request.setAttribute("oneUser", user);
@@ -174,6 +182,11 @@ public class UserServlet extends HttpServlet {
 			//mando el user con sus datos actuales para que el usuario no escriba todo de nuevo
 			request.setAttribute("oneUser", newUser); 
 			request.setAttribute("editing", true);
+			
+			PurchaseDAO purDao = new PurchaseDAO();
+			LinkedList<PurchasePresentationDTO> purchasesWithPre = purDao.searchAllByUser(newUser);
+			request.setAttribute("allPurchasesWithPre", purchasesWithPre);
+			
 			request.getRequestDispatcher("/WEB-INF/user/form.jsp").forward(request,response);
 		}
 				
@@ -202,6 +215,11 @@ public class UserServlet extends HttpServlet {
 			UserDAO userDAO = new UserDAO();
 			request.setAttribute("oneUser", userDAO.search(delUser)); 
 			request.setAttribute("editing", true);
+			
+			PurchaseDAO purDao = new PurchaseDAO();
+			LinkedList<PurchasePresentationDTO> purchasesWithPre = purDao.searchAllByUser(delUser);
+			request.setAttribute("allPurchasesWithPre", purchasesWithPre);
+			
 			request.getRequestDispatcher("/WEB-INF/user/form.jsp").forward(request,response);
 		}
 		
