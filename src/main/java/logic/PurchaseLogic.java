@@ -33,9 +33,9 @@ public class PurchaseLogic {
 	    
 	    Presentation pre = new Presentation();
 	    pre.setId(newPur.getPresentationId());
-	    preDao.search(pre);
+	    pre = preDao.search(pre);
 	    
-	    if ("Termindo".equals(pre.getStatus())) {
+	    if ("Terminado".equals(pre.getStatus())) {
 	        throw new Exception("No pueden comprarse entradas para una presentacion terminada.");
 			
 		}
