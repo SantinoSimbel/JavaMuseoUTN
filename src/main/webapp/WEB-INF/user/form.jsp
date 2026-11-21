@@ -178,7 +178,7 @@
 			                                </div>
 				                            <div class="mt-1">
 			                                    <i class="bi bi-cash-stack"></i> 
-			                                    <b>Precio unitario: </b> $<%= purPreDTO.getPresentation().getPrice().intValue() %>
+			                                    <b>Precio unitario actual: </b> $<%= purPreDTO.getPresentation().getPrice().intValue() %>
 			                                </div>
 			                            </div>
 			                                
