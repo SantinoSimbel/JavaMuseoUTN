@@ -285,20 +285,25 @@ public class PurchaseDAO {
 	        // 4) reviso si tiene otra compra, si tiene hago el update y si no el insert. luego commit
         	int oldTickets =0;
         	
-	        stmtCheckPreviousPurchase = conn.prepareStatement("SELECT quantity as oldTickets FROM purchase where user_id = ? and presentation_id = ?");
+	        stmtCheckPreviousPurchase = conn.prepareStatement("SELECT quantity as oldTickets, total_price as oldTotalPrice " +
+	        		"FROM purchase where user_id = ? and presentation_id = ?");
 	        stmtCheckPreviousPurchase.setInt(1, newPur.getUserId());
 	        stmtCheckPreviousPurchase.setInt(2, newPur.getPresentationId());
 	        
 	        rsCheckPreviousPurchase = stmtCheckPreviousPurchase.executeQuery();
 	        
 	        if (rsCheckPreviousPurchase != null && rsCheckPreviousPurchase.next()) {
-	        	//calculo total price
+	        	//calculo total price pero teniendo en cuenta el precio anterior de las entradas
 	        	oldTickets = rsCheckPreviousPurchase.getInt("oldTickets");
+	        	BigDecimal oldTotalPrice = rsCheckPreviousPurchase.getBigDecimal("oldTotalPrice");
 	        	
 	        	int actualTickets = newPur.getQuantity()+ oldTickets;
 	        	newPur.setQuantity(actualTickets);
 	        	
-	        	BigDecimal totalPrice = price.multiply(BigDecimal.valueOf(actualTickets));
+	        	//calculo solamente el importe de las entradas nuevas
+	        	BigDecimal newTicketsPrice = price.multiply(BigDecimal.valueOf(newPur.getQuantity() - oldTickets));
+	        	//sumo el total viejo + las nuevas
+	        	BigDecimal totalPrice = oldTotalPrice.add(newTicketsPrice);
 
 		        newPur.setTotalPrice(totalPrice);
 	        	//actualizo la tabla
