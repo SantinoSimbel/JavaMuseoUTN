@@ -41,6 +41,9 @@ public class UserLogic {
 		//busco su rol viejo y le pongo el mismo (por si mandan un http malisioso)
 		User oldUser = dao.search(newUser);
 		
+		if (oldUser == null) {
+		    throw new Exception("El usuario que intenta modificar no existe.");
+		}
 		newUser.setRole(oldUser.getRole());
 		
 		//valido que el nuevo mail no pertenezca a otro usuario
@@ -88,6 +91,9 @@ public class UserLogic {
 	public void changeUserRole (User u, UserSessionDTO userDto) throws Exception{
 		
 		User userEdit = dao.search(u);
+		if (userEdit == null) {
+		    throw new Exception("El usuario seleccionado no existe.");
+		}
 		
 		//me fijo si el usuario logeado es distinto al que quiere editar
 		if (userDto.getId() != userEdit.getId()) {
@@ -102,7 +108,7 @@ public class UserLogic {
 		}
 	}
 	
-	private boolean isUserDniTaken(User user){
+	private boolean isUserDniTaken(User user) throws Exception{
 		User userWithDni = dao.searchByDni(user);
 		
 		//si encontro el dni devuelve true
@@ -113,7 +119,7 @@ public class UserLogic {
 		}
 	}
 	
-	private boolean isUserEmailTaken(User user){
+	private boolean isUserEmailTaken(User user) throws Exception{
 		User userWithEmail = dao.searchByEmail(user);
 		
 		if (userWithEmail != null) {

@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import data.PurchaseDAO;
 import data.UserDAO;
-import entities.Purchase;
 import entities.PurchasePresentationDTO;
 import entities.User;
 import entities.UserSessionDTO;
@@ -36,7 +35,6 @@ public class UserServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		
 		String operation = request.getParameter("operation");
 		
@@ -57,7 +55,6 @@ public class UserServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		request.setCharacterEncoding("UTF-8");
 		
 		String operation = request.getParameter("operation");
@@ -80,8 +77,17 @@ public class UserServlet extends HttpServlet {
 	
 	public void getAllUsers(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		UserDAO dao  = new UserDAO();
-		LinkedList<User> users = dao.list();
+		//la declaro aca para poder mandarla vacia si sale mal
+		LinkedList<User> users = new LinkedList<>();
+		
+		try {
+			UserDAO dao  = new UserDAO();
+			
+			users = dao.list();
+			
+		} catch (Exception e) {
+			request.setAttribute("errorMessage", e.getMessage());
+		}
 		
 		request.setAttribute("allUsers", users);
 		request.getRequestDispatcher("/WEB-INF/user/list.jsp").forward(request,response);
@@ -89,28 +95,40 @@ public class UserServlet extends HttpServlet {
 	
 	public void showForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		//showform prepara lo necesario para el form.jsp
-		User user;
+		User user = new User();
 		boolean editing;
 		
 		String operation = request.getParameter("operation");
 		
 		if ("new".equals(operation)) {
-			user = new User();
 			editing =  false;
+			
 		} else {
 			editing = true;
 			
-			//En vez de sacar el id del link lo saco de la session
-			UserSessionDTO userDTO = (UserSessionDTO) request.getSession().getAttribute("user");
+			LinkedList<PurchasePresentationDTO> purchasesWithPre = new LinkedList<>();
 			
-			User u = new User();
-			u.setId(userDTO.getId());
-			
-			UserDAO dao = new UserDAO();
-			user = dao.search(u);
-			
-			PurchaseDAO purDao = new PurchaseDAO();
-			LinkedList<PurchasePresentationDTO> purchasesWithPre  = purDao.searchAllByUser(user);
+			try {
+				//En vez de sacar el id del link lo saco de la session
+				UserSessionDTO userDTO = (UserSessionDTO) request.getSession().getAttribute("user");
+				
+				User u = new User();
+				u.setId(userDTO.getId());
+				
+				UserDAO dao = new UserDAO();
+				user = dao.search(u);
+				
+				if (user == null) {
+					user = new User();
+					throw new Exception("El usuario no existe.");
+				}
+				
+				PurchaseDAO purDao = new PurchaseDAO();
+				purchasesWithPre  = purDao.searchAllByUser(user);
+				
+			} catch (Exception e) {
+				request.setAttribute("errorMessage", e.getMessage());
+			}
 			
 			request.setAttribute("allPurchasesWithPre", purchasesWithPre);
 		}
@@ -140,7 +158,7 @@ public class UserServlet extends HttpServlet {
 			
 			//guardamos el usuario en la session y permanece ahi
 			request.getSession().setAttribute("user",userDTO);
-			response.sendRedirect(request.getContextPath() + "/");
+
 		} catch (Exception e) {
 			
 			request.setAttribute("errorMessage", e.getMessage());
@@ -149,8 +167,11 @@ public class UserServlet extends HttpServlet {
 			request.setAttribute("oneUser", newUser); 
 			request.setAttribute("editing", false);
 			request.getRequestDispatcher("/WEB-INF/user/form.jsp").forward(request,response);
+			//volvemos para que no se ejecute el sendRedirect que hay afuera
+			return;
 		}
-
+		
+		response.sendRedirect(request.getContextPath() + "/");
 		
 	}
 	
@@ -175,7 +196,7 @@ public class UserServlet extends HttpServlet {
 			UserSessionDTO updatedUserDTO = new UserSessionDTO(newUser);
 			request.getSession().setAttribute("user",updatedUserDTO);
 			
-			response.sendRedirect("UserServlet?operation=edit");
+
 		} catch (Exception e) {
 			request.setAttribute("errorMessage", e.getMessage());
 			
@@ -183,12 +204,21 @@ public class UserServlet extends HttpServlet {
 			request.setAttribute("oneUser", newUser); 
 			request.setAttribute("editing", true);
 			
-			PurchaseDAO purDao = new PurchaseDAO();
-			LinkedList<PurchasePresentationDTO> purchasesWithPre = purDao.searchAllByUser(newUser);
+			LinkedList<PurchasePresentationDTO> purchasesWithPre = new LinkedList<>();
+			try {
+				PurchaseDAO purDao = new PurchaseDAO();
+				purchasesWithPre = purDao.searchAllByUser(newUser);
+				
+			} catch (Exception e2) {
+				//Se envia purchasesWithPre vacia
+			}
+			
 			request.setAttribute("allPurchasesWithPre", purchasesWithPre);
 			
 			request.getRequestDispatcher("/WEB-INF/user/form.jsp").forward(request,response);
+			return;
 		}
+		response.sendRedirect("UserServlet?operation=edit");
 				
 	}
 	
@@ -207,41 +237,61 @@ public class UserServlet extends HttpServlet {
 			//cierro la session
 			request.getSession().invalidate();
 			
-			response.sendRedirect(request.getContextPath() + "/");
 		} catch (Exception e) {
 			
 			request.setAttribute("errorMessage", e.getMessage());
-			//mando el user con sus datos actuales para que el usuario no escriba todo de nuevo
-			UserDAO userDAO = new UserDAO();
-			request.setAttribute("oneUser", userDAO.search(delUser)); 
-			request.setAttribute("editing", true);
 			
-			PurchaseDAO purDao = new PurchaseDAO();
-			LinkedList<PurchasePresentationDTO> purchasesWithPre = purDao.searchAllByUser(delUser);
+			LinkedList<PurchasePresentationDTO> purchasesWithPre = new LinkedList<>();
+			try {
+				//mando el user con sus datos actuales para que el usuario no escriba todo de nuevo
+				UserDAO userDAO = new UserDAO();
+				delUser = userDAO.search(delUser);
+				
+				if (delUser == null) {
+					delUser = new User();
+				}
+					
+				
+				PurchaseDAO purDao = new PurchaseDAO();
+				purchasesWithPre = purDao.searchAllByUser(delUser);
+			} catch (Exception e2) {
+				// Se envia delUser y purchasesWithPre vacios
+			}
+			request.setAttribute("oneUser", delUser);
+			request.setAttribute("editing", true);
 			request.setAttribute("allPurchasesWithPre", purchasesWithPre);
 			
 			request.getRequestDispatcher("/WEB-INF/user/form.jsp").forward(request,response);
+			return;
 		}
 		
+		response.sendRedirect(request.getContextPath() + "/");
 	}
 	
 	public void changeUserRole(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		User editUser = new User();
-		editUser.setId(Integer.parseInt(request.getParameter("id")));
-		
 		UserSessionDTO userDTO = (UserSessionDTO) request.getSession().getAttribute("user");
 		
 		UserLogic logic = new UserLogic();
+		
 		try {
+			User editUser = new User();
+			editUser.setId(Integer.parseInt(request.getParameter("id")));
+			
 			logic.changeUserRole(editUser, userDTO);
-			response.sendRedirect("UserServlet?operation=list");
+			
+		} catch (NumberFormatException e) {
+			request.setAttribute("errorMessage", "El id del usuario no es válido.");
+			getAllUsers(request, response);
+			return;
 			
 		} catch (Exception e) {
 			request.setAttribute("errorMessage", e.getMessage());
 			  getAllUsers(request, response);
+			  return;
 		}
 		
+		response.sendRedirect("UserServlet?operation=list");
 	}
 				
 }

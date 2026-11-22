@@ -12,9 +12,7 @@ import entities.User;
 public class UserDAO {
 	private DbConnection db = new DbConnection();
 
-	// es un metodo normal, tiene misma estructura que un
-	// public String mostrarDatos()
-	public LinkedList<User> list() {
+	public LinkedList<User> list() throws Exception {
 		LinkedList<User> users = new LinkedList<>();
 		// definimos estos 2 aca para que pueda encontrlos el finally
 		Statement stmt = null;
@@ -45,8 +43,8 @@ public class UserDAO {
 			return users;
 
 		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
+			e.printStackTrace(); //para debug en consola
+			throw new Exception("La operación no pudo completarse debido a un error en la base de datos.");
 		} finally {
 			// finally siempre se ejecuta, tanto si va por try o por catch
 			// cerrar las conexiones para que no consuman recursos
@@ -64,7 +62,7 @@ public class UserDAO {
 
 	}
 	
-	public User search(User u) { //recibimos un User que solo tenga el id
+	public User search(User u) throws Exception { //recibimos un User que solo tenga el id
 		//definimos estos 2 aca para que pueda encontrlos el finally
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -75,9 +73,7 @@ public class UserDAO {
 			//lo definimos aca asi si nunca entra al try puedo devolverlo null (en caso de querer avisar que esta nulo, hacerlo en la interfaz grafica!)
 			conn= db.getConnection();
 			User user = null;
-			stmt = conn.prepareStatement("select id, dni, name, surname, email, password, role from user where id = ?");
-			//al primer signo de pregunta(1) le asigno el resultado de getId() (el id que ingreso el usuario)
-			stmt.setInt(1, u.getId());
+			stmt = conn.prepareStatement("select id, dni, name, surname, email, password, role from user where id = ?");			stmt.setInt(1, u.getId());
 			
 			rs = stmt.executeQuery();
 			
@@ -96,7 +92,7 @@ public class UserDAO {
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return null;
+			throw new Exception("La operación no pudo completarse debido a un error en la base de datos.");
 		} finally {
 			try {
 				if(rs != null)rs.close();
@@ -108,7 +104,7 @@ public class UserDAO {
 		}
 	}
 	
-	public User searchByEmail(User u) {
+	public User searchByEmail(User u) throws Exception {
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		Connection conn = null;
@@ -117,7 +113,6 @@ public class UserDAO {
 			conn= db.getConnection();
 			User user = null;
 			stmt = conn.prepareStatement("select id, dni, name, surname, email, password, role from user where email = ?");
-			//al primer signo de pregunta(1) le asigno el resultado de getEmail() (el email que ingreso el usuario)
 			stmt.setString(1, u.getEmail());
 			
 			rs = stmt.executeQuery();
@@ -137,7 +132,7 @@ public class UserDAO {
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return null;
+			throw new Exception("La operación no pudo completarse debido a un error en la base de datos.");
 		} finally {
 			try {
 				if(rs != null)rs.close();
@@ -149,7 +144,7 @@ public class UserDAO {
 		}
 	}
 	
-	public User searchByDni(User u) {
+	public User searchByDni(User u) throws Exception {
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		Connection conn = null;
@@ -158,7 +153,6 @@ public class UserDAO {
 			conn= db.getConnection();
 			User user = null;
 			stmt = conn.prepareStatement("select id, dni, name, surname, email, password, role from user where dni = ?");
-			//al primer signo de pregunta(1) le asigno el resultado de getEmail() (el email que ingreso el usuario)
 			stmt.setString(1, u.getDni());
 			
 			rs = stmt.executeQuery();
@@ -178,7 +172,7 @@ public class UserDAO {
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return null;
+			throw new Exception("La operación no pudo completarse debido a un error en la base de datos.");
 		} finally {
 			try {
 				if(rs != null)rs.close();
@@ -190,7 +184,7 @@ public class UserDAO {
 		}
 	}
 	
-	public void add(User newUser) {
+	public void add(User newUser) throws Exception {
 		PreparedStatement stmt = null;
 		//le pongo keyRs para tener nombre mas amigable con lo que estoy haciendo. (en el stmt no hace falta saber que es un preparedStatement.)
 		ResultSet keyRs = null;
@@ -199,7 +193,6 @@ public class UserDAO {
 		//crear el prepareStatement (la consulta)
 		try {
 			conn= db.getConnection();
-			//no cortar la sentencias(aca no esta cortada pero en el video si)
 			stmt = conn.prepareStatement("insert into user(dni,name,surname,email,password,role) values(?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS); //eso ultimo devuelve el id generado por la base de datos
 			stmt.setString(1, newUser.getDni());
 			stmt.setString(2, newUser.getName());
@@ -219,8 +212,8 @@ public class UserDAO {
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
+			throw new Exception("La operación no pudo completarse debido a un error en la base de datos.");
 		} finally {
-			//cerrar las conexiones para que no consuman recursos
 			try {
 				if(keyRs != null)keyRs.close();
 				if(stmt != null)stmt.close();
@@ -232,7 +225,7 @@ public class UserDAO {
 		}
 	}
 	
-	public void update(User updUser) {
+	public void update(User updUser) throws Exception {
 		PreparedStatement stmt = null;
 		Connection conn = null;	
 		
@@ -252,8 +245,8 @@ public class UserDAO {
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
+			throw new Exception("La operación no pudo completarse debido a un error en la base de datos.");
 		} finally {
-			//cerrar las conexiones para que no consuman recursos
 			try {
 				if(stmt != null)stmt.close();
 				db.releaseConnection();
@@ -264,7 +257,7 @@ public class UserDAO {
 
 	} 
 	
-	public void delete(User delUser) {
+	public void delete(User delUser) throws Exception {
 		PreparedStatement stmt = null;
 		Connection conn = null;
 		
@@ -278,8 +271,8 @@ public class UserDAO {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
+			throw new Exception("La operación no pudo completarse debido a un error en la base de datos.");
 		} finally {
-			//cerrar las conexiones para que no consuman recursos
 			try {
 				if(stmt != null)stmt.close();
 				db.releaseConnection();
