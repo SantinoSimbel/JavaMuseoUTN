@@ -137,7 +137,7 @@
                     Seleccione una compra para ir a su presentacion:
                 </p>
             	<% if(purchasesWithPre == null || purchasesWithPre.isEmpty()){ %>
-            		<div class="alert alert-danger" role="alert">
+            		<div class="alert alert-warning" role="alert">
                 		El usuario todavia no ha hecho ninguna compra.
             		</div>
         		<% } %>
