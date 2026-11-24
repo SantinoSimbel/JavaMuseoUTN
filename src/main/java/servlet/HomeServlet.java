@@ -45,14 +45,15 @@ public class HomeServlet extends HttpServlet {
 	
 	//GETALL
 	public void getEventsAndItems(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		HomeLogic logHome = new HomeLogic();
-
-		request.setAttribute("someExhibitions", logHome.getExhibitions());
-		request.setAttribute("somePresentations", logHome.getPresentations());
-		request.setAttribute("someItems", logHome.getItems());
-
-	    request.getRequestDispatcher("/WEB-INF/home/index.jsp").forward(request,response);
+	    HomeLogic logHome = new HomeLogic();
+	    try {
+	        request.setAttribute("someExhibitions", logHome.getExhibitions());
+	        request.setAttribute("somePresentations", logHome.getPresentations());
+	        request.setAttribute("someItems", logHome.getItems());
+	    } catch (Exception e) {
+	        request.setAttribute("errorMessage", e.getMessage());
+	    }
+	    request.getRequestDispatcher("/WEB-INF/home/index.jsp").forward(request, response);
 	}
 	
 	

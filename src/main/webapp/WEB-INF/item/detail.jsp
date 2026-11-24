@@ -10,6 +10,8 @@
 		Item item = (Item) request.getAttribute("oneItem");
 		String from = (String) request.getAttribute("from");
 		String eventId = (String) request.getAttribute("eventId");
+	 	String errorMessage = (String) request.getAttribute("errorMessage");
+
 	%>
 </head>
 <body>
@@ -36,6 +38,12 @@
 					Regresar
 				</a>
     		</div>
+    		<!-- Mensajes de error -->
+			<%if(errorMessage != null){%>
+				<div class="alert alert-danger" role="alert">
+ 					<%= errorMessage %>
+				</div>
+			<%}%>
 
 			<div class="card shadow-sm">
 	

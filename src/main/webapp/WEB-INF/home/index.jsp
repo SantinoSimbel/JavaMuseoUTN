@@ -14,6 +14,7 @@
         LinkedList<Exhibition> exhibitionList = (LinkedList<Exhibition>) request.getAttribute("someExhibitions");
         LinkedList<Item> itemList = (LinkedList<Item>) request.getAttribute("someItems");
         LinkedList<Presentation> presentationList = (LinkedList<Presentation>) request.getAttribute("somePresentations");
+	 	String errorMessage = (String) request.getAttribute("errorMessage");
     %>
 </head>
 <body>
@@ -40,6 +41,13 @@
                 </p>
             </div>
         </div>
+        
+        <!-- Mensajes de error -->
+		<%if(errorMessage != null){%>
+			<div class="alert alert-danger" role="alert">
+ 				<%= errorMessage %>
+			</div>
+		<%}%>
 
         <!-- ==================== ITEMS ==================== -->
         <% if (itemList != null && !itemList.isEmpty()) { %>

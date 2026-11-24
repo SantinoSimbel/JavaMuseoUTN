@@ -12,7 +12,7 @@
 	<%
 		LinkedList<Item> itemsList = (LinkedList<Item>) request.getAttribute("allItems");
 		LinkedList<Category> categoryList = (LinkedList<Category>) request.getAttribute("allCategories");
-		
+	 	String errorMessage = (String) request.getAttribute("errorMessage");
 		String selectedCategory = (String) request.getAttribute("selectedCategory");
 	%>
 </head>
@@ -32,6 +32,15 @@
          
         </p>
         
+        
+        <!-- Mensajes de error -->
+		<%if(errorMessage != null){%>
+			<div class="alert alert-danger" role="alert">
+ 				<%= errorMessage %>
+			</div>
+		<%}%>
+		
+		
         <!-- Filtros -->
         <div class="d-flex flex-column flex-md-row align-items-md-center align-items-start gap-4 mb-3">
             <form action="ItemServlet" method="GET" class="d-flex flex-column flex-sm-row align-items-sm-center gap-2">
@@ -66,7 +75,7 @@
    
 
         <% if(itemsList.isEmpty()){ %>
-            <div class="alert alert-danger" role="alert">
+            <div class="alert alert-warning" role="alert">
                 No hay items disponibles.
             </div>
         <% } %>
