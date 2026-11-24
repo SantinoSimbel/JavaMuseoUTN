@@ -55,11 +55,13 @@ public class PresentationLogic extends EventLogic {
 	   	if (found == null) {
     		throw new Exception("No existe ningun evento con ese id.");
     	}
-	   	else if(found.getStatus().equals("Terminado")) {
+
+	   	found.updateStatus();
+	   	
+	   	if(found.getStatus().equals("Terminado")) {
 	   		found.setReviews(revDao.searchByPresentation(pre));
 		}
 		
-    	found.updateStatus();
 		return found;
 	} 
 	
