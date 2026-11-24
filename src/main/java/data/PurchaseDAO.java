@@ -107,7 +107,7 @@ public class PurchaseDAO {
 		}
 	}
 	
-	public LinkedList<Purchase> searchAllByPresentation(Presentation pre){
+	public LinkedList<Purchase> searchAllByPresentation(Presentation pre) throws Exception {
 			
 			PreparedStatement stmt = null;
 			ResultSet rs = null;
@@ -136,7 +136,7 @@ public class PurchaseDAO {
 				
 			} catch (SQLException e) {
 				e.printStackTrace();
-				return null;
+				throw new Exception("La operación no pudo completarse debido a un error en la base de datos.");
 			} finally {
 				try {
 					if(rs != null)rs.close();

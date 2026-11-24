@@ -8,8 +8,9 @@
     <title>User list presentation</title>
     <%@ include file="/WEB-INF/common/head.jsp" %>
     <% 
-    LinkedList<Presentation> presentationList = (LinkedList<Presentation>) request.getAttribute("allPresentations");
-    String currentStatus = request.getParameter("status");
+    	LinkedList<Presentation> presentationList = (LinkedList<Presentation>) request.getAttribute("allPresentations");
+    	String currentStatus = request.getParameter("status");
+		String errorMessage = (String) request.getAttribute("errorMessage");
     %>
 </head>
 <body>
@@ -21,6 +22,14 @@
         <div class="d-flex justify-content-between align-items-center gap-2 mb-2">
             <h1>Presentaciones</h1>
         </div>
+
+		<!-- Mensajes de error -->
+		<%if(errorMessage != null){%>
+			<div class="alert alert-danger" role="alert">
+ 				<%= errorMessage %>
+			</div>
+		<%}%>
+
 
         <div class="d-flex flex-column flex-md-row align-items-md-center align-items-start gap-4 mb-3">
             <form action="PresentationServlet" method="GET" class="d-flex flex-column flex-sm-row align-items-sm-center gap-2">
@@ -43,7 +52,7 @@
         </div>
 
         <% if(presentationList.isEmpty()){ %>
-            <div class="alert alert-danger" role="alert">
+            <div class="alert alert-warning" role="alert">
                 No hay presentaciones disponibles
             </div>
         <% } %>

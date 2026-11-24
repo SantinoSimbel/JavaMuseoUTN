@@ -19,7 +19,7 @@ public class ExhibitionDAO {
 
 	
 	//list() -----------------------------------------------------------------------------------------
-	public LinkedList<Exhibition> list() {
+	public LinkedList<Exhibition> list() throws Exception {
 		LinkedList<Exhibition> exhibitions = new LinkedList<>();
 
 		Statement stmt = null;
@@ -89,7 +89,7 @@ public class ExhibitionDAO {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return null;
+			throw new Exception("La operación no pudo completarse debido a un error en la base de datos.");
 		} finally {
 			// cerrar las conexiones para que no consuman recursos
 			try {
@@ -116,7 +116,7 @@ public class ExhibitionDAO {
 	
 	
 	//search(Exhibition ex) -----------------------------------------------------------------------------------------
-	public Exhibition search(Exhibition ex) {
+	public Exhibition search(Exhibition ex) throws Exception {
 
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -187,7 +187,7 @@ public class ExhibitionDAO {
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return null;
+			throw new Exception("La operación no pudo completarse debido a un error en la base de datos.");
 		} finally {
 			try {
 				if(rs != null)rs.close();
@@ -209,7 +209,7 @@ public class ExhibitionDAO {
 	
 	
 	//add(Exhibition newExi) -----------------------------------------------------------------------------------------
-	public void add(Exhibition newExi) {
+	public void add(Exhibition newExi) throws Exception {
 		PreparedStatement stmt = null;
 		Connection conn = null;
 		
@@ -229,6 +229,7 @@ public class ExhibitionDAO {
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
+			throw new Exception("La operación no pudo completarse debido a un error en la base de datos.");
 		} finally {
 			//cerrar las conexiones para que no consuman recursos
 			try {
@@ -246,7 +247,7 @@ public class ExhibitionDAO {
 	
 	
 	//update(Exhibition updExi)-----------------------------------------------------------------------------------------
-	public void update(Exhibition updExi) {
+	public void update(Exhibition updExi) throws Exception {
 		PreparedStatement stmt = null;
 		Connection conn = null;	
 		
@@ -263,6 +264,7 @@ public class ExhibitionDAO {
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
+			throw new Exception("La operación no pudo completarse debido a un error en la base de datos.");
 		} finally {
 			//cerrar las conexiones para que no consuman recursos
 			try {
@@ -280,7 +282,7 @@ public class ExhibitionDAO {
 	
 	
 	//delete(Event delEve) -----------------------------------------------------------------------------------------
-	public void delete(Event delEve) {
+	public void delete(Event delEve) throws Exception {
 		PreparedStatement stmt = null;
 		Connection conn = null;
 		
@@ -294,6 +296,7 @@ public class ExhibitionDAO {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
+			throw new Exception("La operación no pudo completarse debido a un error en la base de datos.");
 		} finally {
 			//cerrar las conexiones para que no consuman recursos
 			try {

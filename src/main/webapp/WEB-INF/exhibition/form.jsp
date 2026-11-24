@@ -53,12 +53,6 @@
 			</div>
 		<%}%>
 		
-		<% if (request.getAttribute("error") != null) { %>
-			<div class="alert alert-danger">
-				<%= request.getAttribute("error") %>
-			</div>
-		<% } %>
-		
 		
 		<!-- Formularios -->
 		<div class = "card shadow-sm">	

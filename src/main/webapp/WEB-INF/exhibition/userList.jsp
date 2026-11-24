@@ -10,6 +10,7 @@
     <% 
         LinkedList<Exhibition> exhibitionList = (LinkedList<Exhibition>) request.getAttribute("allExhibitions");
         String currentStatus = request.getParameter("status");
+		String errorMessage = (String) request.getAttribute("errorMessage");
     %>
 </head>
 <body>
@@ -21,6 +22,15 @@
         <div class="d-flex justify-content-between align-items-center gap-2 mb-2">
             <h1>Exhibiciones</h1>
         </div>
+        
+        
+        <!-- Mensajes de error -->
+		<%if(errorMessage != null){%>
+			<div class="alert alert-danger" role="alert">
+ 				<%= errorMessage %>
+			</div>
+		<%}%>
+        
 
         <div class="d-flex flex-column flex-md-row align-items-md-center align-items-start gap-4 mb-3">
             <form action="ExhibitionServlet" method="GET" class="d-flex flex-column flex-sm-row align-items-sm-center gap-2">
@@ -43,7 +53,7 @@
         </div>
 
         <% if(exhibitionList.isEmpty()){ %>
-            <div class="alert alert-danger" role="alert">
+            <div class="alert alert-warning" role="alert">
                 No hay exhibiciones disponibles
             </div>
         <% } %>

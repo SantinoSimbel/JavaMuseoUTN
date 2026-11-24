@@ -43,6 +43,14 @@
 				
 		<p class="text-muted mb-2">Seleccione un articulo para editarlo:</p>
 		
+		<%if(itemsList.isEmpty()){%>
+			<div class="alert alert-warning" role="alert">
+ 				No hay articulos disponibles
+			</div>
+		<%}%>
+        
+		
+		
 		<!-- Listado -->
 		<% for (Item ite : itemsList){ %>
 			<div class= "card mb-3 shadow-sm">

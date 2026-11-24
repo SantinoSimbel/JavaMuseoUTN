@@ -17,7 +17,7 @@ public class PresentationLogic extends EventLogic {
 	
 	
 	//get presentations
-	public LinkedList<Presentation> getPresentations(String status, String operation){
+	public LinkedList<Presentation> getPresentations(String status, String operation) throws Exception {
 		LinkedList<Presentation> presentations = dao.list();
 		for (Presentation pre : presentations) {
 			pre.updateStatus();
@@ -48,17 +48,19 @@ public class PresentationLogic extends EventLogic {
 	
 	
 	//get one
-	public Presentation getOne(int id) {
+	public Presentation getPresentation(Presentation pre) throws Exception  {
 		
-		Presentation pre = new Presentation();
-		pre.setId(id);
-		pre = dao.search(pre);
+		Presentation found = dao.search(pre);
 		
-		if(pre.getStatus().equals("Terminado")) {
-			pre.setReviews(revDao.searchByPresentation(pre));
+	   	if (found == null) {
+    		throw new Exception("No existe ningun evento con ese id.");
+    	}
+	   	else if(found.getStatus().equals("Terminado")) {
+	   		found.setReviews(revDao.searchByPresentation(pre));
 		}
 		
-		return pre;
+    	found.updateStatus();
+		return found;
 	} 
 	
 	
@@ -91,8 +93,10 @@ public class PresentationLogic extends EventLogic {
 	//update presentation
 	public void updatePresentation(Presentation newPresentation) throws Exception{
 
-		
 		//validaciones
+		canUpdate(getPresentation(newPresentation));
+		validationEvent(newPresentation);
+		
 		if (newPresentation.getDay().isBefore(LocalDate.now()) || newPresentation.getDay().equals(LocalDate.now())){
 			throw new Exception("La fecha debe ser superior al día de hoy.");
 		}
@@ -103,7 +107,6 @@ public class PresentationLogic extends EventLogic {
 			throw new Exception("El precio no puede ser menor o igual a 0.");
 		}
 		
-		super.validationEvent(newPresentation);
 		daoEv.update(newPresentation);		
 		dao.update(newPresentation);
 	}
@@ -114,14 +117,20 @@ public class PresentationLogic extends EventLogic {
 	
 	//delete presentations
 	public void deletePresentation(Presentation delPre) throws Exception {
-		//si la presentacion tiene compras no borrar
+
+		//comprobamos si existe
+		Presentation exist = getPresentation(delPre);
 		
-		if (!purDao.searchAllByPresentation(delPre).isEmpty()){
+		canDelete(exist);
+		
+		//si la presentacion tiene compras no borrar
+		if (!purDao.searchAllByPresentation(exist).isEmpty()){
 			throw new Exception("No puede borrarse la presentacion porque tiene compras asociadas.");
 		}
+		
 		//si no tiene, borrar
-		dao.delete(delPre);
-		daoEv.delete(delPre);
+		dao.delete(exist);
+		daoEv.delete(exist);
 	}
 	
 	
