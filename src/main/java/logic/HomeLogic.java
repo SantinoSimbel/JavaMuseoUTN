@@ -25,8 +25,8 @@ public class HomeLogic {
         return firstN(preLogic.getPresentations(null, operation));
     }
 
-    public LinkedList<Item> getItems() {
-        return firstN(iteDAO.list());
+    public LinkedList<Item> getItems() throws Exception {
+    	return firstN(iteDAO.list());
     }
 
     private <T> LinkedList<T> firstN(LinkedList<T> list) {
