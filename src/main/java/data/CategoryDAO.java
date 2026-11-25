@@ -15,7 +15,7 @@ public class CategoryDAO {
 
 	// es un metodo normal, tiene misma estructura que un
 	// public String mostrarDatos()
-	public LinkedList<Category> list() {
+	public LinkedList<Category> list() throws Exception {
 		LinkedList<Category> categories = new LinkedList<>();
 		// definimos estos 2 aca para que pueda encontrlos el finally
 		Statement stmt = null;
@@ -42,7 +42,7 @@ public class CategoryDAO {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return null;
+			throw new Exception("La operación no pudo completarse debido a un error en la base de datos.");
 		} finally {
 			// finally siempre se ejecuta, tanto si va por try o por catch
 			// cerrar las conexiones para que no consuman recursos
@@ -60,7 +60,7 @@ public class CategoryDAO {
 
 	}
 	
-	public Category search(Category c) { //recibimos un Category que solo tenga el id
+	public Category search(Category c) throws Exception { //recibimos un Category que solo tenga el id
 		//definimos estos 2 aca para que pueda encontrlos el finally
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -87,7 +87,7 @@ public class CategoryDAO {
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return null;
+			throw new Exception("La operación no pudo completarse debido a un error en la base de datos.");
 		} finally {
 			try {
 				if(rs != null)rs.close();
@@ -100,7 +100,7 @@ public class CategoryDAO {
 	}
 	
 
-	public Category searchByName(Category c) { 
+	public Category searchByName(Category c) throws Exception { 
 		
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -124,7 +124,7 @@ public class CategoryDAO {
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return null;
+			throw new Exception("La operación no pudo completarse debido a un error en la base de datos.");
 		} finally {
 			try {
 				if(rs != null)rs.close();
@@ -139,7 +139,7 @@ public class CategoryDAO {
 	
 	
 	
-	public void add(Category newCat) {
+	public void add(Category newCat) throws Exception {
 		PreparedStatement stmt = null;
 		//le pongo keyRs para tener nombre mas amigable con lo que estoy haciendo. (en el stmt no hace falta saber que es un preparedStatement.)
 		ResultSet keyRs = null;
@@ -163,8 +163,8 @@ public class CategoryDAO {
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
+			throw new Exception("La operación no pudo completarse debido a un error en la base de datos.");
 		} finally {
-			//cerrar las conexiones para que no consuman recursos
 			try {
 				if(keyRs != null)keyRs.close();
 				if(stmt != null)stmt.close();
@@ -176,7 +176,7 @@ public class CategoryDAO {
 		}
 	}
 	
-	public void update(Category updCat) {
+	public void update(Category updCat) throws Exception {
 		PreparedStatement stmt = null;
 		Connection conn = null;	
 		
@@ -191,8 +191,8 @@ public class CategoryDAO {
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
+			throw new Exception("La operación no pudo completarse debido a un error en la base de datos.");
 		} finally {
-			//cerrar las conexiones para que no consuman recursos
 			try {
 				if(stmt != null)stmt.close();
 				db.releaseConnection();
@@ -203,7 +203,7 @@ public class CategoryDAO {
 
 	} 
 	
-	public void delete(Category delCat) {
+	public void delete(Category delCat) throws Exception {
 		PreparedStatement stmt = null;
 		Connection conn = null;
 		
@@ -217,8 +217,8 @@ public class CategoryDAO {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
+			throw new Exception("La operación no pudo completarse debido a un error en la base de datos.");
 		} finally {
-			//cerrar las conexiones para que no consuman recursos
 			try {
 				if(stmt != null)stmt.close();
 				db.releaseConnection();

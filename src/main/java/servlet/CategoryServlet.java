@@ -74,8 +74,16 @@ public class CategoryServlet extends HttpServlet {
 	
 	public void getAllCategories(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		CategoryDAO dao  = new CategoryDAO();
-		LinkedList<Category> categories = dao.list();
+
+		LinkedList<Category> categories = new LinkedList<>();
+		
+		try {
+			CategoryDAO dao  = new CategoryDAO();
+			categories = dao.list();
+			
+		} catch (Exception e) {
+			request.setAttribute("errorMessage", e.getMessage());
+		}
 		
 		// guardo en el request la lista de categorias que le voy a mandar al jsp. ("name", objeto)
 		request.setAttribute("allCategories", categories);
@@ -85,23 +93,35 @@ public class CategoryServlet extends HttpServlet {
 	
 	public void showForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		//showform prepara lo necesario para que el form.jsp pueda mostrarse o vacio o con la categoria a editar
-		Category cat;
+		Category cat = new Category();
 		boolean editing;
 		
 		String operation = request.getParameter("operation");
 		
 		if ("new".equals(operation)) {
-			cat = new Category();
 			editing =  false;
 		} else {
 			editing = true;
-			int id = Integer.parseInt(request.getParameter("id"));
+			try {
+				int id = Integer.parseInt(request.getParameter("id"));
+				
+				Category c = new Category();
+				c.setId(id);
+				
+				CategoryDAO dao  = new CategoryDAO();
+				cat = dao.search(c);
+				
+				if (cat == null) {
+					cat = new Category();
+					throw new Exception("La categoría seleccionada no existe.");
+				}
+				
+			} catch (NumberFormatException e) {
+				request.setAttribute("errorMessage", "El id de la categoría no es válido.");
+			} catch (Exception e) {
+				request.setAttribute("errorMessage", e.getMessage());
+			}
 			
-			Category c = new Category();
-			c.setId(id);
-			
-			CategoryDAO dao  = new CategoryDAO();
-			cat = dao.search(c);
 		}
 		
 		request.setAttribute("oneCategory", cat);
@@ -120,50 +140,68 @@ public class CategoryServlet extends HttpServlet {
 		try {
 			logic.addCategory(newCat);
 			
-			response.sendRedirect("CategoryServlet?operation=list");
+			
 		} catch (Exception e) {
 			
 			request.setAttribute("errorMessage", e.getMessage());
 			request.setAttribute("oneCategory", newCat); 
 			request.setAttribute("editing", false);
 			request.getRequestDispatcher("/WEB-INF/category/form.jsp").forward(request,response);
+			
+			return;
 		}
+		response.sendRedirect("CategoryServlet?operation=list");
 	}
 	
 	public void updateCategory(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Category newCat = new Category();
-		newCat.setId(Integer.parseInt(request.getParameter("id")));
-		newCat.setName(request.getParameter("name"));
-		
-		CategoryLogic logic = new CategoryLogic();
 		
 		try {
+			
+			newCat.setId(Integer.parseInt(request.getParameter("id")));
+			newCat.setName(request.getParameter("name"));
+			
+			CategoryLogic logic = new CategoryLogic();
 			logic.updateCategory(newCat);
 			
-			response.sendRedirect("CategoryServlet?operation=list");
-		} catch (Exception e) {
+		} catch (NumberFormatException e) {
+			request.setAttribute("errorMessage", "El id de la categoría no es válido.");
+			request.setAttribute("oneCategory", newCat); 
+			request.setAttribute("editing", true);
+			request.getRequestDispatcher("/WEB-INF/category/form.jsp").forward(request,response);
+			return;	
 			
+		} catch (Exception e) {
 			request.setAttribute("errorMessage", e.getMessage());
 			request.setAttribute("oneCategory", newCat); 
 			request.setAttribute("editing", true);
 			request.getRequestDispatcher("/WEB-INF/category/form.jsp").forward(request,response);
+			return;
 		}
+		response.sendRedirect("CategoryServlet?operation=list");
 	}
 	
 	
 	public void deleteCategory(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	    Category delCat = new Category();
-	    delCat.setId(Integer.parseInt(request.getParameter("id")));
-
-	    CategoryLogic logic = new CategoryLogic();
-
+	    
 	    try {
+	    	delCat.setId(Integer.parseInt(request.getParameter("id")));
+		    CategoryLogic logic = new CategoryLogic();
+		    
 	        logic.deleteCategory(delCat);
-	        response.sendRedirect("CategoryServlet?operation=list");
+	        
+		} catch (NumberFormatException e) {
+			request.setAttribute("errorMessage", "El id de la categoría no es válido.");
+			getAllCategories(request, response); // vuelve a mostrar la lista, ahora con el mensaje
+			return;	
+			
 	    } catch (Exception e) {
 	        request.setAttribute("errorMessage", e.getMessage());
 	        getAllCategories(request, response); // vuelve a mostrar la lista, ahora con el mensaje
+	        return;	
 	    }
+	    response.sendRedirect("CategoryServlet?operation=list");
 	}
 
 }

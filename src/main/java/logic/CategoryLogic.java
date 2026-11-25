@@ -20,7 +20,6 @@ private ItemDAO itemDao = new ItemDAO();
 	
 	
 	
-	
 	public void updateCategory(Category newCat) throws Exception{
 		
 		if (isCategoryNameTaken(newCat)) {
@@ -32,8 +31,6 @@ private ItemDAO itemDao = new ItemDAO();
 	
 	
 	
-	
-
 	public void deleteCategory(Category cat) throws Exception {
 	    if (itemDao.existsByCategory(cat)) {
 	        throw new Exception("No se puede eliminar la categoría porque está siendo usada por uno o más items.");
@@ -43,13 +40,10 @@ private ItemDAO itemDao = new ItemDAO();
 	
 	
 	
-	
-	
-	
-	private boolean isCategoryNameTaken(Category cat){
+	private boolean isCategoryNameTaken(Category cat) throws Exception{
+		
 		Category catWithName = dao.searchByName(cat);
 		
-		//si encontro el dni devuelve true
 		if (catWithName != null) {
 			return true; 
 		} else {
