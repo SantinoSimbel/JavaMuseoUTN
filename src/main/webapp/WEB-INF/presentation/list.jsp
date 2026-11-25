@@ -29,7 +29,9 @@
 		<div class="d-flex flex-column flex-md-row align-items-md-center align-items-start gap-4 mb-3">
 
     		<a href="PresentationServlet?operation=new" class="btn btn-success"> Nueva Presentación </a>
-
+    		
+    		
+    	
     		<form action="PresentationServlet" method="GET" class="d-flex flex-column flex-sm-row align-items-sm-center gap-2">
 
         		<input type="hidden" name="operation" value="list">
@@ -57,7 +59,7 @@
         <p class="text-muted mb-2"> Presentaciones registradas: </p>
 
 		<%if(presentationList.isEmpty()){%>
-			<div class="alert alert-danger" role="alert">
+			<div class="alert alert-warning" role="alert">
  				No hay presentaciones disponibles
 			</div>
 		<%}%>

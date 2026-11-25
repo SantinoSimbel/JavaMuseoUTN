@@ -11,8 +11,11 @@
 <head>
     <title>List exhibition</title>
     <%@ include file="/WEB-INF/common/head.jsp" %>
-    <% LinkedList<Exhibition> exhibitionList = (LinkedList<Exhibition>) request.getAttribute("allExhibitions"); 
-    String currentStatus = request.getParameter("status");%>
+    <% 
+    	LinkedList<Exhibition> exhibitionList = (LinkedList<Exhibition>) request.getAttribute("allExhibitions"); 
+    	String currentStatus = request.getParameter("status");
+    	String errorMessage = (String) request.getAttribute("errorMessage");
+    %>
 </head>
 
 <body>
@@ -32,6 +35,7 @@
 		<div class="d-flex flex-column flex-md-row align-items-md-center align-items-start gap-4 mb-3">
 
     		<a href="ExhibitionServlet?operation=new" class="btn btn-success"> Nueva Exhibición </a>
+    		
 
     		<form action="ExhibitionServlet" method="GET" class="d-flex flex-column flex-sm-row align-items-sm-center gap-2">
 
@@ -52,8 +56,19 @@
 		</div>
 		
 		
-		<%if(exhibitionList.isEmpty()){%>
+		   		
+    	<!-- Mensajes de error -->
+		<%if(errorMessage != null){%>
 			<div class="alert alert-danger" role="alert">
+ 				<%= errorMessage %>
+			</div>
+		<%}%>
+		
+		<p class="text-muted mb-2"> Exhibiciones registradas: </p>
+		
+		
+		<%if(exhibitionList.isEmpty()){%>
+			<div class="alert alert-warning" role="alert">
  				No hay exhibiciones disponibles
 			</div>
 		<%}%>

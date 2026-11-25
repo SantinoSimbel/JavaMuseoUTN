@@ -17,11 +17,11 @@ public class HomeLogic {
 
     
     
-    public LinkedList<Exhibition> getExhibitions() {
+    public LinkedList<Exhibition> getExhibitions() throws Exception  {
         return firstN(exLogic.getExhibitions(null, operation));
     }
 
-    public LinkedList<Presentation> getPresentations() {
+    public LinkedList<Presentation> getPresentations() throws Exception  {
         return firstN(preLogic.getPresentations(null, operation));
     }
 
