@@ -215,6 +215,7 @@ public class ItemServlet extends HttpServlet {
 		} catch (Exception e) {
 	        request.setAttribute("errorMessage", e.getMessage());
 	        getAllItem(request, response, "list");
+	        return;
 	    }
 		
 		

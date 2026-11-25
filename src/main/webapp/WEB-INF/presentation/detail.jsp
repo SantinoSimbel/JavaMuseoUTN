@@ -20,8 +20,11 @@
     	
     	String errorMessage = (String) request.getAttribute("errorMessage");
     	String purchaseErrorMessage = (String) request.getAttribute("purchaseErrorMessage");
-    	String reviewErrorMessage = (String) session.getAttribute("reviewErrorMessage");
+       	String reviewErrorMessage = (String) session.getAttribute("reviewErrorMessage");
     	session.removeAttribute("reviewErrorMessage");
+    	if (errorMessage == null) {
+    		errorMessage = reviewErrorMessage;
+    	}
     %>
 </head>
 
@@ -47,15 +50,6 @@
 			</div>
 		<%}%>
 		
-									<!-- Mensaje de error de la reseña -->
-							<% if (reviewErrorMessage != null) { %>
-								<div class="alert alert-danger" role="alert">
-									<%= reviewErrorMessage %>
-								</div>
-							<% } %>
-
-        
-        
 		<div class="d-flex flex-column flex-md-row align-items-md-center align-items-start gap-4 mb-3"></div>
 		
         
