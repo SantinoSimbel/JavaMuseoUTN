@@ -52,7 +52,7 @@ public class ExhibitionLogic extends EventLogic{
 		Exhibition found = dao.search(ex);
     	
     	if (found == null) {
-    		throw new Exception("No existe ningun evento con ese id.");
+    		throw new Exception("No existe ninguna exhibición con ese id.");
     	}
     	
     	found.updateStatus();

@@ -53,7 +53,7 @@ public class PresentationLogic extends EventLogic {
 		Presentation found = dao.search(pre);
 		
 	   	if (found == null) {
-    		throw new Exception("No existe ningun evento con ese id.");
+    		throw new Exception("No existe ninguna presentación con ese id.");
     	}
 
 	   	found.updateStatus();
