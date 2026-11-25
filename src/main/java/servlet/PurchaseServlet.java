@@ -97,7 +97,7 @@ public class PurchaseServlet extends HttpServlet {
 			
 			request.setAttribute("onePresentation", pre);
 			request.setAttribute("onePurchase", pur);
-			request.setAttribute("errorMessage", e.getMessage());
+			request.setAttribute("purchaseErrorMessage", e.getMessage());
 
 			request.getRequestDispatcher("/WEB-INF/presentation/detail.jsp").forward(request,response);
 			return;

@@ -19,7 +19,7 @@ public class ReviewDAO {
 
 	
 	//searchByPresentation(Presentation pre) -----------------------------------------------------------------------------------------------------
-	public LinkedList<Review> searchByPresentation(Presentation pre){
+	public LinkedList<Review> searchByPresentation(Presentation pre) throws Exception {
 			
 			PreparedStatement stmt = null;
 			ResultSet rs = null;
@@ -55,7 +55,7 @@ public class ReviewDAO {
 				
 			} catch (SQLException e) {
 				e.printStackTrace();
-				return null;
+				throw new Exception("La operación no pudo completarse debido a un error en la base de datos.");
 			} finally {
 				try {
 					if(rs != null)rs.close();
@@ -71,7 +71,7 @@ public class ReviewDAO {
 	
 
 	//search(int idPre, int idUsr) -----------------------------------------------------------------------------------------------------
-	public Review search(int idPre, int idUsr){
+	public Review search(int idPre, int idUsr) throws Exception {
 			
 			PreparedStatement stmt = null;
 			ResultSet rs = null;
@@ -107,7 +107,7 @@ public class ReviewDAO {
 				
 			} catch (SQLException e) {
 				e.printStackTrace();
-				return null;
+				throw new Exception("La operación no pudo completarse debido a un error en la base de datos.");
 			} finally {
 				try {
 					if(rs != null)rs.close();
@@ -125,7 +125,7 @@ public class ReviewDAO {
 
 	
 	//add(Review newRev, int preId) --------------------------------------------------------------------------------------------------------------------
-	public void add(Review newRev, int PreId, int usrId) {
+	public void add(Review newRev, int PreId, int usrId) throws Exception {
 		PreparedStatement stmt = null;
 		ResultSet keyRs = null;
 		Connection conn = null;
@@ -147,6 +147,7 @@ public class ReviewDAO {
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
+			throw new Exception("La operación no pudo completarse debido a un error en la base de datos.");
 		} finally {
 			//cerrar las conexiones para que no consuman recursos
 			try {
@@ -165,7 +166,7 @@ public class ReviewDAO {
 	
 	
 	//update(Review updRev, int preId) -----------------------------------------------------------------------------------------
-	public void update(Review updRev, int preId, int usrId) {
+	public void update(Review updRev, int preId, int usrId) throws Exception {
 		PreparedStatement stmt = null;
 		Connection conn = null;	
 		
@@ -183,6 +184,7 @@ public class ReviewDAO {
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
+			throw new Exception("La operación no pudo completarse debido a un error en la base de datos.");
 		} finally {
 			//cerrar las conexiones para que no consuman recursos
 			try {
@@ -201,7 +203,7 @@ public class ReviewDAO {
 	
 	
 	//delete(int userId, int preId) -----------------------------------------------------------------------------------------
-		public void delete(int userId, int preId) {
+		public void delete(int userId, int preId) throws Exception {
 			PreparedStatement stmt = null;
 			Connection conn = null;
 			
@@ -216,6 +218,7 @@ public class ReviewDAO {
 
 			} catch (SQLException e) {
 				e.printStackTrace();
+				throw new Exception("La operación no pudo completarse debido a un error en la base de datos.");
 			} finally {
 				//cerrar las conexiones para que no consuman recursos
 				try {

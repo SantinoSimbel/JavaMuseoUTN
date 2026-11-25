@@ -13,11 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 
 import data.ItemDAO;
-import data.CategoryDAO;
-import data.EventDAO;
-import data.ExhibitionDAO;
 import entities.Item;
-import entities.Category;
 import entities.Exhibition;
 import logic.ExhibitionLogic;
 
