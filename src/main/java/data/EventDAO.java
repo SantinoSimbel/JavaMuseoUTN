@@ -17,7 +17,7 @@ public class EventDAO {
 
 	
 	//existsByItem(Item ite) -----------------------------------------------------------------------------------------
-	public boolean existsByItem(Item ite) {
+	public boolean existsByItem(Item ite) throws Exception {
 	    PreparedStatement stmt = null;
 	    ResultSet rs = null;
 	    Connection conn = null;
@@ -31,7 +31,7 @@ public class EventDAO {
 	        return rs.next(); // devuelve true si encontró al menos una fila
 	    } catch (SQLException e) {
 	        e.printStackTrace();
-	        return true; // ante un error, por dudas, bloqueamos el borrado
+	        throw new Exception("La operación no pudo completarse debido a un error en la base de datos.");
 	    } finally {
 	        try {
 	            if (rs != null) rs.close();
@@ -47,7 +47,7 @@ public class EventDAO {
 	
 	
 	//add(Event newIte) -----------------------------------------------------------------------------------------
-	public void add(Event newEve) {
+	public void add(Event newEve) throws Exception  {
 		PreparedStatement stmt = null;
 		PreparedStatement itemStmt = null;
 		ResultSet keyRs = null;
@@ -83,6 +83,7 @@ public class EventDAO {
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
+	        throw new Exception("La operación no pudo completarse debido a un error en la base de datos.");
 		} finally {
 			//cerrar las conexiones para que no consuman recursos
 			try {
@@ -102,7 +103,7 @@ public class EventDAO {
 	
 	
 	//update(Event updEve)-----------------------------------------------------------------------------------------
-	public void update(Event updEve) {
+	public void update(Event updEve) throws Exception  {
 		PreparedStatement stmt = null;
 		PreparedStatement itemStmt = null;
 		Connection conn = null;	
@@ -134,6 +135,7 @@ public class EventDAO {
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
+	        throw new Exception("La operación no pudo completarse debido a un error en la base de datos.");
 		} finally {
 			//cerrar las conexiones para que no consuman recursos
 			try {
@@ -152,7 +154,7 @@ public class EventDAO {
 	
 	
 	//delete(Event delEve) -----------------------------------------------------------------------------------------
-	public void delete(Event delEve) {
+	public void delete(Event delEve) throws Exception  {
 		PreparedStatement stmt = null;
 		PreparedStatement stmtItem = null;
 		Connection conn = null;
@@ -169,6 +171,7 @@ public class EventDAO {
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
+	        throw new Exception("La operación no pudo completarse debido a un error en la base de datos.");
 		} finally {
 			//cerrar las conexiones para que no consuman recursos
 			try {

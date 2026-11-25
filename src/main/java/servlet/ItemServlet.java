@@ -44,10 +44,10 @@ public class ItemServlet extends HttpServlet {
 		
 		switch (operation) {
 		case "list":
-			getAllItem(request, response);
+			getAllItem(request, response, operation);
 			break;
 		case "userList":
-			getAllItem(request, response);
+			getAllItem(request, response, operation);
 			break;
 		case "detail":
 			getOneItem(request, response);
@@ -89,84 +89,134 @@ public class ItemServlet extends HttpServlet {
 		}
 	}
 	
+	
+	
+	
+	
 	//GETALL
-	public void getAllItem(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void getAllItem(HttpServletRequest request, HttpServletResponse response, String view) throws ServletException, IOException {
 		
-		String operation = request.getParameter("operation");
 		String categoryId = request.getParameter("categoryId");
 		
 		ItemDAO dao  = new ItemDAO();
 		CategoryDAO catDao = new CategoryDAO();
 		
-		//filtro del userList
-		if (categoryId == null || categoryId.isEmpty()) {
-			LinkedList<Item> items = dao.list();
-			request.setAttribute("allItems", items);
+	    LinkedList<Item> items = new LinkedList<>();
+	    LinkedList<Category> allCategories = new LinkedList<>();
+		
+		try {
+			allCategories = catDao.list();
 			
-		} else {
-			Category c = new Category();
-			c.setId(Integer.parseInt(categoryId));
+			//filtro del userList
+			if (categoryId == null || categoryId.isEmpty()) {
+				items = dao.list();	
+				
+			} else {
+				Category c = new Category();
+				c.setId(Integer.parseInt(categoryId));
+				items = dao.listByCategory(c);
+			}
 			
-			LinkedList<Item> items = dao.listByCategory(c);
-			request.setAttribute("allItems", items);
-		}
+			
+		} catch (NumberFormatException e) {
+			request.setAttribute("errorMessage", "Error al ejecutar el filtro. El id de la categoría no es valido");
+			
+		} catch (Exception e) {
+	        request.setAttribute("errorMessage", e.getMessage());
+	    }
 		
-		LinkedList<Category> allCategories = catDao.list();
-		request.setAttribute("allCategories", allCategories);
 		
-		//para que 
-		request.setAttribute("selectedCategory", categoryId);
+	    request.setAttribute("allItems", items);
+	    request.setAttribute("allCategories", allCategories);
+	    request.setAttribute("selectedCategory", categoryId);
 		
-		String jsp = "userList".equals(operation)
-				? "/WEB-INF/item/userList.jsp"
-				: "/WEB-INF/item/list.jsp";
+		String jsp = "list".equals(view)
+				? "/WEB-INF/item/list.jsp"
+				: "/WEB-INF/item/userList.jsp";
 		
 		request.getRequestDispatcher(jsp).forward(request,response);
 	}
 	
 	
+	
+	
+	
+	
+	
+	
+	
+	//getOne
 	public void getOneItem(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		//estos parametros son para saber a que link volver al apretar el boton de volver
 		String from =request.getParameter("from");
 		String eventId =request.getParameter("eventId");
 		
-		ItemDAO dao  = new ItemDAO();
+		ItemLogic logic  = new ItemLogic();
 		Item item = new Item();
 		
-		item.setId(Integer.parseInt(request.getParameter("id")));
+		try {
+			item.setId(Integer.parseInt(request.getParameter("id")));
+			item = logic.getItem(item);
+			
+		} catch (NumberFormatException e) {
+			request.setAttribute("errorMessage", "El id del item no es válido.");
+			getAllItem(request, response, "userList");
+			return;
+			
+		} catch (Exception e) {
+	        request.setAttribute("errorMessage", e.getMessage());
+	        getAllItem(request, response, "userList");
+	        return;
+	    }
 		
-		item = dao.search(item);
+		
 		
 		request.setAttribute("oneItem", item);
-		
 		request.setAttribute("from", from);
 		request.setAttribute("eventId", eventId);
 		
 		request.getRequestDispatcher("/WEB-INF/item/detail.jsp").forward(request,response);
 	}
 	
+	
+	
+	
+	
+	
+	
+	
+	
 	//SHOWFORM
 	public void showForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Item ite;
-		boolean editing;
+		Item ite = new Item();
+		boolean editing = false;
 		CategoryDAO categoryDAO = new CategoryDAO();
-		LinkedList<Category> categories = categoryDAO.list();
+		ItemLogic logic = new ItemLogic();
+		LinkedList<Category> categories = new LinkedList<Category>();
 		
 		String operation = request.getParameter("operation");
 		
-		if ("new".equals(operation)) {
-			ite = new Item();
-			editing =  false;
-		} else {
-			editing = true;
-			int id = Integer.parseInt(request.getParameter("id"));
+		try {
 			
-			Item i = new Item();
-			i.setId(id);
+			categories = categoryDAO.list();
+			if ("edit".equals(operation)) {
+				editing = true;
+				int id = Integer.parseInt(request.getParameter("id"));
+				
+				ite.setId(id);
+				ite = logic.getItem(ite);
+			}
 			
-			ItemDAO dao  = new ItemDAO();
-			ite = dao.search(i);
-		}
+		} catch (NumberFormatException e) {
+			request.setAttribute("errorMessage", "El id del item no es válido.");
+	        getAllItem(request, response, "list");
+			return;
+			
+		} catch (Exception e) {
+	        request.setAttribute("errorMessage", e.getMessage());
+	        getAllItem(request, response, "list");
+	    }
+		
 		
 		request.setAttribute("oneItem", ite);
 		request.setAttribute("editing", editing);
@@ -176,18 +226,26 @@ public class ItemServlet extends HttpServlet {
 		request.getRequestDispatcher("/WEB-INF/item/form.jsp").forward(request,response);
 	}
 
+	
+	
+	
+	
+	
 	//ADD
 	public void addItem(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Item newIte = new Item();
 		newIte.setName(request.getParameter("name"));
 		newIte.setDescription(request.getParameter("description"));
+		LinkedList<Category> categories = new LinkedList<Category>();
+
 		
 		Category cat = new Category();
-	    cat.setId(Integer.parseInt(request.getParameter("category_id")));
-	    
-	    newIte.setCategory(cat);
 		
 		try {
+			
+		    cat.setId(Integer.parseInt(request.getParameter("category_id")));
+		    newIte.setCategory(cat);
+			
 			//guardamos la imagen fisicamente y en la DB el path a ella
 			String imagePath = saveImage(request);
 			
@@ -199,42 +257,73 @@ public class ItemServlet extends HttpServlet {
 			
 			ItemDAO dao  = new ItemDAO();
 			dao.add(newIte);
-			response.sendRedirect("ItemServlet?operation=list");
+
+		
+		} catch (NumberFormatException e) {
+			try {
+				CategoryDAO categoryDAO = new CategoryDAO();
+				categories = categoryDAO.list();
+			} catch (Exception e2) {}
+
+			request.setAttribute("allCategories", categories);
+			request.setAttribute("errorMessage", "El id de la categoría no es válido.");
+			request.setAttribute("oneItem", newIte);
+	        request.setAttribute("editing", false);
+			request.getRequestDispatcher("/WEB-INF/item/form.jsp").forward(request, response);
+			
+			return;
 			
 		} catch (Exception e) {
-			CategoryDAO categoryDAO = new CategoryDAO();
-		    request.setAttribute("allCategories", categoryDAO.list());
-		    
+			
+			try {
+				CategoryDAO categoryDAO = new CategoryDAO();
+				categories = categoryDAO.list();
+			} catch (Exception e2) {}
+
+			request.setAttribute("allCategories", categories);
 			request.setAttribute("errorMessage", e.getMessage());
 			request.setAttribute("oneItem", newIte);
 	        request.setAttribute("editing", false);
 			request.getRequestDispatcher("/WEB-INF/item/form.jsp").forward(request, response);
+			
+			return;
 		}
 		
 		
+		response.sendRedirect("ItemServlet?operation=list");
+		
 	}
+	
+	
+	
+	
+	
 	
 	
 	//UPDATE
 	public void updateItem(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Item newIte = new Item();
+		LinkedList<Category> categories = new LinkedList<Category>();
 		
-		Integer itemId = (Integer.parseInt(request.getParameter("id"))); 
-		
-		newIte.setId(itemId);
 		newIte.setName(request.getParameter("name"));
 		newIte.setDescription(request.getParameter("description"));
 		
 		Category cat = new Category();
-		cat.setId(Integer.parseInt(request.getParameter("category_id")));
-	    newIte.setCategory(cat);
+		ItemLogic logic = new ItemLogic();
+
 	    
 	    try {
+			Integer itemId = (Integer.parseInt(request.getParameter("id"))); 
+			newIte.setId(itemId);
+			
+			cat.setId(Integer.parseInt(request.getParameter("category_id")));
+		    newIte.setCategory(cat);
+			
 	    	ItemDAO dao  = new ItemDAO();
 	    	//busco el item actual para conservar su imagen anterior en caso de que no se haya cambiado
 	    	Item currentItem = new Item();
 	    	currentItem.setId(itemId);
-	    	currentItem = dao.search(currentItem);
+	    	currentItem = logic.getItem(currentItem);
 	    	
 	    	//recupero el path de la imagen anterior
 	    	String oldImagePath = currentItem.getPicture();
@@ -259,53 +348,84 @@ public class ItemServlet extends HttpServlet {
 	    		deleteImage(oldImagePath);
 			}
 			
-			response.sendRedirect("ItemServlet?operation=list");
+			
+		} catch (NumberFormatException e) {
+
+			try {
+				CategoryDAO categoryDAO = new CategoryDAO();
+				categories = categoryDAO.list();
+			} catch (Exception e2) {}
+
+			request.setAttribute("allCategories", categories);
+			request.setAttribute("errorMessage", "El id del item o la categoría no es válido.");
+			request.setAttribute("oneItem", newIte);
+	        request.setAttribute("editing", true);
+			request.getRequestDispatcher("/WEB-INF/item/form.jsp").forward(request, response);
+			return;
 			
 		} catch (Exception e) {
-			
-			CategoryDAO categoryDAO = new CategoryDAO();
-		    request.setAttribute("allCategories", categoryDAO.list());
-		    
+
+			try {
+				CategoryDAO categoryDAO = new CategoryDAO();
+				categories = categoryDAO.list();
+			} catch (Exception e2) {}
+
+			request.setAttribute("allCategories", categories);
 			request.setAttribute("errorMessage", e.getMessage());
 			request.setAttribute("oneItem", newIte);
 	        request.setAttribute("editing", true);
 			request.getRequestDispatcher("/WEB-INF/item/form.jsp").forward(request, response);
+			return;
+
 		}
+
+	    response.sendRedirect("ItemServlet?operation=list");
+
+
 	}
 		    
+	
+	
+	
+	
+	
 	
 	//DELETE
 	public void deleteItem(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Item delIte = new Item();
-		delIte.setId(Integer.parseInt(request.getParameter("id")));
-		
-		ItemDAO dao  = new ItemDAO();
+		ItemLogic logic = new ItemLogic();
 		
 		try {
+			delIte.setId(Integer.parseInt(request.getParameter("id")));
+
 			//busco item actual para tener el path de la img
-			Item currentItem = dao.search(delIte);
-			
-			ItemLogic logic = new ItemLogic();
+			Item currentItem = logic.getItem(delIte);
 			
 			logic.deleteItem(delIte);
 			
 			deleteImage(currentItem.getPicture());
 			
-			response.sendRedirect("ItemServlet?operation=list");
+		
+		} catch (NumberFormatException e) {
+			request.setAttribute("errorMessage", "El id del item no es válido.");
+			getAllItem(request, response, "list");
+			return;
+			
 		} catch (Exception e) {
 			
 			request.setAttribute("errorMessage", e.getMessage());
-			
-			//reutilizamos el getAllItem que ya prepara toda la lista
-			getAllItem(request, response);
-			
+			getAllItem(request, response, "list");
+			return;
 		}
-
+		
+		response.sendRedirect("ItemServlet?operation=list");
 	}
 	
 	
 
 	
+	
+
 	private String saveImage(HttpServletRequest request) throws ServletException, IOException {
 		
 		//recupero del formulario la imagen. se usa gertPart por que es un archivo
@@ -359,6 +479,11 @@ public class ItemServlet extends HttpServlet {
 		
 		return "uploads/items/" + fileName;
 	}
+	
+	
+	
+	
+	
 	
 	
 	private void deleteImage(String imagePath) {

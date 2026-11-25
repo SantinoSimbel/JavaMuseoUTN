@@ -15,9 +15,13 @@
     <%@ include file="/WEB-INF/common/head.jsp" %>
     <% 
     	Presentation pre = (Presentation) request.getAttribute("onePresentation"); 
-    	String errorMessage = (String) request.getAttribute("errorMessage");
     	Purchase pur = (Purchase) request.getAttribute("onePurchase");
     	Review rev = (Review) request.getAttribute("oneReview");
+    	
+    	String errorMessage = (String) request.getAttribute("errorMessage");
+    	String purchaseErrorMessage = (String) request.getAttribute("purchaseErrorMessage");
+    	String reviewErrorMessage = (String) session.getAttribute("reviewErrorMessage");
+    	session.removeAttribute("reviewErrorMessage");
     %>
 </head>
 
@@ -35,6 +39,20 @@
         		<a href="PresentationServlet?operation=userList" class="btn btn-secondary text-nowrap text-center"> Regresar </a>
     		</div>
 		</div>
+		
+		<!-- Mensajes de error -->
+		<%if(errorMessage != null){%>
+			<div class="alert alert-danger" role="alert">
+ 				<%= errorMessage %>
+			</div>
+		<%}%>
+		
+									<!-- Mensaje de error de la reseña -->
+							<% if (reviewErrorMessage != null) { %>
+								<div class="alert alert-danger" role="alert">
+									<%= reviewErrorMessage %>
+								</div>
+							<% } %>
 
         
         
@@ -146,6 +164,11 @@
 		<%} %>
 		
 			
+			
+			
+			
+			
+			
 		<!-- Reseñas  -->
 		<% if (pre.getStatus().equals("Terminado")){ %>
 			<%if(userDTO!=null){ %>
@@ -164,8 +187,11 @@
 								<%= rev != null ? "Edita tu reseña" : "Dinos qué te ha parecido la experiencia" %>
 							</h5>
 							
+
+							
 							<!-- Formulario principal con los inputs -->
 							<form action="ReviewServlet" method="POST" id="reviewForm">
+							
 								<input type="hidden" name="operation" value="<%= rev != null ? "update" : "add" %>">
 								<input type="hidden" name="presentationId" value="<%= pre.getId() %>">
 								
@@ -307,9 +333,9 @@
 			        		
 			        		</div>
 							<!-- Mensaje de error -->
-							<%if(errorMessage != null){%>
+							<%if(purchaseErrorMessage != null){%>
 								<div class="alert alert-danger" role="alert">
-			 						<%= errorMessage %>
+			 						<%= purchaseErrorMessage %>
 								</div>
 							<%}%>
 							
@@ -369,7 +395,7 @@
     <script src="js/calculate-total.js"></script>
 	
 	<!--Si hay error abro el modal y lo muestro -->
-	<% if (request.getAttribute("errorMessage") != null) { %>
+	<% if (request.getAttribute("purchaseErrorMessage") != null) { %>
     <script>
         const purchaseModal = new bootstrap.Modal(document.getElementById("purchaseModal"));
         purchaseModal.show();

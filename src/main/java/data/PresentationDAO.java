@@ -20,7 +20,7 @@ public class PresentationDAO {
 
 	
 	//list() -----------------------------------------------------------------------------------------
-	public LinkedList<Presentation> list() {
+	public LinkedList<Presentation> list() throws Exception {
 		LinkedList<Presentation> presentations = new LinkedList<>();
 
 		Statement stmt = null;
@@ -90,7 +90,7 @@ public class PresentationDAO {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return null;
+			throw new Exception("La operación no pudo completarse debido a un error en la base de datos.");
 		} finally {
 			// cerrar las conexiones para que no consuman recursos
 			try {
@@ -111,7 +111,7 @@ public class PresentationDAO {
 	
 	
 	//search(Presentation p) -----------------------------------------------------------------------------------------
-	public Presentation search(Presentation p) {
+	public Presentation search(Presentation p) throws Exception {
 
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -185,7 +185,7 @@ public class PresentationDAO {
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return null;
+			throw new Exception("La operación no pudo completarse debido a un error en la base de datos.");
 		} finally {
 			try {
 				if(rs != null)rs.close();
@@ -207,7 +207,7 @@ public class PresentationDAO {
 	
 	
 	//add(Presentation newPre) -----------------------------------------------------------------------------------------
-	public void add(Presentation newPre) {
+	public void add(Presentation newPre) throws Exception {
 		PreparedStatement stmt = null;
 		Connection conn = null;
 		
@@ -228,6 +228,7 @@ public class PresentationDAO {
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
+			throw new Exception("La operación no pudo completarse debido a un error en la base de datos.");
 		} finally {
 			//cerrar las conexiones para que no consuman recursos
 			try {
@@ -245,7 +246,7 @@ public class PresentationDAO {
 	
 	
 	//update(Presentation updPre)-----------------------------------------------------------------------------------------
-	public void update(Presentation updPre) {
+	public void update(Presentation updPre) throws Exception {
 		PreparedStatement stmt = null;
 		Connection conn = null;	
 		
@@ -264,6 +265,7 @@ public class PresentationDAO {
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
+	        throw new Exception("La operación no pudo completarse debido a un error en la base de datos.");
 		} finally {
 			//cerrar las conexiones para que no consuman recursos
 			try {
@@ -281,7 +283,7 @@ public class PresentationDAO {
 	
 	
 	//delete(Event delEve) -----------------------------------------------------------------------------------------
-	public void delete(Event delEve) {
+	public void delete(Event delEve) throws Exception {
 		PreparedStatement stmt = null;
 		Connection conn = null;
 		
@@ -295,6 +297,7 @@ public class PresentationDAO {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
+	        throw new Exception("La operación no pudo completarse debido a un error en la base de datos.");
 		} finally {
 			//cerrar las conexiones para que no consuman recursos
 			try {

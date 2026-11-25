@@ -3,6 +3,7 @@ package servlet;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.time.*;
+import java.time.format.DateTimeParseException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,8 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 
 
 import data.ItemDAO;
-import data.EventDAO;
-import data.ExhibitionDAO;
 import entities.Item;
 import entities.Exhibition;
 import logic.ExhibitionLogic;
@@ -46,10 +45,10 @@ public class ExhibitionServlet extends HttpServlet {
 		
 		switch (operation) {
 		case "userList":
-		    getAllExhibition(request, response);
+		    getAllExhibition(request, response, operation);
 		    break;
 		case "list":
-			getAllExhibition(request, response);
+			getAllExhibition(request, response, operation);
 			break;
 		case "detail":
 			getOneExhibition(request, response);
@@ -92,17 +91,23 @@ public class ExhibitionServlet extends HttpServlet {
 	
 	
 	//GETALL
-	public void getAllExhibition(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void getAllExhibition(HttpServletRequest request, HttpServletResponse response, String view) throws ServletException, IOException {
 		
 		ExhibitionLogic logicEx = new ExhibitionLogic();
-	    String operation = request.getParameter("operation");
-		LinkedList<Exhibition> exhibitions = logicEx.getExhibitions(request.getParameter("status"), operation);
+		LinkedList<Exhibition> exhibitions = new LinkedList<Exhibition>();
+				
+		try {
+			exhibitions = logicEx.getExhibitions(request.getParameter("status"), view);
+
+		} catch(Exception e) {
+	        request.setAttribute("errorMessage", e.getMessage());
+		}
 		
 		request.setAttribute("allExhibitions", exhibitions);
 		
-	    String jsp = "userList".equals(operation)
-	            ? "/WEB-INF/exhibition/userList.jsp"
-	            : "/WEB-INF/exhibition/list.jsp";
+	    String jsp = "list".equals(view)
+	            ? "/WEB-INF/exhibition/list.jsp"
+	            : "/WEB-INF/exhibition/userList.jsp";
 
 	    request.getRequestDispatcher(jsp).forward(request, response);
 	}
@@ -114,11 +119,27 @@ public class ExhibitionServlet extends HttpServlet {
 	//GETONE
 	public void getOneExhibition(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		ExhibitionDAO exDAO = new ExhibitionDAO();
+		ExhibitionLogic exLogic = new ExhibitionLogic();
 		
 		Exhibition ex = new Exhibition();
-		ex.setId(Integer.parseInt(request.getParameter("id")));
-		ex = exDAO.search(ex);
+		
+
+		try {
+			ex.setId(Integer.parseInt(request.getParameter("id")));
+			ex = exLogic.getExhibition(ex);
+			
+		} catch (NumberFormatException e) {
+			request.setAttribute("errorMessage", "El id de la exhibicion no es válido.");
+			getAllExhibition(request, response, "userList");
+			return;
+			
+		} catch (Exception e) {
+	        request.setAttribute("errorMessage", e.getMessage());
+	        getAllExhibition(request, response, "userList");
+	        return;
+	    }
+		
+		
 		
 		request.setAttribute("oneExhibition", ex);
 		request.getRequestDispatcher("/WEB-INF/exhibition/detail.jsp").forward(request,response);
@@ -129,27 +150,39 @@ public class ExhibitionServlet extends HttpServlet {
 	
 	//SHOWFORM
 	public void showForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Exhibition ex;
-		boolean editing;
+		Exhibition ex = new Exhibition();
+		boolean editing =  false;
 		
 		ItemDAO itemDAO = new ItemDAO();
-		LinkedList<Item> items = itemDAO.list();
+		LinkedList<Item> items = new LinkedList<Item>();
 		
 		String operation = request.getParameter("operation");
-		
-		if ("new".equals(operation)) {
-			editing =  false;
-			ex = new Exhibition();
-		} else {
-			editing = true;
-			int id = Integer.parseInt(request.getParameter("id"));
+
+				
+		try {
+				items = itemDAO.list();
+
+				if ("edit".equals(operation)) {
+					editing = true;
+					int id = Integer.parseInt(request.getParameter("id"));
 			
-			Exhibition e = new Exhibition();
-			e.setId(id);
+					ex.setId(id);
 			
-			ExhibitionDAO dao  = new ExhibitionDAO();
-			ex = dao.search(e);
+					ExhibitionLogic logic  = new ExhibitionLogic();
+					ex = logic.getExhibition(ex);
+					logic.canUpdate(ex);
 			
+				}
+				
+		} catch (NumberFormatException e) {
+			request.setAttribute("errorMessage", "El id de la exhibición no es válido.");
+			getAllExhibition(request, response, "list");
+			return;
+			
+		} catch (Exception e) {
+	        request.setAttribute("errorMessage", e.getMessage());
+	        getAllExhibition(request, response, "list");
+	        return;
 		}
 		
 		request.setAttribute("oneExhibition", ex);
@@ -173,41 +206,64 @@ public class ExhibitionServlet extends HttpServlet {
 		
 		newEx.setTitle(request.getParameter("title"));
 		newEx.setDescription(request.getParameter("description"));
-		newEx.setEndTime(LocalTime.parse(request.getParameter("endTime")));
-		newEx.setStartTime(LocalTime.parse(request.getParameter("startTime")));
-		
-		newEx.setEndDay(LocalDate.parse(request.getParameter("endDay")));
-		newEx.setStartDay(LocalDate.parse(request.getParameter("startDay")));
 		
 		String[] itemIds = request.getParameterValues("item_ids");
-
 		LinkedList<Item> selectedItems = new LinkedList<>();
-		if (itemIds != null) {
-		    for (String itemId : itemIds) {
-		        Item item = new Item();
-		        item.setId(Integer.parseInt(itemId));
-		        selectedItems.add(item);
-		    }
-		}
-		newEx.setItems(selectedItems);
-		
-		ExhibitionLogic logicEx = new ExhibitionLogic();
+
 		
 		try {
+
+			if (itemIds != null) {
+				for (String itemId : itemIds) {
+					Item item = new Item();
+					item.setId(Integer.parseInt(itemId));
+					selectedItems.add(item);
+				}
+			}
+			newEx.setItems(selectedItems);
+			
+			newEx.setEndTime(LocalTime.parse(request.getParameter("endTime")));
+			newEx.setStartTime(LocalTime.parse(request.getParameter("startTime")));
+			newEx.setEndDay(LocalDate.parse(request.getParameter("endDay")));
+			newEx.setStartDay(LocalDate.parse(request.getParameter("startDay")));
+		
+			ExhibitionLogic logicEx = new ExhibitionLogic();
+
 			logicEx.addExhibition(newEx);
 			
-			response.sendRedirect("ExhibitionServlet?operation=list");
 		} catch (Exception e) {
 			
-			ItemDAO itemDAO = new ItemDAO();
-		    request.setAttribute("allItems", itemDAO.list());
-			request.setAttribute("errorMessage", e.getMessage());
+			try {
+				ItemDAO itemDAO = new ItemDAO();
+				selectedItems = itemDAO.list();
+			} catch (Exception e2) {}
+			
+			String msg;
+		    if (e instanceof NumberFormatException) {
+		        msg = "Se ha detectado un id no válido.";
+		    } else if (e instanceof DateTimeParseException) {
+		        msg = "La fecha o la hora no son válidas.";
+		    } else {
+		        msg = e.getMessage();
+		    }
+		    
+		    request.setAttribute("errorMessage", msg);			
+		    request.setAttribute("allItems", selectedItems);
 			request.setAttribute("oneExhibition", newEx); 
 			request.setAttribute("editing", false);
 			request.getRequestDispatcher("/WEB-INF/exhibition/form.jsp").forward(request,response);
+			return;
 		}
 		
+		
+		response.sendRedirect("ExhibitionServlet?operation=list");
 	}
+	
+	
+		
+	
+	
+	
 	
 	
 	
@@ -218,51 +274,71 @@ public class ExhibitionServlet extends HttpServlet {
 	
 	//UPDATE
 	public void updateExhibition(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
 		
-		Exhibition newEx = new Exhibition();
+		Exhibition updEx = new Exhibition();
 		
-		newEx.setId(Integer.parseInt(request.getParameter("id")));
-		newEx.setTitle(request.getParameter("title"));
-		newEx.setDescription(request.getParameter("description"));
-		newEx.setEndTime(LocalTime.parse(request.getParameter("endTime")));
-		newEx.setStartTime(LocalTime.parse(request.getParameter("startTime")));
+		updEx.setTitle(request.getParameter("title"));
+		updEx.setDescription(request.getParameter("description"));
 		
-		newEx.setEndDay(LocalDate.parse(request.getParameter("endDay")));
-		newEx.setStartDay(LocalDate.parse(request.getParameter("startDay")));
-
 		String[] itemIds = request.getParameterValues("item_ids");
-
 		LinkedList<Item> selectedItems = new LinkedList<>();
-		if (itemIds != null) {
-		    for (String itemId : itemIds) {
-		        Item item = new Item();
-		        item.setId(Integer.parseInt(itemId));
-		        selectedItems.add(item);
-		    }
-		}
-		newEx.setItems(selectedItems);
-		
 
-
-		ExhibitionLogic logicEx = new ExhibitionLogic();
 		
 		try {
-			logicEx.updateExhibition(newEx);
+			updEx.setId(Integer.parseInt(request.getParameter("id")));
 			
-			response.sendRedirect("ExhibitionServlet?operation=list");
+			updEx.setEndTime(LocalTime.parse(request.getParameter("endTime")));
+			updEx.setStartTime(LocalTime.parse(request.getParameter("startTime")));
+		
+			updEx.setEndDay(LocalDate.parse(request.getParameter("endDay")));
+			updEx.setStartDay(LocalDate.parse(request.getParameter("startDay")));
+		
+
+			if (itemIds != null) {
+				for (String itemId : itemIds) {
+					Item item = new Item();
+					item.setId(Integer.parseInt(itemId));
+					selectedItems.add(item);
+				}
+			}
+			updEx.setItems(selectedItems);
+		
+			ExhibitionLogic logicEx = new ExhibitionLogic();
+
+			logicEx.updateExhibition(updEx);
+			
 		} catch (Exception e) {
 			
-			ItemDAO itemDAO = new ItemDAO();
-		    request.setAttribute("allItems", itemDAO.list());
-			request.setAttribute("errorMessage", e.getMessage());
-			request.setAttribute("oneExhibition", newEx); 
+			try {
+				ItemDAO itemDAO = new ItemDAO();
+				selectedItems = itemDAO.list();
+			} catch (Exception e2) {}
+			
+			String msg;
+		    if (e instanceof NumberFormatException) {
+		        msg = "Se ha detectado un id no válido.";
+		    } else if (e instanceof DateTimeParseException) {
+		        msg = "La fecha o la hora no son válidas.";
+		    } else {
+		        msg = e.getMessage();
+		    }
+		    
+		    request.setAttribute("errorMessage", msg);			
+		    request.setAttribute("allItems", selectedItems);
+		    request.setAttribute("oneExhibition", updEx); 
 			request.setAttribute("editing", true);
 			request.getRequestDispatcher("/WEB-INF/exhibition/form.jsp").forward(request,response);
+			return;
 		}
 		
+		
+		response.sendRedirect("ExhibitionServlet?operation=list");
 	}
 	
+	
+		
+
+
 	
 	
 	
@@ -272,14 +348,29 @@ public class ExhibitionServlet extends HttpServlet {
 	
 	//DELETE
 	public void deleteExhibition(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
 		Exhibition delEx = new Exhibition();
-		delEx.setId(Integer.parseInt(request.getParameter("id")));
+		ExhibitionLogic exLog = new ExhibitionLogic();		
 		
-		EventDAO daoEv  = new EventDAO();
-		ExhibitionDAO daoEx = new ExhibitionDAO();
+		try {
+			delEx.setId(Integer.parseInt(request.getParameter("id")));
+			
+			exLog.deleteExhibition(delEx);
+			
 		
-		daoEx.delete(delEx);
-		daoEv.delete(delEx);
+		} catch (NumberFormatException e) {
+			request.setAttribute("errorMessage", "El id de la exhibición no es válido.");
+			getAllExhibition(request, response, "list");
+			return;
+			
+		} catch (Exception e) {
+			
+			request.setAttribute("errorMessage", e.getMessage());
+			getAllExhibition(request, response, "list");
+			return;
+		}
+		
+		
 		response.sendRedirect("ExhibitionServlet?operation=list");
 	}
 

@@ -17,7 +17,7 @@ public class ItemDAO {
 	
 	
 	//list() -----------------------------------------------------------------------------------------
-	public LinkedList<Item> list() {
+	public LinkedList<Item> list() throws Exception {
 		LinkedList<Item> items = new LinkedList<>();
 
 		Statement stmt = null;
@@ -55,7 +55,7 @@ public class ItemDAO {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return null;
+			throw new Exception("La operación no pudo completarse debido a un error en la base de datos.");
 		} finally {
 			// cerrar las conexiones para que no consuman recursos
 			try {
@@ -72,7 +72,12 @@ public class ItemDAO {
 
 	}
 	
-	public LinkedList<Item> listByCategory(Category c) {
+	
+	
+	
+	
+	
+	public LinkedList<Item> listByCategory(Category c) throws Exception {
 		LinkedList<Item> items = new LinkedList<>();
 
 		PreparedStatement stmt = null;
@@ -113,7 +118,7 @@ public class ItemDAO {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return null;
+			throw new Exception("La operación no pudo completarse debido a un error en la base de datos.");
 		} finally {
 			// cerrar las conexiones para que no consuman recursos
 			try {
@@ -138,7 +143,7 @@ public class ItemDAO {
 	
 	
 	//search(Item i) -----------------------------------------------------------------------------------------
-	public Item search(Item i) {
+	public Item search(Item i) throws Exception {
 
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -174,7 +179,7 @@ public class ItemDAO {
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return null;
+			throw new Exception("La operación no pudo completarse debido a un error en la base de datos.");
 		} finally {
 			try {
 				if(rs != null)rs.close();
@@ -195,7 +200,7 @@ public class ItemDAO {
 	
 	
 	//add(Item newIte) -----------------------------------------------------------------------------------------
-	public void add(Item newIte) {
+	public void add(Item newIte) throws Exception {
 		PreparedStatement stmt = null;
 		ResultSet keyRs = null;
 		Connection conn = null;
@@ -221,6 +226,7 @@ public class ItemDAO {
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
+			throw new Exception("La operación no pudo completarse debido a un error en la base de datos.");
 		} finally {
 			//cerrar las conexiones para que no consuman recursos
 			try {
@@ -239,7 +245,7 @@ public class ItemDAO {
 	
 	
 	//update(Item updIte) -----------------------------------------------------------------------------------------
-	public void update(Item updIte) {
+	public void update(Item updIte) throws Exception {
 		PreparedStatement stmt = null;
 		Connection conn = null;	
 		
@@ -258,6 +264,7 @@ public class ItemDAO {
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
+			throw new Exception("La operación no pudo completarse debido a un error en la base de datos.");
 		} finally {
 			//cerrar las conexiones para que no consuman recursos
 			try {
@@ -273,7 +280,7 @@ public class ItemDAO {
 	
 
 	//existsByCategory(Category c) -----------------------------------------------------------------------------------------
-	public boolean existsByCategory(Category c) {
+	public boolean existsByCategory(Category c) throws Exception {
 	    PreparedStatement stmt = null;
 	    ResultSet rs = null;
 	    Connection conn = null;
@@ -287,7 +294,7 @@ public class ItemDAO {
 	        return rs.next(); // devuelve true si encontró al menos una fila
 	    } catch (SQLException e) {
 	        e.printStackTrace();
-	        return true; // ante un error, por dudas, bloqueamos el borrado
+			throw new Exception("La operación no pudo completarse debido a un error en la base de datos.");
 	    } finally {
 	        try {
 	            if (rs != null) rs.close();
@@ -303,7 +310,7 @@ public class ItemDAO {
 	
 	
 	//delete(Item delIte) -----------------------------------------------------------------------------------------
-	public void delete(Item delIte) {
+	public void delete(Item delIte) throws Exception {
 		PreparedStatement stmt = null;
 		Connection conn = null;
 		
@@ -317,6 +324,7 @@ public class ItemDAO {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
+			throw new Exception("La operación no pudo completarse debido a un error en la base de datos.");
 		} finally {
 			//cerrar las conexiones para que no consuman recursos
 			try {

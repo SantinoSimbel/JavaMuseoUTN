@@ -11,9 +11,11 @@ public abstract class EventLogic {
 	protected EventDAO daoEv = new EventDAO();
 	
 	//add event
-	public void validationEvent(Event newEvent) throws Exception{
+	public void validationEvent(Event newEvent) throws Exception {
 		
 		//validaciones
+	
+		
 		if (newEvent.getItems() == null || newEvent.getItems().isEmpty()) {
 			throw new Exception("Debe seleccionar al menos un artículo.");
 		}
@@ -31,12 +33,29 @@ public abstract class EventLogic {
 	
 	
 	
+	protected void canDelete(Event e) throws Exception {
+		
+		if("Empezado".equals(e.getStatus())) {
+			throw new Exception("No es posible eliminar un evento en curso.");
+		}
+	}
 	
+	
+	
+	
+	public void canUpdate(Event e) throws Exception {
+		
+		if(!"Creado".equals(e.getStatus())) {
+			throw new Exception("No es posible editar el evento.");
+		}
+		
+	}
+	
+	
+
 	
 	protected int getPriority(Event e, String operation) {
-        
-		
-		
+   
 		// Grupo 1: Creado"
         if ("Creado".equals(e.getStatus())) {
             return 1; 

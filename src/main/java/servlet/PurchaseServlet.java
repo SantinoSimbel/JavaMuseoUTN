@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import data.PresentationDAO;
+import logic.PresentationLogic;
 import data.PurchaseDAO;
 import entities.Presentation;
 import entities.Purchase;
@@ -75,15 +75,17 @@ public class PurchaseServlet extends HttpServlet {
 			
 			logic.addPurchase(newPur);
 			
-			response.sendRedirect("PresentationServlet?operation=userList");
 			 
 		} catch (Exception e) {
 			//buscamos los datos necesarios para que details se vuelva a rellenar bien
-			PresentationDAO preDAO = new PresentationDAO();
+			PresentationLogic preLogic = new PresentationLogic();
 			Presentation pre = new Presentation();
-			
 			pre.setId(newPur.getPresentationId());
-			pre = preDAO.search(pre);
+
+			try {
+				pre = preLogic.getPresentation(pre);
+			} catch (Exception e2) {}
+
 			
 			PurchaseDAO purDAO = new PurchaseDAO();
 			Purchase pur  = new Purchase();
@@ -95,10 +97,14 @@ public class PurchaseServlet extends HttpServlet {
 			
 			request.setAttribute("onePresentation", pre);
 			request.setAttribute("onePurchase", pur);
-			request.setAttribute("errorMessage", e.getMessage());
+			request.setAttribute("purchaseErrorMessage", e.getMessage());
 
 			request.getRequestDispatcher("/WEB-INF/presentation/detail.jsp").forward(request,response);
+			return;
 		}
+	
+		response.sendRedirect("PresentationServlet?operation=userList");
+
 	}
 	
 }

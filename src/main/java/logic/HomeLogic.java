@@ -17,16 +17,16 @@ public class HomeLogic {
 
     
     
-    public LinkedList<Exhibition> getExhibitions() {
+    public LinkedList<Exhibition> getExhibitions() throws Exception  {
         return firstN(exLogic.getExhibitions(null, operation));
     }
 
-    public LinkedList<Presentation> getPresentations() {
+    public LinkedList<Presentation> getPresentations() throws Exception  {
         return firstN(preLogic.getPresentations(null, operation));
     }
 
-    public LinkedList<Item> getItems() {
-        return firstN(iteDAO.list());
+    public LinkedList<Item> getItems() throws Exception {
+    	return firstN(iteDAO.list());
     }
 
     private <T> LinkedList<T> firstN(LinkedList<T> list) {

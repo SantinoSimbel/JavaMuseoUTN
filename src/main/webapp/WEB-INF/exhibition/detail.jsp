@@ -6,12 +6,16 @@
 
 <!DOCTYPE html>
 
-<html>
+<html>    
 
 <head>
     <title>One exhibition</title>
     <%@ include file="/WEB-INF/common/head.jsp" %>
-    <% Exhibition ex = (Exhibition) request.getAttribute("oneExhibition"); %>
+    <% 
+    	Exhibition ex = (Exhibition) request.getAttribute("oneExhibition"); 
+   		String errorMessage = (String) request.getAttribute("errorMessage");
+    %>
+    
 </head>
 
 <body>
@@ -26,6 +30,13 @@
     		<h1><%= ex.getTitle() %></h1>
     		<a href="ExhibitionServlet?operation=userList" class="btn btn-secondary text-nowrap"> Regresar </a>
 		</div>
+        
+        <!-- Mensajes de error -->
+		<%if(errorMessage != null){%>
+			<div class="alert alert-danger" role="alert">
+ 				<%= errorMessage %>
+			</div>
+		<%}%>
         
         
 		<div class="d-flex flex-column flex-md-row align-items-md-center align-items-start gap-4 mb-3">

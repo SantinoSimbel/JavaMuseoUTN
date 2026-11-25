@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.LinkedList;
 import java.time.*;
+import java.time.format.DateTimeParseException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,9 +14,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import data.ItemDAO;
-import data.PresentationDAO;
 import data.PurchaseDAO;
 import data.ReviewDAO;
+import logic.ReviewLogic;
 import entities.Item;
 import entities.Presentation;
 import entities.Purchase;
@@ -52,10 +53,10 @@ public class PresentationServlet extends HttpServlet {
 		
 		switch (operation) {
 		case "userList":
-			getAllPresentation(request, response);
+			getAllPresentation(request, response, operation);
 			break;
 		case "list":
-			getAllPresentation(request, response);
+			getAllPresentation(request, response, operation);
 			break;
 		case "detail":
 			getOnePresentation(request, response);
@@ -98,14 +99,21 @@ public class PresentationServlet extends HttpServlet {
 	
 	
 	//GETALL
-	public void getAllPresentation(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void getAllPresentation(HttpServletRequest request, HttpServletResponse response, String view) throws ServletException, IOException {
 		
 		PresentationLogic logicPre = new PresentationLogic();
-	    String operation = request.getParameter("operation");
-		LinkedList<Presentation> presentations = logicPre.getPresentations(request.getParameter("status"), null);
+		LinkedList<Presentation> presentations = new LinkedList<Presentation>();
+		
+		try {
+			presentations = logicPre.getPresentations(request.getParameter("status"), view);
+
+		} catch(Exception e) {
+	        request.setAttribute("errorMessage", e.getMessage());
+		}
 		
 		request.setAttribute("allPresentations", presentations);
-		String jsp = "list".equals(operation)
+		
+		String jsp = "list".equals(view)
 				?  "/WEB-INF/presentation/list.jsp"
 			    :  "/WEB-INF/presentation/userList.jsp";
 		
@@ -121,35 +129,49 @@ public class PresentationServlet extends HttpServlet {
 	public void getOnePresentation(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		PresentationLogic preLog = new PresentationLogic();
-		
-		Presentation pre = preLog.getOne(Integer.parseInt(request.getParameter("id")));
-		
-		
-		//para poder mostrar los datos de la compra en el modal:
-		HttpSession session = request.getSession(false);
-		UserSessionDTO userDTO = null;
-		
-		if (session != null) {
-		    userDTO = (UserSessionDTO) session.getAttribute("user");
-		}
-		
+		Presentation pre = new Presentation();
 		Purchase pur = null;
 		Review rev = null;
-		
-		if (userDTO != null) {
+				
+
+		try {
+			pre.setId(Integer.parseInt(request.getParameter("id")));
+			pre = preLog.getPresentation(pre);
 			
-			PurchaseDAO purDAO = new PurchaseDAO();
-			pur = new Purchase();
-			pur.setUserId(userDTO.getId());
-			pur.setPresentationId(pre.getId());
-			pur = purDAO.searchByUserAndPresentation(pur);
+			//para poder mostrar los datos de la compra en el modal:
+			HttpSession session = request.getSession(false);
+			UserSessionDTO userDTO = null;
+			
+			if (session != null) {
+			    userDTO = (UserSessionDTO) session.getAttribute("user");
+			}
 			
 			
-			ReviewDAO revDAO = new ReviewDAO();
-			rev = new Review();
-			rev = revDAO.search(pre.getId(), userDTO.getId());
-		}
-		
+			if (userDTO != null) {
+				
+				PurchaseDAO purDAO = new PurchaseDAO();
+				pur = new Purchase();
+				pur.setUserId(userDTO.getId());
+				pur.setPresentationId(pre.getId());
+				pur = purDAO.searchByUserAndPresentation(pur);
+				
+				
+				ReviewDAO revDAO = new ReviewDAO();
+				rev = new Review();
+				rev = revDAO.search(pre.getId(), userDTO.getId());
+			}
+			
+		} catch (NumberFormatException e) {
+			request.setAttribute("errorMessage", "El id de la presentación no es válido.");
+			getAllPresentation(request, response, "userList");
+			return;
+			
+		} catch (Exception e) {
+	        request.setAttribute("errorMessage", e.getMessage());
+	        getAllPresentation(request, response, "userList");
+	        return;
+	    }
+				
 		
 		request.setAttribute("onePresentation", pre);
 		request.setAttribute("onePurchase", pur);
@@ -158,31 +180,45 @@ public class PresentationServlet extends HttpServlet {
 
 	}
 	
+	
+	
+	
 	//SHOWFORM
 	public void showForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Presentation pre;
-		boolean editing;
+		Presentation pre = new Presentation();
+		boolean editing =  false;
 		
 		ItemDAO itemDAO = new ItemDAO();
-		LinkedList<Item> items = itemDAO.list();
+		LinkedList<Item> items = new LinkedList<Item>();
 		
 		String operation = request.getParameter("operation");
 		
-		if ("new".equals(operation)) {
-			editing =  false;
-			pre = new Presentation();
-		} else {
-			editing = true;
-			int id = Integer.parseInt(request.getParameter("id"));
+		try {
 			
-			Presentation e = new Presentation();
-			e.setId(id);
+			items = itemDAO.list();
 			
-			PresentationDAO dao  = new PresentationDAO();
-			pre = dao.search(e);
+			if ("edit".equals(operation)) {
+				editing = true;
+				int id = Integer.parseInt(request.getParameter("id"));
+				
+				pre.setId(id);
+				PresentationLogic logic  = new PresentationLogic();
+				pre = logic.getPresentation(pre);
+				logic.canUpdate(pre);
+
+			}
 			
+		} catch (NumberFormatException e) {
+			request.setAttribute("errorMessage", "El id de la presentación no es válido.");
+			getAllPresentation(request, response, "list");
+			return;
+			
+		} catch (Exception e) {
+	        request.setAttribute("errorMessage", e.getMessage());
+	        getAllPresentation(request, response, "list");
+	        return;
 		}
-		
+			
 		request.setAttribute("onePresentation", pre);
 		request.setAttribute("editing", editing);
 		request.setAttribute("allItems", items);
@@ -192,8 +228,7 @@ public class PresentationServlet extends HttpServlet {
 	}
 
 	
-	
-	
+		
 	
 	
 	
@@ -204,48 +239,63 @@ public class PresentationServlet extends HttpServlet {
 		
 		newPre.setTitle(request.getParameter("title"));
 		newPre.setDescription(request.getParameter("description"));
-		newPre.setEndTime(LocalTime.parse(request.getParameter("endTime")));
-		newPre.setStartTime(LocalTime.parse(request.getParameter("startTime")));
-		
-		newPre.setDay(LocalDate.parse(request.getParameter("day")));
-		newPre.setCapacity(Integer.parseInt(request.getParameter("capacity")));
-		newPre.setPrice(new BigDecimal(request.getParameter("price")));
 		
 		String[] itemIds = request.getParameterValues("item_ids");
-
 		LinkedList<Item> selectedItems = new LinkedList<>();
-		if (itemIds != null) {
-		    for (String itemId : itemIds) {
-		        Item item = new Item();
-		        item.setId(Integer.parseInt(itemId));
-		        selectedItems.add(item);
-		    }
-		}
-		newPre.setItems(selectedItems);
 		
-		
-
-		PresentationLogic logicPre = new PresentationLogic();
 		
 		try {
+		
+			if (itemIds != null) {
+				for (String itemId : itemIds) {
+					Item item = new Item();
+					item.setId(Integer.parseInt(itemId));
+					selectedItems.add(item);
+				}
+			}
+			newPre.setItems(selectedItems);
+		
+			newPre.setEndTime(LocalTime.parse(request.getParameter("endTime")));
+			newPre.setStartTime(LocalTime.parse(request.getParameter("startTime")));
+			newPre.setDay(LocalDate.parse(request.getParameter("day")));
+			newPre.setCapacity(Integer.parseInt(request.getParameter("capacity")));
+			newPre.setPrice(new BigDecimal(request.getParameter("price")));
+		
+
+			PresentationLogic logicPre = new PresentationLogic();
 			logicPre.addPresentation(newPre);
 			
-			response.sendRedirect("PresentationServlet?operation=list");
 		} catch (Exception e) {
 			
-			ItemDAO itemDAO = new ItemDAO();
-		    request.setAttribute("allItems", itemDAO.list());
-			request.setAttribute("errorMessage", e.getMessage());
+			try {
+				ItemDAO itemDAO = new ItemDAO();
+				selectedItems = itemDAO.list();
+			} catch (Exception e2) {}
+			
+			String msg;
+		    if (e instanceof NumberFormatException) {
+		        msg = "Se ha detectado un valor numérico no válido.";
+		    } else if (e instanceof DateTimeParseException) {
+		        msg = "La fecha o la hora no son válidas.";
+		    } else {
+		        msg = e.getMessage();
+		    }
+			
+		    request.setAttribute("allItems", selectedItems);
+			request.setAttribute("errorMessage", msg);
 			request.setAttribute("onePresentation", newPre); 
 			request.setAttribute("editing", false);
 			request.getRequestDispatcher("/WEB-INF/presentation/form.jsp").forward(request,response);
+			return;
 		}
 		
+		response.sendRedirect("PresentationServlet?operation=list");
 	}
 	
 	
-	
-	
+		
+		
+
 	
 	
 	
@@ -255,50 +305,69 @@ public class PresentationServlet extends HttpServlet {
 
 		
 		Presentation newPre = new Presentation();
+		String[] itemIds = request.getParameterValues("item_ids");
+		LinkedList<Item> selectedItems = new LinkedList<>();
 		
-		newPre.setId(Integer.parseInt(request.getParameter("id")));
 		newPre.setTitle(request.getParameter("title"));
 		newPre.setDescription(request.getParameter("description"));
-		newPre.setEndTime(LocalTime.parse(request.getParameter("endTime")));
-		newPre.setStartTime(LocalTime.parse(request.getParameter("startTime")));
-		
-		newPre.setDay(LocalDate.parse(request.getParameter("day")));
-		newPre.setCapacity(Integer.parseInt(request.getParameter("capacity")));
-		newPre.setPrice(new BigDecimal(request.getParameter("price")));
-		
-		String[] itemIds = request.getParameterValues("item_ids");
-
-		LinkedList<Item> selectedItems = new LinkedList<>();
-		if (itemIds != null) {
-		    for (String itemId : itemIds) {
-		        Item item = new Item();
-		        item.setId(Integer.parseInt(itemId));
-		        selectedItems.add(item);
-		    }
-		}
-		newPre.setItems(selectedItems);
 		
 		
-		PresentationLogic logicPre = new PresentationLogic();
 		
 		try {
+
+			newPre.setEndTime(LocalTime.parse(request.getParameter("endTime")));
+			newPre.setStartTime(LocalTime.parse(request.getParameter("startTime")));
+			newPre.setDay(LocalDate.parse(request.getParameter("day")));
+			
+			newPre.setId(Integer.parseInt(request.getParameter("id")));
+			newPre.setCapacity(Integer.parseInt(request.getParameter("capacity")));
+			newPre.setPrice(new BigDecimal(request.getParameter("price")));
+		
+
+			if (itemIds != null) {
+				for (String itemId : itemIds) {
+					Item item = new Item();
+					item.setId(Integer.parseInt(itemId));
+					selectedItems.add(item);
+				}
+			}
+			
+			newPre.setItems(selectedItems);
+		
+		
+			PresentationLogic logicPre = new PresentationLogic();
 			logicPre.updatePresentation(newPre);
 			
-			response.sendRedirect("PresentationServlet?operation=list");
 		} catch (Exception e) {
 			
-			ItemDAO itemDAO = new ItemDAO();
-		    request.setAttribute("allItems", itemDAO.list());
-			request.setAttribute("errorMessage", e.getMessage());
+			try {
+				ItemDAO itemDAO = new ItemDAO();
+				selectedItems = itemDAO.list();
+			} catch (Exception e2) {}
+			
+			String msg;
+		    if (e instanceof NumberFormatException) {
+		    	msg = "Se ha detectado un valor numérico no válido.";
+		    } else if (e instanceof DateTimeParseException) {
+		        msg = "La fecha o la hora no son válidas.";
+		    } else {
+		        msg = e.getMessage();
+		    }
+		    
+		    request.setAttribute("allItems", selectedItems);
+			request.setAttribute("errorMessage", msg);
 			request.setAttribute("onePresentation", newPre); 
 			request.setAttribute("editing", true);
 			request.getRequestDispatcher("/WEB-INF/presentation/form.jsp").forward(request,response);
+			return;
 		}
+		
+		response.sendRedirect("PresentationServlet?operation=list");
 	}
 	
 	
 	
-	
+
 	
 	
 	
@@ -306,19 +375,27 @@ public class PresentationServlet extends HttpServlet {
 	//DELETE
 	public void deletePresentation(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Presentation delPre = new Presentation();
-		delPre.setId(Integer.parseInt(request.getParameter("id")));
-		
 		PresentationLogic logicPre = new PresentationLogic();
+		
 		try {
+			delPre.setId(Integer.parseInt(request.getParameter("id")));
+
 			logicPre.deletePresentation(delPre);
-			response.sendRedirect("PresentationServlet?operation=list");
+			
+		} catch (NumberFormatException e) {
+			request.setAttribute("errorMessage", "El id de la presentación no es válido.");
+			getAllPresentation(request, response, "list");
+			return;
+			
 		} catch (Exception e) {
 			
-			LinkedList<Presentation> presentations = logicPre.getPresentations(request.getParameter("status"), null);	
-			request.setAttribute("allPresentations", presentations);
 			request.setAttribute("errorMessage", e.getMessage());
-			request.getRequestDispatcher("/WEB-INF/presentation/list.jsp").forward(request,response);
+			getAllPresentation(request, response, "list");
+			return;
 		}
+		
+		response.sendRedirect("PresentationServlet?operation=list");
+
 		
 	}
 

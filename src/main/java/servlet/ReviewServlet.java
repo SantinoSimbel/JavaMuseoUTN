@@ -12,6 +12,12 @@ import javax.servlet.http.HttpSession;
 import data.ReviewDAO;
 import entities.Review;
 import entities.UserSessionDTO;
+import data.PurchaseDAO;
+import entities.Presentation;
+import entities.Purchase;
+import logic.PresentationLogic;
+import logic.ReviewLogic;
+
 
 
 /**
@@ -71,64 +77,92 @@ public class ReviewServlet extends HttpServlet {
 	
 	//ADD
 	public void addReview(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+
 		HttpSession session = request.getSession(false);
-		UserSessionDTO userDTO = (UserSessionDTO) session.getAttribute("user");  
-		int idPre = Integer.parseInt(request.getParameter("presentationId"));
-		
-		
-		Review newRev = new Review();
-		newRev.setPunctuation(Double.parseDouble(request.getParameter("punctuation")));
-		newRev.setContent(request.getParameter("content"));
-		
-		
-		ReviewDAO dao  = new ReviewDAO();
-		dao.add(newRev, idPre, userDTO.getId());
+		UserSessionDTO userDTO = (UserSessionDTO) session.getAttribute("user");
+		int idPre = 0;
+
+		try {
+			idPre = Integer.parseInt(request.getParameter("presentationId"));
+
+			Review newRev = new Review();
+			newRev.setPunctuation(Double.parseDouble(request.getParameter("punctuation")));
+			newRev.setContent(request.getParameter("content"));
+
+			ReviewLogic log = new ReviewLogic();
+			log.addReview(newRev, idPre, userDTO.getId());
+
+		} catch (NumberFormatException e) {
+			session.setAttribute("reviewErrorMessage", "Se ha detectado un valor numérico no válido.");
+
+		} catch (Exception e) {
+			session.setAttribute("reviewErrorMessage", e.getMessage());
+		}
+
 		response.sendRedirect("PresentationServlet?operation=detail&id=" + idPre);
-		
 	}
-	
-	
-	
-	
+
+
 	
 	
 	
 	
 	//UPDATE
 	public void updateReview(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
 		HttpSession session = request.getSession(false);
-		UserSessionDTO userDTO = (UserSessionDTO) session.getAttribute("user");  
-		int idPre = Integer.parseInt(request.getParameter("presentationId"));
-		
-		Review updRev = new Review();
-		updRev.setPunctuation(Double.parseDouble(request.getParameter("punctuation")));
-		updRev.setContent(request.getParameter("content"));
-		
-		
-		ReviewDAO dao  = new ReviewDAO();
-		dao.update(updRev, idPre, userDTO.getId());
-		
-		
-		
+		UserSessionDTO userDTO = (UserSessionDTO) session.getAttribute("user");
+		int idPre = 0;
+
+		try {
+			idPre = Integer.parseInt(request.getParameter("presentationId"));
+
+			Review updRev = new Review();
+			updRev.setPunctuation(Double.parseDouble(request.getParameter("punctuation")));
+			updRev.setContent(request.getParameter("content"));
+
+			ReviewLogic log = new ReviewLogic();
+			log.updateReview(updRev, idPre, userDTO.getId());
+
+
+
+		} catch (NumberFormatException e) {
+			session.setAttribute("reviewErrorMessage", "Se ha detectado un valor numérico no válido.");
+
+		} catch (Exception e) {
+			session.setAttribute("reviewErrorMessage", e.getMessage());
+		}
+
 		response.sendRedirect("PresentationServlet?operation=detail&id=" + idPre);
 	}
+
 	
 	
 	
 	
+	
+
 	//DELETE
 	public void deleteReview(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
 		HttpSession session = request.getSession(false);
-		UserSessionDTO userDTO = (UserSessionDTO) session.getAttribute("user");  
-		int idPre = Integer.parseInt(request.getParameter("presentationId"));
-		
-		
-		ReviewDAO dao  = new ReviewDAO();
-		dao.delete(userDTO.getId(), idPre);
+		UserSessionDTO userDTO = (UserSessionDTO) session.getAttribute("user");
+		int idPre = 0;
+
+		try {
+			idPre = Integer.parseInt(request.getParameter("presentationId"));
+
+			ReviewDAO dao = new ReviewDAO();
+			dao.delete(userDTO.getId(), idPre);
+
+		} catch (NumberFormatException e) {
+			session.setAttribute("reviewErrorMessage", "El id de la presentación no es válido.");
+
+		} catch (Exception e) {
+			session.setAttribute("reviewErrorMessage", e.getMessage());
+		}
+
 		response.sendRedirect("PresentationServlet?operation=detail&id=" + idPre);
 	}
-
-
 
 }
