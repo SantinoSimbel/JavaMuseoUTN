@@ -13,19 +13,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import data.EventDAO;
-import data.ExhibitionDAO;
 import data.ItemDAO;
-import data.PresentationDAO;
 import data.PurchaseDAO;
 import data.ReviewDAO;
-import entities.Exhibition;
+import logic.ReviewLogic;
 import entities.Item;
 import entities.Presentation;
 import entities.Purchase;
 import entities.Review;
 import entities.UserSessionDTO;
-import logic.ExhibitionLogic;
 import logic.PresentationLogic;
 
 
