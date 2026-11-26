@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import data.UserDAO;
 import entities.User;
 import entities.UserSessionDTO;
 import logic.UserLogic;
@@ -68,15 +67,15 @@ public class LoginServlet extends HttpServlet {
 			
 			//guardamos el usuario en la session y permanece ahi
 			request.getSession().setAttribute("user",userDTO);
-			response.sendRedirect(request.getContextPath() + "/");
+			
 			
 		} catch (Exception e) {
 			request.setAttribute("errorMessage", e.getMessage());
 			request.setAttribute("oneUser", loginUser);
 			request.getRequestDispatcher("login.jsp").forward(request,response);
+			return;
 		}
-
-		
+		response.sendRedirect(request.getContextPath() + "/");
 	}
 	
 	public void logout(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

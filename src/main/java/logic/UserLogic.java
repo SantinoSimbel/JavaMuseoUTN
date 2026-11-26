@@ -44,7 +44,9 @@ public class UserLogic {
 		if (oldUser == null) {
 		    throw new Exception("El usuario que intenta modificar no existe.");
 		}
+		//piso siempre el rol y el dni con el anterior por que no son datos modificables
 		newUser.setRole(oldUser.getRole());
+		newUser.setDni(oldUser.getDni());
 		
 		//valido que el nuevo mail no pertenezca a otro usuario
 		User registerUser = dao.searchByEmail(newUser);
