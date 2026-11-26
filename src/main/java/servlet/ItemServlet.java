@@ -251,7 +251,7 @@ public class ItemServlet extends HttpServlet {
 			String imagePath = saveImage(request);
 			
 			if (imagePath == null) {
-			    throw new ServletException("Debe seleccionar una imagen.");
+			    throw new Exception("Debe seleccionar una imagen.");
 			}
 			
 			newIte.setPicture(imagePath);
@@ -427,7 +427,7 @@ public class ItemServlet extends HttpServlet {
 	
 	
 
-	private String saveImage(HttpServletRequest request) throws ServletException, IOException {
+	private String saveImage(HttpServletRequest request) throws Exception {
 		
 		//recupero del formulario la imagen. se usa gertPart por que es un archivo
 		Part imagePart = request.getPart("picture");
@@ -441,7 +441,7 @@ public class ItemServlet extends HttpServlet {
 		String contentType = imagePart.getContentType();
 		
 		if (contentType == null || !contentType.startsWith("image/")) {
-			throw new ServletException("El archivo seleccionado no es una imagen.");
+			throw new Exception("El archivo seleccionado no es una imagen.");
 		}
 		
 		//obtengo la extension para luego validar formato
@@ -455,7 +455,7 @@ public class ItemServlet extends HttpServlet {
 		
 		//formatos permitidos
 		if (!extension.matches("\\.(jpg|jpeg|png|webp)")) {
-			throw new ServletException("Formato de imagen no permitido.");		
+			throw new Exception("Formato de imagen no permitido.");		
 		}
 		
 		// creamos la carpeta donde se guardan las imagenes
