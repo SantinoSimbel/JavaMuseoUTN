@@ -1,6 +1,7 @@
 package servlet;
 
 import java.io.IOException;
+import java.util.LinkedList;
 
 
 import javax.servlet.ServletException;
@@ -9,7 +10,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+
 import logic.HomeLogic;
+import entities.Presentation;
+import entities.Exhibition;
+import entities.Item;
 
 
 
@@ -46,13 +51,23 @@ public class HomeServlet extends HttpServlet {
 	//GETALL
 	public void getEventsAndItems(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	    HomeLogic logHome = new HomeLogic();
+	    
+	    LinkedList<Exhibition> exhibitions = new LinkedList<Exhibition>();
+	    LinkedList<Presentation> presentations = new LinkedList<Presentation>();
+	    LinkedList<Item> items = new LinkedList<Item>();
+	    
 	    try {
-	        request.setAttribute("someExhibitions", logHome.getExhibitions());
-	        request.setAttribute("somePresentations", logHome.getPresentations());
-	        request.setAttribute("someItems", logHome.getItems());
+	    	exhibitions = logHome.getExhibitions();
+	    	presentations = logHome.getPresentations();
+	    	items = logHome.getItems();	    	
+
 	    } catch (Exception e) {
 	        request.setAttribute("errorMessage", e.getMessage());
 	    }
+        request.setAttribute("someExhibitions", exhibitions);
+        request.setAttribute("somePresentations", presentations);
+        request.setAttribute("someItems", items);
+        
 	    request.getRequestDispatcher("/WEB-INF/home/index.jsp").forward(request, response);
 	}
 	
