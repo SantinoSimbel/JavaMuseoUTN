@@ -28,7 +28,7 @@ public class ReviewLogic {
 		pur.setPresentationId(idPre);
 		
 		if (purDao.searchByUserAndPresentation(pur) == null) {
-    		throw new Exception("No es posible realizar reseñas si no ha participado de la presentación.");
+    		throw new Exception("No es posible realizar reseñas si no ha participado de la presentación (realizando una compra).");
 		}
 		
 		if (!(rev.getPunctuation() >= 0 && rev.getPunctuation() <= 5)) { //utilizamos esta logica por si llega con valor NaN
